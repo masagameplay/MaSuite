@@ -1,0 +1,7 @@
+name: MaSuite
+version: @version@
+main: dev.masa.masuite.MaSuitePaper
+api-version: 1.17
+authors: [ Masa ]
+description: Proxy wide homes, teleportations and warps
+website: https://masa.dev
