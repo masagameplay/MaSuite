@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":masuite-common"))
+    // implementation(project(":MaSuite-common"))
 }
 
 sponge {
@@ -20,7 +20,7 @@ sponge {
     plugin("MaSuite") {
         loader(PluginLoaders.JAVA_PLAIN)
         displayName("MaSuite")
-        mainClass("dev.masa.masuite.MaSuiteSponge")
+        mainClass("dev.masa.masuite.sponge.MaSuiteSponge")
         description("Proxy wide homes, teleportations and warps")
         links {
             homepage("https://masa.dev")

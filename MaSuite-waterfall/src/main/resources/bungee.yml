@@ -1,4 +1,4 @@
 name: MaSuite
 version: @version@
-main: dev.masa.masuite.MaSuiteWaterfall
+main: dev.masa.masuite.waterfall.MaSuiteWaterfall
 description: Proxy wide homes, teleportations and warps

@@ -1,4 +1,4 @@
-package dev.masa.masuite;
+package dev.masa.waterfall;
 
 import net.md_5.bungee.api.plugin.Plugin;
 

@@ -1,4 +1,4 @@
-package dev.masa.masuite;
+package dev.masa.paper;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

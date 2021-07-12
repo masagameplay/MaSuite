@@ -1,3 +1,4 @@
 rootProject.name = 'MaSuite'
 
-include 'masuite-common', 'masuite-paper', 'masuite-sponge', 'masuite-waterfall', 'masuite-velocity'
+include 'masuite-api', 'masuite-common', 'masuite-paper', 'masuite-sponge', 'masuite-waterfall', 'masuite-velocity'
+
