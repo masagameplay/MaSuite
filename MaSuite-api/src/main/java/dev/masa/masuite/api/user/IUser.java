@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * MaSuiteUser contains data of the user and queries optional data from other databases (homes)
  */
-public interface IMaSuiteUser {
+public interface IUser {
 
     /**
      * Unique id of the user
