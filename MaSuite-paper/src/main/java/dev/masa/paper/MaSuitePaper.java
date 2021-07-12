@@ -7,7 +7,6 @@ public final class MaSuitePaper extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
     }
 
     @Override

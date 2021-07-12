@@ -15,6 +15,10 @@ java {
     targetCompatibility = JavaVersion.toVersion(16)
 }
 
+tasks.wrapper {
+    gradleVersion = "7.1.1"
+}
+
 allprojects {
 
     group = project.group
