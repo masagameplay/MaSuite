@@ -29,7 +29,7 @@ tasks.build {
     dependsOn("shadowJar")
 }
 
-tasks.assemble {
+tasks.jar {
     dependsOn("shadowJar")
 }
 
