@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation(api("masuite-api"))
+    implementation(project(":masuite-api"))
 }
 
 java {
