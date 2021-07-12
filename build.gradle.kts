@@ -7,7 +7,7 @@ plugins {
     `java`
     kotlin("jvm") version "1.5.0-RC"
 
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 java {
@@ -32,7 +32,6 @@ allprojects {
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.16"
-            useIR = true
         }
     }
 

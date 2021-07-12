@@ -1,6 +1,6 @@
-package dev.masa.masuite.api.home;
+package dev.masa.masuite.api.models.home;
 
-import dev.masa.masuite.api.object.ILocation;
+import dev.masa.masuite.api.models.object.ILocation;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package dev.masa.masuite.api.user;
+package dev.masa.masuite.api.models.user;
 
 import java.util.Date;
 import java.util.UUID;

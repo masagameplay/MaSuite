@@ -1,7 +1,7 @@
 package dev.masa.masuite.common.models;
 
-import dev.masa.masuite.api.home.IHome;
-import dev.masa.masuite.api.object.ILocation;
+import dev.masa.masuite.api.models.home.IHome;
+import dev.masa.masuite.api.models.object.ILocation;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

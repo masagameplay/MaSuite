@@ -1,6 +1,6 @@
 package dev.masa.masuite.common.models;
 
-import dev.masa.masuite.api.user.IUser;
+import dev.masa.masuite.api.models.user.IUser;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
