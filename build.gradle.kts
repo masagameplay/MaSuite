@@ -19,10 +19,6 @@ tasks.wrapper {
     gradleVersion = "7.1.1"
 }
 
-tasks.build {
-    dependsOn("shadowJar")
-}
-
 allprojects {
 
     group = project.group
