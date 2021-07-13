@@ -1,5 +1,7 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
-    `java`
+    `java-library`
     id("com.github.johnrengelman.shadow")
 }
 
@@ -16,8 +18,10 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":masuite-common"))
+    api(project(":masuite-common"))
     compileOnly("io.github.waterfallmc:waterfall-api:1.17-R0.1-SNAPSHOT")
+
+    implementation("org.spongepowered:configurate-yaml:4.1.1")
 
     compileOnly("org.projectlombok:lombok:1.18.20")
     annotationProcessor("org.projectlombok:lombok:1.18.20")
@@ -26,21 +30,10 @@ dependencies {
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(sourceSets.main.get().resources.srcDirs) {
-       // expand("version")
-    }
-}
-
-tasks.shadowJar {
-    dependencies {
-        include(dependency(":masuite-api"))
-        include(dependency(":masuite-common"))
+        // expand("version")
     }
 }
 
 tasks.build {
-    dependsOn("shadowJar")
-}
-
-tasks.assemble {
     dependsOn("shadowJar")
 }

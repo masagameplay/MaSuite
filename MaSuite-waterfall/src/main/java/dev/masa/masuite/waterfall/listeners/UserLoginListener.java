@@ -2,7 +2,6 @@ package dev.masa.masuite.waterfall.listeners;
 
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -21,20 +20,21 @@ public final class UserLoginListener implements Listener {
     @EventHandler
     public void onLogin(LoginEvent event) {
         event.registerIntent(this.plugin.loader());
-        Optional<User> optionalUser = this.plugin.userService().user(event.getConnection().getUniqueId());
-
-        if (optionalUser.isPresent()) {
-            ProxyServer.getInstance().broadcast("User found");
-        } else {
-            User user = new User();
-            user.uniqueId(event.getConnection().getUniqueId());
-            user.username(event.getConnection().getName());
-            user.firstLogin(new Date());
-            user.lastLogin(new Date());
+        try {
+            Optional<User> optionalUser = this.plugin.userService().user(event.getConnection().getUniqueId());
+            if (optionalUser.isEmpty()) {
+                User user = new User();
+                user.uniqueId(event.getConnection().getUniqueId());
+                user.username(event.getConnection().getName());
+                user.firstLogin(new Date());
+                user.lastLogin(new Date());
+                this.plugin.userService().createOrUpdateUser(user);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            event.completeIntent(this.plugin.loader());
         }
-
-        event.completeIntent(this.plugin.loader());
-
     }
 
 }

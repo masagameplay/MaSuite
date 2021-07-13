@@ -2,8 +2,10 @@ package dev.masa.masuite.api.services;
 
 import dev.masa.masuite.api.models.user.IUser;
 
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public interface IUserService<T extends IUser> {
 
@@ -20,7 +22,7 @@ public interface IUserService<T extends IUser> {
      *
      * @param user user to create or update
      */
-    void user(T user);
+    void createOrUpdateUser(T user);
 
 
 }

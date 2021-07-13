@@ -8,16 +8,16 @@ public class MaSuiteWaterfallLoader extends Plugin {
 
     public MaSuiteWaterfallLoader() {
         this.plugin = new MaSuiteWaterfall();
-        this.plugin.loader(this);
+        plugin.loader(this);
     }
 
     @Override
     public void onEnable() {
-        this.plugin.onEnable();
+        plugin.onEnable();
     }
 
     @Override
     public void onDisable() {
-        this.plugin.onDisable();
+        plugin.onDisable();
     }
 }

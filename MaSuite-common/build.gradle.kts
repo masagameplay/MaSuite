@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     `java-library`
     id("com.github.johnrengelman.shadow")
@@ -14,6 +16,8 @@ dependencies {
     implementation("com.j256.ormlite:ormlite-core:5.6")
     implementation("com.j256.ormlite:ormlite-jdbc:5.6")
     implementation("javax.persistence:javax.persistence-api:2.2")
+
+    implementation("org.spongepowered:configurate-yaml:4.1.1")
 }
 
 java {
@@ -21,8 +25,10 @@ java {
     targetCompatibility = JavaVersion.toVersion(16)
 }
 
-tasks.shadowJar {
+tasks.withType<ShadowJar>() {
     relocate("com.j256.ormlite", "dev.masa.masuite.libs.ormlite")
+    relocate("org.spongepowered:configurate-yaml", "dev.masa.masuite.libs.configurate-yaml")
+    relocate("javax", "dev.masa.masuite.libs.javax")
 }
 
 tasks.build {

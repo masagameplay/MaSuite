@@ -5,6 +5,10 @@ public class MaSuiteProvider {
     public static MaSuiteAPI instance = null;
 
     public static MaSuiteAPI api() {
+        if (instance == null) {
+            throw new IllegalStateException("MaSuitAPI isn't loaded yet!");
+        }
+
         return MaSuiteProvider.instance;
     }
 
