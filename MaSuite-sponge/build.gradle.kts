@@ -2,6 +2,7 @@ import org.spongepowered.gradle.plugin.config.PluginLoaders
 import org.spongepowered.plugin.metadata.PluginDependency
 
 plugins {
+    `java`
     `java-library`
     id("com.github.johnrengelman.shadow")
     id("org.spongepowered.gradle.plugin") version "1.1.1"
@@ -12,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    // implementation(project(":MaSuite-common"))
+    api(project(":masuite-common"))
 }
 
 sponge {
@@ -37,7 +38,7 @@ sponge {
     }
 }
 
-val javaTarget = 8 // Sponge targets a minimum of Java 8
+val javaTarget = 16 // Sponge targets a minimum of Java 8
 java {
     sourceCompatibility = JavaVersion.toVersion(javaTarget)
     targetCompatibility = JavaVersion.toVersion(javaTarget)
@@ -61,7 +62,7 @@ tasks.withType(AbstractArchiveTask::class).configureEach {
 tasks {
     shadowJar {
         dependencies {
-            include(dependency(":MaSuite-common"))
+            include(dependency(":masuite-common"))
         }
     }
 

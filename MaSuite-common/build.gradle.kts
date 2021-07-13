@@ -27,7 +27,9 @@ java {
 
 tasks.withType<ShadowJar>() {
     relocate("com.j256.ormlite", "dev.masa.masuite.libs.ormlite")
-    relocate("org.spongepowered:configurate-yaml", "dev.masa.masuite.libs.configurate-yaml")
+    relocate("org.spongepowered", "dev.masa.masuite.libs.spongepowered")
+    relocate("org.yaml.snakeyaml", "dev.masa.masuite.libs.snakeyaml")
+    relocate("io.leangen.geantyref", "dev.masa.masuite.libs.geantyref")
     relocate("javax", "dev.masa.masuite.libs.javax")
 }
 

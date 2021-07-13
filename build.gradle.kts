@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "dev.masa"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 
 plugins {
     `java`
-    kotlin("jvm") version "1.5.0-RC"
+    kotlin("jvm") version "1.5.21"
 
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
@@ -17,6 +17,10 @@ java {
 
 tasks.wrapper {
     gradleVersion = "7.1.1"
+}
+
+tasks.build {
+    dependsOn("shadowJar")
 }
 
 allprojects {

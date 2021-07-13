@@ -30,9 +30,10 @@ dependencies {
 
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    /*
     from(sourceSets.main.get().resources.srcDirs) {
-        // expand("version")
-    }
+        expand(mutableMapOf("version" to project.version))
+    }*/
 }
 
 tasks.build {

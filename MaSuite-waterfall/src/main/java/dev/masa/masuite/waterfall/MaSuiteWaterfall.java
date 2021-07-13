@@ -14,6 +14,8 @@ import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 @Accessors(fluent = true)
 public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfallLoader> {
@@ -44,7 +46,13 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         this.generateConfigs();
 
         // Initialize services
-        this.databaseService = new DatabaseService(this.config().database().databaseAddress(), this.config().database().databasePort(), this.config().database().databaseName(), this.config().database().databaseUsername(), this.config().database().databasePassword());
+        try {
+            this.databaseService = new DatabaseService(this.config().database().databaseAddress(), this.config().database().databasePort(), this.config().database().databaseName(), this.config().database().databaseUsername(), this.config().database().databasePassword());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            this.loader.getLogger().log(Level.SEVERE, "Could not connect to database.");
+        }
+
         this.userService = new UserService(databaseService);
 
         // Add listeners
