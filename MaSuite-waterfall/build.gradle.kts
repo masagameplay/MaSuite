@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
+    `java`
     `java-library`
     id("com.github.johnrengelman.shadow")
 }
