@@ -1,4 +1,4 @@
-package dev.masa.velocity;
+package dev.masa.masuite.velocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;

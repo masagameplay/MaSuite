@@ -2,6 +2,7 @@ package dev.masa.masuite.common.services;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.table.TableUtils;
 import dev.masa.masuite.api.services.IUserService;
 import dev.masa.masuite.common.models.User;
@@ -22,6 +23,27 @@ public class UserService implements IUserService<User> {
         this.userDao = DaoManager.createDao(databaseService.connection(), User.class);
         this.userDao.setObjectCache(true);
         TableUtils.createTableIfNotExists(databaseService.connection(), User.class);
+    }
+
+    public Optional<User> user(String username) {
+        CompletableFuture<Optional<User>> query = CompletableFuture.supplyAsync(() -> {
+            try {
+                SelectArg name = new SelectArg(username);
+                return userDao.queryForEq("username", name).stream().findFirst();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return Optional.empty();
+        });
+
+
+        try {
+            return query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
     }
 
     public Optional<User> user(UUID uniqueId) {

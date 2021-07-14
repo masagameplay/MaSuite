@@ -1,4 +1,4 @@
-package dev.masa.sponge;
+package dev.masa.masuite.sponge;
 
 import com.google.inject.Inject;
 import net.kyori.adventure.identity.Identity;

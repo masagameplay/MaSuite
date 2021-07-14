@@ -6,6 +6,7 @@ import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.UserService;
 import dev.masa.masuite.waterfall.listeners.UserLeaveListener;
 import dev.masa.masuite.waterfall.listeners.UserLoginListener;
+import dev.masa.masuite.waterfall.listeners.UserPluginMessageListener;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -58,6 +59,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         // Add listeners
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new UserLoginListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new UserLeaveListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new UserPluginMessageListener(this));
     }
 
     @Override
