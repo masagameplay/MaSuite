@@ -3,10 +3,15 @@ package dev.masa.masuite.waterfall;
 import dev.masa.masuite.common.AbstractMaSuitePlugin;
 import dev.masa.masuite.common.configuration.MaSuiteConfig;
 import dev.masa.masuite.common.services.DatabaseService;
+import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
-import dev.masa.masuite.waterfall.listeners.UserLeaveListener;
-import dev.masa.masuite.waterfall.listeners.UserLoginListener;
-import dev.masa.masuite.waterfall.listeners.UserPluginMessageListener;
+import dev.masa.masuite.waterfall.listeners.home.DeleteHomeMessageListener;
+import dev.masa.masuite.waterfall.listeners.home.SetHomeMessageListener;
+import dev.masa.masuite.waterfall.listeners.home.TeleportHomeMessageListener;
+import dev.masa.masuite.waterfall.listeners.user.UserLeaveListener;
+import dev.masa.masuite.waterfall.listeners.user.UserLoginListener;
+import dev.masa.masuite.waterfall.listeners.user.UserPluginMessageListener;
+import dev.masa.masuite.waterfall.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -29,6 +34,12 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
 
     @Getter
     private DatabaseService databaseService;
+
+    @Getter
+    private HomeService homeService;
+
+    @Getter
+    private TeleportationService teleportationService;
 
     @Getter
     private MaSuiteConfig config;
@@ -55,16 +66,21 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         }
 
         this.userService = new UserService(databaseService);
+        this.homeService = new HomeService(databaseService);
+        this.teleportationService = new TeleportationService(this);
 
         // Add listeners
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new UserLoginListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new UserLeaveListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new UserPluginMessageListener(this));
+
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new SetHomeMessageListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new TeleportHomeMessageListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new DeleteHomeMessageListener(this));
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
     }
 
     private void generateConfigs() {

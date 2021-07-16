@@ -1,4 +1,4 @@
-package dev.masa.masuite.api.models.object;
+package dev.masa.masuite.api.objects;
 
 /**
  * Network wide location object

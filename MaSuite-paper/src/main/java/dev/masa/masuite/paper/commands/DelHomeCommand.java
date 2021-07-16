@@ -5,26 +5,26 @@ import co.aikar.commands.annotation.*;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.masa.masuite.paper.MaSuitePaper;
+import dev.masa.masuite.paper.utils.BukkitAdapter;
 import org.bukkit.entity.Player;
 
-@CommandAlias("userinfo|masuiteuser")
-public class UserInfoCommand extends BaseCommand {
+@CommandAlias("delhome|deletehome|removehome")
+public class DelHomeCommand extends BaseCommand {
 
     private final MaSuitePaper plugin;
 
-    public UserInfoCommand(MaSuitePaper plugin) {
+    public DelHomeCommand(MaSuitePaper plugin) {
         this.plugin = plugin;
     }
 
     @Default()
-    @CommandPermission("masuite.user.info")
-    @Description("Shows info about user")
-    @CommandCompletion("@players")
-    public void userInfoCommand(Player player, @Single String user) {
+    @CommandPermission("masuite.home.delete")
+    @Description("Delete home")
+    public void setHome(Player player, @Single @Default("home") String home) {
         try {
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("masuite:user:info");
-            out.writeUTF(user);
+            out.writeUTF("masuite:homes:delete");
+            out.writeUTF(home);
             player.sendPluginMessage(this.plugin, "BungeeCord", out.toByteArray());
         } catch (Exception ex) {
             ex.printStackTrace();

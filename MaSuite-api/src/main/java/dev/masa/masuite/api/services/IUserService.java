@@ -7,15 +7,28 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * UserService handles data related to homes
+ *
+ * @param <T> platform type of {@link IUser}
+ */
 public interface IUserService<T extends IUser> {
 
     /**
-     * Get {@link T}
+     * Get {@link T} by unique id
      *
      * @param uniqueId unique id of the user
-     * @return optional @{T}
+     * @return optional {@link T}
      */
     Optional<T> user(UUID uniqueId);
+
+    /**
+     * Get {@link T} by username
+     *
+     * @param username unique id of the user
+     * @return optional {@link T}
+     */
+    Optional<T> user(String username);
 
     /**
      * Create or update new user

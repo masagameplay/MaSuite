@@ -22,6 +22,9 @@ dependencies {
     implementation(project(":masuite-common"))
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+
+    compileOnly("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
 }
 
 tasks.processResources {
@@ -39,6 +42,7 @@ tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
     options.isFork = true
     options.forkOptions.executable = "javac"
+    options.encoding = "UTF-8"
 }
 
 tasks.withType<ShadowJar> {

@@ -1,4 +1,4 @@
-package dev.masa.masuite.waterfall.listeners;
+package dev.masa.masuite.waterfall.listeners.user;
 
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
@@ -29,7 +29,7 @@ public class UserPluginMessageListener implements Listener {
         }
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
-        if (!channel.equals("masuite:userinfo")) {
+        if (!channel.equals("masuite:user:info")) {
             return;
         }
 

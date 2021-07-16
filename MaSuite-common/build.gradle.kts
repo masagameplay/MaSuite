@@ -18,6 +18,7 @@ dependencies {
     implementation("javax.persistence:javax.persistence-api:2.2")
 
     implementation("org.spongepowered:configurate-yaml:4.1.1")
+    implementation("com.google.code.gson:gson:2.8.7")
 }
 
 java {
@@ -31,6 +32,7 @@ tasks.withType<ShadowJar>() {
     relocate("org.yaml.snakeyaml", "dev.masa.masuite.libs.snakeyaml")
     relocate("io.leangen.geantyref", "dev.masa.masuite.libs.geantyref")
     relocate("javax", "dev.masa.masuite.libs.javax")
+    relocate("com.google.code.gson", "dev.masa.masuite.libs.gson")
 }
 
 tasks.build {

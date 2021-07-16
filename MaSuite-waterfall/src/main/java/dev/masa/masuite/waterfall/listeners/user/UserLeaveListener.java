@@ -1,4 +1,4 @@
-package dev.masa.masuite.waterfall.listeners;
+package dev.masa.masuite.waterfall.listeners.user;
 
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;

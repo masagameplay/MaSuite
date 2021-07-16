@@ -1,5 +1,7 @@
 package dev.masa.masuite.api;
 
+import dev.masa.masuite.api.services.IHomeService;
+import dev.masa.masuite.api.services.ITeleportationService;
 import dev.masa.masuite.api.services.IUserService;
 
 public interface MaSuiteAPI {
@@ -17,5 +19,9 @@ public interface MaSuiteAPI {
     }
 
     IUserService<?> userService();
+
+    IHomeService<?> homeService();
+
+    ITeleportationService<?, ?> teleportationService();
 
 }
