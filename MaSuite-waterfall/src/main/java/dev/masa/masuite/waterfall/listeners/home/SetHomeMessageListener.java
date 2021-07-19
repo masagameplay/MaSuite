@@ -78,7 +78,7 @@ public class SetHomeMessageListener implements Listener {
         Optional<User> user = this.plugin.userService().user(username);
 
         if (user.isEmpty()) {
-            player.sendMessage(new TextComponent("§cCould not find user named " + username));
+            player.sendMessage(new TextComponent(this.plugin.messages().playerNotFound()));
             return;
         }
 

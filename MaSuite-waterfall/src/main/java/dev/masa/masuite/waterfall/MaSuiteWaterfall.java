@@ -2,6 +2,8 @@ package dev.masa.masuite.waterfall;
 
 import dev.masa.masuite.common.AbstractMaSuitePlugin;
 import dev.masa.masuite.common.configuration.MaSuiteConfig;
+import dev.masa.masuite.common.configuration.MessagesConfig;
+import dev.masa.masuite.common.configuration.home.HomeConfig;
 import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
@@ -45,6 +47,12 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
     @Getter
     private MaSuiteConfig config;
 
+    @Getter
+    private HomeConfig homeConfig;
+
+    @Getter
+    private MessagesConfig messages;
+
     @Override
     public void loader(MaSuiteWaterfallLoader loader) throws IllegalStateException {
         if (this.loader != null) {
@@ -86,6 +94,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
     }
 
     private void generateConfigs() {
+        // config.yml
         YamlConfigurationLoader configLoader = YamlConfigurationLoader.builder()
                 .file(new File("plugins/MaSuite/config.yml"))
                 .defaultOptions(opts -> opts.shouldCopyDefaults(true))
@@ -98,6 +107,52 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
             this.config = MaSuiteConfig.loadFrom(configNode);
             this.config.saveTo(configNode);
             configLoader.save(configNode);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        // messages.yml
+        YamlConfigurationLoader messagesLoader = YamlConfigurationLoader.builder()
+                .file(new File("plugins/MaSuite/messages.yml"))
+                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+
+        CommentedConfigurationNode messagesNode;
+        try {
+            messagesNode = messagesLoader.load();
+            this.messages = MessagesConfig.loadFrom(messagesNode);
+            this.messages.saveTo(messagesNode);
+            messagesLoader.save(messagesNode);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        // homes/config.yml
+        YamlConfigurationLoader homeConfigLoader = YamlConfigurationLoader.builder()
+                .file(new File("plugins/MaSuite/homes/config.yml"))
+                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+
+        CommentedConfigurationNode homeConfigNode;
+        try {
+            homeConfigNode = homeConfigLoader.load();
+            this.homeConfig = HomeConfig.loadFrom(homeConfigNode);
+
+            // Add server specific settings
+            for (String server : this.loader.getProxy().getServers().keySet()) {
+                HomeConfig.ServerSettings setting;
+                if(homeConfig.servers().containsKey(server)) {
+                    setting = homeConfig.servers().get(server);
+                } else {
+                    setting = new HomeConfig.ServerSettings();
+                }
+                homeConfig.servers().put(server, setting);
+            }
+
+            this.homeConfig.saveTo(homeConfigNode);
+            homeConfigLoader.save(homeConfigNode);
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }
