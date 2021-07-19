@@ -1,6 +1,7 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.common.models.Home;
+import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -23,7 +24,7 @@ public class TeleportHomeMessageListener implements Listener {
     }
 
     @EventHandler
-    public void onTeleportHome(PluginMessageEvent event) throws IOException {
+    public void teleportHome(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
@@ -40,6 +41,43 @@ public class TeleportHomeMessageListener implements Listener {
 
         Optional<Home> home = this.plugin.homeService().home(player.getUniqueId(), name);
 
+        this.teleport(player, home);
+
+    }
+
+    @EventHandler
+    public void teleportHomeOthers(PluginMessageEvent event) throws IOException {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+            return;
+        }
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.HOMES_TELEPORT_OTHERS.channel)) {
+            return;
+        }
+
+        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+
+        // Get targeted user
+        String username = in.readUTF();
+        Optional<User> user = this.plugin.userService().user(username);
+
+        if (user.isEmpty()) {
+            player.sendMessage(new TextComponent("§cCould not find user named " + username));
+            return;
+        }
+
+        // Search home & teleport
+        String name = in.readUTF();
+        Optional<Home> home = this.plugin.homeService().home(user.get().uniqueId(), name);
+
+        this.teleport(player, home);
+
+
+    }
+
+    private void teleport(ProxiedPlayer player, Optional<Home> home) {
         if (home.isEmpty()) {
             player.sendMessage(new TextComponent("§cCould not find home with that name"));
             return;
@@ -48,6 +86,5 @@ public class TeleportHomeMessageListener implements Listener {
         this.plugin.teleportationService().teleportPlayerToLocation(player, home.get().location(), done -> {
             player.sendMessage(new TextComponent("§aTeleported to " + home.get().name()));
         });
-
     }
 }

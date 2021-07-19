@@ -1,6 +1,7 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.common.models.Home;
+import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -14,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class ListHomeMessageListener implements Listener {
 
@@ -24,7 +26,7 @@ public class ListHomeMessageListener implements Listener {
     }
 
     @EventHandler
-    public void onTeleportHome(PluginMessageEvent event) throws IOException {
+    public void listHomes(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
@@ -41,7 +43,44 @@ public class ListHomeMessageListener implements Listener {
 
         BaseComponent baseComponent = new TextComponent("§9Homes: §7");
 
-        for(Home home : homes) {
+        for (Home home : homes) {
+            baseComponent.addExtra(home.name());
+            baseComponent.addExtra(", ");
+        }
+
+        player.sendMessage(baseComponent);
+
+    }
+
+    @EventHandler
+    public void listUserHomes(PluginMessageEvent event) throws IOException {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+            return;
+        }
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.HOMES_LIST_OTHERS.channel)) {
+            return;
+        }
+
+        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+
+        // Get target user
+        String username = in.readUTF();
+        Optional<User> user = this.plugin.userService().user(username);
+
+        if (user.isEmpty()) {
+            player.sendMessage(new TextComponent("§cCould not find user named " + username));
+            return;
+        }
+
+        // Query homes and send them to player
+        List<Home> homes = this.plugin.homeService().homes(user.get().uniqueId());
+
+        BaseComponent baseComponent = new TextComponent("§9" + user.get().username() + "'s homes: §7");
+
+        for (Home home : homes) {
             baseComponent.addExtra(home.name());
             baseComponent.addExtra(", ");
         }

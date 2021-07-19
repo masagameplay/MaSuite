@@ -3,18 +3,11 @@ package dev.masa.masuite.paper.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
-import dev.masa.masuite.paper.MaSuitePaper;
 import dev.masa.masuite.paper.utils.BukkitPluginMessage;
 import org.bukkit.entity.Player;
 
 @CommandAlias("userinfo|masuiteuser")
 public class UserInfoCommand extends BaseCommand {
-
-    private final MaSuitePaper plugin;
-
-    public UserInfoCommand(MaSuitePaper plugin) {
-        this.plugin = plugin;
-    }
 
     @Default()
     @CommandPermission("masuite.user.info")

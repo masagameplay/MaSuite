@@ -27,11 +27,11 @@ public final class MaSuitePaper extends JavaPlugin {
     public void onEnable() {
         this.manager = new PaperCommandManager(this);
 
-        this.manager.registerCommand(new UserInfoCommand(this));
-        this.manager.registerCommand(new SetHomeCommand(this));
-        this.manager.registerCommand(new TeleportHomeCommand(this));
-        this.manager.registerCommand(new DelHomeCommand(this));
-        this.manager.registerCommand(new ListHomeCommand(this));
+        this.manager.registerCommand(new UserInfoCommand());
+        this.manager.registerCommand(new SetHomeCommand());
+        this.manager.registerCommand(new TeleportHomeCommand());
+        this.manager.registerCommand(new DelHomeCommand());
+        this.manager.registerCommand(new ListHomeCommand());
 
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
