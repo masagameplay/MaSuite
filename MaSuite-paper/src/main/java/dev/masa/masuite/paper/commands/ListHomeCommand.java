@@ -7,20 +7,20 @@ import dev.masa.masuite.paper.MaSuitePaper;
 import dev.masa.masuite.paper.utils.BukkitPluginMessage;
 import org.bukkit.entity.Player;
 
-@CommandAlias("home|teleporthome")
-public class TeleportHomeCommand extends BaseCommand {
+@CommandAlias("homes|listhomes")
+public class ListHomeCommand extends BaseCommand {
 
     private final MaSuitePaper plugin;
 
-    public TeleportHomeCommand(MaSuitePaper plugin) {
+    public ListHomeCommand(MaSuitePaper plugin) {
         this.plugin = plugin;
     }
 
     @Default()
-    @CommandPermission("masuite.home.teleport")
-    @Description("Teleport to home")
-    public void setHome(Player player, @Single @Default("home") String home) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT, home);
+    @CommandPermission("masuite.home.list")
+    @Description("List all of your homes")
+    public void listHomes(Player player) {
+        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_LIST);
         bpm.send();
     }
 

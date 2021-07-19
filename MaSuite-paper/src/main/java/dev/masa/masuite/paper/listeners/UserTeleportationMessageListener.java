@@ -1,6 +1,7 @@
 package dev.masa.masuite.paper.listeners;
 
 import dev.masa.masuite.common.objects.Location;
+import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.paper.MaSuitePaper;
 import dev.masa.masuite.paper.utils.BukkitAdapter;
 import org.bukkit.entity.Player;
@@ -22,14 +23,14 @@ public class UserTeleportationMessageListener implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player pl, @NotNull byte[] message) {
-        if (!channel.equals("BungeeCord")) {
+        if (!channel.equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(message));
         try {
             String subchannel = in.readUTF();
 
-            if (subchannel.equals("masuite:user:teleport:location")) {
+            if (subchannel.equals(MaSuiteMessage.TELEPORT_TO_LOCATION.channel)) {
                 UUID uuid = UUID.fromString(in.readUTF());
                 org.bukkit.Location loc = BukkitAdapter.adapt(new Location().deserialize(in.readUTF()));
 

@@ -10,6 +10,8 @@ import dev.masa.masuite.common.models.Home;
 import lombok.SneakyThrows;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -75,16 +77,38 @@ public class HomeService implements IHomeService<Home> {
         });
     }
 
+
     @Override
     public void deleteHome(Home home, Consumer<Boolean> done) {
         CompletableFuture.runAsync(() -> {
-           try {
-               this.homeDao.delete(home);
-               done.accept(true);
-           } catch (SQLException ex) {
-               ex.printStackTrace();
-               done.accept(false);
-           }
+            try {
+                this.homeDao.delete(home);
+                done.accept(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                done.accept(false);
+            }
         });
+    }
+
+    @Override
+    public List<Home> homes(UUID ownerId) {
+        CompletableFuture<List<Home>> homesQuery = CompletableFuture.supplyAsync(() -> {
+            try {
+                QueryBuilder<Home, UUID> queryBuilder = this.homeDao.queryBuilder()
+                        .orderBy("name", true)
+                        .where().in("owner", ownerId).queryBuilder();
+                return this.homeDao.query(queryBuilder.prepare()).stream().toList();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                return new ArrayList<>();
+            }
+        });
+        try {
+            return homesQuery.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

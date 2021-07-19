@@ -1,6 +1,7 @@
 package dev.masa.masuite.waterfall.listeners.user;
 
 import dev.masa.masuite.common.models.User;
+import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -24,12 +25,12 @@ public class UserPluginMessageListener implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) throws IOException {
-        if (!event.getTag().equals("BungeeCord")) {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
-        if (!channel.equals("masuite:user:info")) {
+        if (!channel.equals(MaSuiteMessage.USER_INFO.channel)) {
             return;
         }
 

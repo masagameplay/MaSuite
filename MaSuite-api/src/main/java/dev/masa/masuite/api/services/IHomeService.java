@@ -2,6 +2,7 @@ package dev.masa.masuite.api.services;
 
 import dev.masa.masuite.api.models.home.IHome;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -37,4 +38,11 @@ public interface IHomeService<T extends IHome> {
      * @param done callback after has been deleted successfully or not
      */
     void deleteHome(T home, Consumer<Boolean> done);
+
+    /**
+     * Get a list of {@link T}s from owner
+     * @param ownerId id of the homes
+     * @return a list of user's {@link T}s
+     */
+    List<T> homes(UUID ownerId);
 }

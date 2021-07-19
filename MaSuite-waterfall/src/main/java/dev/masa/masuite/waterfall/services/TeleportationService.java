@@ -2,6 +2,7 @@ package dev.masa.masuite.waterfall.services;
 
 import dev.masa.masuite.api.services.ITeleportationService;
 import dev.masa.masuite.common.objects.Location;
+import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import dev.masa.masuite.waterfall.utils.BungeePluginMessage;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -20,14 +21,14 @@ public class TeleportationService implements ITeleportationService<ProxiedPlayer
     @Override
     public void teleportPlayerToLocation(ProxiedPlayer player, Location location, Consumer<Boolean> done) {
         ServerInfo destinationServer = this.plugin.loader().getProxy().getServerInfo(location.server());
-        BungeePluginMessage.Server message = new BungeePluginMessage.Server(destinationServer, "masuite:user:teleport:location", player.getUniqueId().toString(), location.serialize());
+        BungeePluginMessage message = new BungeePluginMessage(destinationServer, MaSuiteMessage.TELEPORT_TO_LOCATION, player.getUniqueId().toString(), location.serialize());
         this.connectAndSendPlayer(player, destinationServer, message, done);
     }
 
     @Override
     public void teleportPlayerToPlayer(ProxiedPlayer player, ProxiedPlayer target, Consumer<Boolean> done) {
         ServerInfo destinationServer = target.getServer().getInfo();
-        BungeePluginMessage.Server message = new BungeePluginMessage.Server(destinationServer, "masuite:user:teleport:player", target.getUniqueId().toString());
+        BungeePluginMessage message = new BungeePluginMessage(destinationServer, MaSuiteMessage.TELEPORT_TO_PLAYER, target.getUniqueId().toString());
         this.connectAndSendPlayer(player, destinationServer, message, done);
     }
 
@@ -39,7 +40,7 @@ public class TeleportationService implements ITeleportationService<ProxiedPlayer
      * @param message           plugin message to send
      * @param done              when teleportation is done
      */
-    private void connectAndSendPlayer(ProxiedPlayer player, ServerInfo destinationServer, BungeePluginMessage.Server message, Consumer<Boolean> done) {
+    private void connectAndSendPlayer(ProxiedPlayer player, ServerInfo destinationServer, BungeePluginMessage message, Consumer<Boolean> done) {
         if (player.getServer().getInfo().equals(destinationServer)) {
             message.send();
             done.accept(true);

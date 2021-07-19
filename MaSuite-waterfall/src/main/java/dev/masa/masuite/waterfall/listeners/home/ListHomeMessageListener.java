@@ -3,6 +3,7 @@ package dev.masa.masuite.waterfall.listeners.home;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -12,13 +13,13 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
-public class TeleportHomeMessageListener implements Listener {
+public class ListHomeMessageListener implements Listener {
 
     private final MaSuiteWaterfall plugin;
 
-    public TeleportHomeMessageListener(MaSuiteWaterfall plugin) {
+    public ListHomeMessageListener(MaSuiteWaterfall plugin) {
         this.plugin = plugin;
     }
 
@@ -30,24 +31,22 @@ public class TeleportHomeMessageListener implements Listener {
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
-        if (!channel.equals(MaSuiteMessage.HOMES_TELEPORT.channel)) {
+        if (!channel.equals(MaSuiteMessage.HOMES_LIST.channel)) {
             return;
         }
 
         ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
 
-        String name = in.readUTF();
+        List<Home> homes = this.plugin.homeService().homes(player.getUniqueId());
 
-        Optional<Home> home = this.plugin.homeService().home(player.getUniqueId(), name);
+        BaseComponent baseComponent = new TextComponent("§9Homes: §7");
 
-        if (home.isEmpty()) {
-            player.sendMessage(new TextComponent("§cCould not find home with that name"));
-            return;
+        for(Home home : homes) {
+            baseComponent.addExtra(home.name());
+            baseComponent.addExtra(", ");
         }
 
-        this.plugin.teleportationService().teleportPlayerToLocation(player, home.get().location(), done -> {
-            player.sendMessage(new TextComponent("§aTeleported to " + home.get().name()));
-        });
+        player.sendMessage(baseComponent);
 
     }
 }

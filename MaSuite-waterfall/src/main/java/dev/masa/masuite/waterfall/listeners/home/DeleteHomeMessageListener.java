@@ -1,7 +1,7 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.common.models.Home;
-import dev.masa.masuite.common.objects.Location;
+import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -24,13 +24,13 @@ public class DeleteHomeMessageListener implements Listener {
 
     @EventHandler
     public void onHomeCreate(PluginMessageEvent event) throws IOException {
-        if(!event.getTag().equals("BungeeCord")) {
+        if(!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
-        if (!channel.equals("masuite:homes:delete")) {
+        if (!channel.equals(MaSuiteMessage.HOMES_DELETE.channel)) {
             return;
         }
 

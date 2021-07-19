@@ -6,6 +6,7 @@ import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
 import dev.masa.masuite.waterfall.listeners.home.DeleteHomeMessageListener;
+import dev.masa.masuite.waterfall.listeners.home.ListHomeMessageListener;
 import dev.masa.masuite.waterfall.listeners.home.SetHomeMessageListener;
 import dev.masa.masuite.waterfall.listeners.home.TeleportHomeMessageListener;
 import dev.masa.masuite.waterfall.listeners.user.UserLeaveListener;
@@ -77,6 +78,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new SetHomeMessageListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new TeleportHomeMessageListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new DeleteHomeMessageListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new ListHomeMessageListener(this));
     }
 
     @Override

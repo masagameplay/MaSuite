@@ -1,10 +1,8 @@
 package dev.masa.masuite.paper;
 
 import co.aikar.commands.PaperCommandManager;
-import dev.masa.masuite.paper.commands.DelHomeCommand;
-import dev.masa.masuite.paper.commands.SetHomeCommand;
-import dev.masa.masuite.paper.commands.TeleportHomeCommand;
-import dev.masa.masuite.paper.commands.UserInfoCommand;
+import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.paper.commands.*;
 import dev.masa.masuite.paper.listeners.PlayerJoinListener;
 import dev.masa.masuite.paper.listeners.UserTeleportationMessageListener;
 import lombok.Getter;
@@ -33,11 +31,12 @@ public final class MaSuitePaper extends JavaPlugin {
         this.manager.registerCommand(new SetHomeCommand(this));
         this.manager.registerCommand(new TeleportHomeCommand(this));
         this.manager.registerCommand(new DelHomeCommand(this));
+        this.manager.registerCommand(new ListHomeCommand(this));
 
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new UserTeleportationMessageListener(this));
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, MaSuiteMessage.MAIN.channel);
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, MaSuiteMessage.MAIN.channel, new UserTeleportationMessageListener(this));
     }
 
     @Override
