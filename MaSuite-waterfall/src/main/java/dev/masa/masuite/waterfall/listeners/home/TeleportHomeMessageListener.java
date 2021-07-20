@@ -4,6 +4,8 @@ import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -78,13 +80,19 @@ public class TeleportHomeMessageListener implements Listener {
     }
 
     private void teleport(ProxiedPlayer player, Optional<Home> home) {
+        Audience audience = this.plugin.adventure().player(player);
         if (home.isEmpty()) {
-            player.sendMessage(new TextComponent("§cCould not find home with that name"));
+            audience.sendMessage(this.plugin.homeMessages().homeNotFound());
             return;
         }
 
+        TextReplacementConfig replacement = TextReplacementConfig.builder()
+                .match("%home%")
+                .replacement(home.get().name())
+                .build();
+
         this.plugin.teleportationService().teleportPlayerToLocation(player, home.get().location(), done -> {
-            player.sendMessage(new TextComponent("§aTeleported to " + home.get().name()));
+            audience.sendMessage(this.plugin.homeMessages().homeTeleported().replaceText(replacement));
         });
     }
 }

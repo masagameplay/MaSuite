@@ -4,6 +4,7 @@ import dev.masa.masuite.common.AbstractMaSuitePlugin;
 import dev.masa.masuite.common.configuration.MaSuiteConfig;
 import dev.masa.masuite.common.configuration.MessagesConfig;
 import dev.masa.masuite.common.configuration.home.HomeConfig;
+import dev.masa.masuite.common.configuration.home.HomeMessagesConfig;
 import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
@@ -17,6 +18,8 @@ import dev.masa.masuite.waterfall.listeners.user.UserPluginMessageListener;
 import dev.masa.masuite.waterfall.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
+import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
@@ -53,6 +56,18 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
     @Getter
     private MessagesConfig messages;
 
+    @Getter
+    private HomeMessagesConfig homeMessages;
+
+    private BungeeAudiences adventure;
+
+    public BungeeAudiences adventure() {
+        if (this.adventure == null) {
+            throw new IllegalStateException("Cannot retrieve audience provider while plugin is not enabled");
+        }
+        return this.adventure;
+    }
+
     @Override
     public void loader(MaSuiteWaterfallLoader loader) throws IllegalStateException {
         if (this.loader != null) {
@@ -63,6 +78,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
 
     @Override
     public void onEnable() {
+        this.adventure = BungeeAudiences.create(this.loader);
         // Generate configs
         this.generateConfigs();
 
@@ -91,13 +107,19 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
 
     @Override
     public void onDisable() {
+        if (this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
     }
 
     private void generateConfigs() {
         // config.yml
         YamlConfigurationLoader configLoader = YamlConfigurationLoader.builder()
                 .file(new File("plugins/MaSuite/config.yml"))
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .defaultOptions(opts ->
+                        opts.shouldCopyDefaults(true)
+                )
                 .nodeStyle(NodeStyle.BLOCK)
                 .build();
 
@@ -114,7 +136,8 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         // messages.yml
         YamlConfigurationLoader messagesLoader = YamlConfigurationLoader.builder()
                 .file(new File("plugins/MaSuite/messages.yml"))
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .defaultOptions(opts -> opts.shouldCopyDefaults(true)
+                        .serializers(build -> build.registerAll(ConfigurateComponentSerializer.configurate().serializers())))
                 .nodeStyle(NodeStyle.BLOCK)
                 .build();
 
@@ -124,6 +147,25 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
             this.messages = MessagesConfig.loadFrom(messagesNode);
             this.messages.saveTo(messagesNode);
             messagesLoader.save(messagesNode);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        YamlConfigurationLoader homeMessagesLoader = YamlConfigurationLoader.builder()
+                .file(new File("plugins/MaSuite/homes/messages.yml"))
+                .defaultOptions(opts ->
+                        opts.shouldCopyDefaults(true)
+                                .serializers(build -> build.registerAll(ConfigurateComponentSerializer.configurate().serializers()))
+                )
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+
+        CommentedConfigurationNode homeMessagesNode;
+        try {
+            homeMessagesNode = homeMessagesLoader.load();
+            this.homeMessages = HomeMessagesConfig.loadFrom(homeMessagesNode);
+            this.homeMessages.saveTo(homeMessagesNode);
+            homeMessagesLoader.save(homeMessagesNode);
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }
@@ -143,7 +185,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
             // Add server specific settings
             for (String server : this.loader.getProxy().getServers().keySet()) {
                 HomeConfig.ServerSettings setting;
-                if(homeConfig.servers().containsKey(server)) {
+                if (homeConfig.servers().containsKey(server)) {
                     setting = homeConfig.servers().get(server);
                 } else {
                     setting = new HomeConfig.ServerSettings();

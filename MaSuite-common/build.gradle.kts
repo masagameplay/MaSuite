@@ -19,6 +19,8 @@ dependencies {
 
     implementation("org.spongepowered:configurate-yaml:4.1.1")
     implementation("com.google.code.gson:gson:2.8.7")
+
+    implementation("net.kyori:adventure-api:4.8.1")
 }
 
 java {
@@ -33,6 +35,7 @@ tasks.withType<ShadowJar>() {
     relocate("io.leangen.geantyref", "dev.masa.masuite.libs.geantyref")
     relocate("javax", "dev.masa.masuite.libs.javax")
     relocate("com.google.code.gson", "dev.masa.masuite.libs.gson")
+    relocate("net.kyori.adventure-api", "dev.masa.masuite.libs.adventure-api")
 }
 
 tasks.build {

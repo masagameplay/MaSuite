@@ -4,6 +4,10 @@ import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -76,17 +80,25 @@ public class DeleteHomeMessageListener implements Listener {
 
     }
 
+
+
     private void delete(ProxiedPlayer player, Optional<Home> home) {
+        Audience audience = this.plugin.adventure().player(player);
         if(home.isEmpty()) {
-            player.sendMessage(new TextComponent("§cHome with that name could not be found."));
+            audience.sendMessage(this.plugin.homeMessages().homeNotFound());
             return;
         }
 
+        TextReplacementConfig replacement = TextReplacementConfig.builder()
+                .match("%home%")
+                .replacement(home.get().name())
+                .build();
+
         this.plugin.homeService().deleteHome(home.get(), done -> {
             if(done) {
-                player.sendMessage(new TextComponent("§aDeleted home with name " + home.get().name()));
+                audience.sendMessage(this.plugin.homeMessages().homeDeleted().replaceText(replacement));
             } else {
-                player.sendMessage(new TextComponent("§cAn error occurred while deleting home"));
+                audience.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));
             }
         });
     }

@@ -4,7 +4,9 @@ import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -41,14 +43,7 @@ public class ListHomeMessageListener implements Listener {
 
         List<Home> homes = this.plugin.homeService().homes(player.getUniqueId());
 
-        BaseComponent baseComponent = new TextComponent("§9Homes: §7");
-
-        for (Home home : homes) {
-            baseComponent.addExtra(home.name());
-            baseComponent.addExtra(", ");
-        }
-
-        player.sendMessage(baseComponent);
+        this.listHomes(player, homes, this.plugin.homeMessages().homeListName(), player.getName());
 
     }
 
@@ -78,14 +73,24 @@ public class ListHomeMessageListener implements Listener {
         // Query homes and send them to player
         List<Home> homes = this.plugin.homeService().homes(user.get().uniqueId());
 
-        BaseComponent baseComponent = new TextComponent("§9" + user.get().username() + "'s homes: §7");
+        this.listHomes(player, homes, this.plugin.homeMessages().homeListTitleOthers(), user.get().username());
+    }
+
+    private void listHomes(ProxiedPlayer player, List<Home> homes, Component title, String ownerName) {
+        Audience audience = this.plugin.adventure().player(player);
+
+        Component message = this.plugin.homeMessages().homeListTitle();
 
         for (Home home : homes) {
-            baseComponent.addExtra(home.name());
-            baseComponent.addExtra(", ");
+            TextReplacementConfig replacement = TextReplacementConfig.builder()
+                    .match("%player%")
+                    .replacement(ownerName)
+                    .match("%home%")
+                    .replacement(home.name())
+                    .build();
+            message = message.append(title.replaceText(replacement)).append(this.plugin.homeMessages().homeListSplitter());
         }
 
-        player.sendMessage(baseComponent);
-
+        audience.sendMessage(message);
     }
 }

@@ -5,6 +5,10 @@ import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -26,7 +30,7 @@ public class SetHomeMessageListener implements Listener {
 
     @EventHandler
     public void createHomer(PluginMessageEvent event) throws IOException {
-        if(!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
 
@@ -46,22 +50,12 @@ public class SetHomeMessageListener implements Listener {
 
         Home home = new Home(name, player.getUniqueId(), loc);
 
-        this.plugin.homeService().createOrUpdateHome(home, (done, isCreated) -> {
-            if(!done) {
-                player.sendMessage(new TextComponent("§cHome with that name could not be found"));
-                return;
-            }
-            if(isCreated) {
-                player.sendMessage(new TextComponent("§aCreated home with name " + name));
-            } else {
-                player.sendMessage(new TextComponent("§aUpdated home with name " + name));
-            }
-        });
+        this.createHome(player, home);
     }
 
     @EventHandler
     public void createHomeOthers(PluginMessageEvent event) throws IOException {
-        if(!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
 
@@ -90,16 +84,29 @@ public class SetHomeMessageListener implements Listener {
 
         Home home = new Home(name, user.get().uniqueId(), loc);
 
+        this.createHome(player, home);
+
+    }
+
+    private void createHome(ProxiedPlayer player, Home home) {
+        Audience audience = this.plugin.adventure().player(player);
+
+        TextReplacementConfig replacement = TextReplacementConfig.builder()
+                .match("%home%")
+                .replacement(home.name())
+                .build();
+
         this.plugin.homeService().createOrUpdateHome(home, (done, isCreated) -> {
-            if(!done) {
-                player.sendMessage(new TextComponent("§cHome with that name could not be found"));
+            if (!done) {
+                audience.sendMessage(Component.text("An error occurred while creating / updating home.", NamedTextColor.RED));
                 return;
             }
-            if(isCreated) {
-                player.sendMessage(new TextComponent("§aCreated home with name " + name));
+            if (isCreated) {
+                audience.sendMessage(this.plugin.homeMessages().homeSet().replaceText(replacement));
             } else {
-                player.sendMessage(new TextComponent("§aUpdated home with name " + name));
+                audience.sendMessage(this.plugin.homeMessages().homeUpdated().replaceText(replacement));
             }
         });
     }
+
 }
