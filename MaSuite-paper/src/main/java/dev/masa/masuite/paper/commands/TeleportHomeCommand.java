@@ -12,6 +12,7 @@ public class TeleportHomeCommand extends BaseCommand {
     @Default()
     @CommandPermission("masuite.home.teleport")
     @Description("Teleport to home")
+    @Conditions("cooldown:type=homes,bypass=masuite.home.cooldown.bypass")
     public void teleportHome(Player player, @Single @Default("home") String home) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT, home);
         bpm.send();

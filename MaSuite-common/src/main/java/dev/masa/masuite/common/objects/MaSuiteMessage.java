@@ -6,6 +6,9 @@ package dev.masa.masuite.common.objects;
 public enum MaSuiteMessage {
     // Main channel
     MAIN ("BungeeCord"),
+    // Setup servers
+    SETUP ("masuite:setup"),
+
     // User
     USER_INFO ("masuite:user:info"),
     // Homes
