@@ -5,3 +5,18 @@ api-version: 1.17
 authors: [ Masa ]
 description: Proxy wide homes, teleportations and warps
 website: https://masa.dev
+permissions:
+  masuite.home.user:
+    description: Basic user permissions for Homes
+    children:
+      masuite.home.set: true
+      masuite.home.delete: true
+      masuite.home.teleport: true
+      masuite.home.list: true
+  masuite.home.staff:
+    description: Staff permissions for Homes
+    children:
+      masuite.home.set.others: true
+      masuite.home.delete.others: true
+      masuite.home.teleport.others: true
+      masuite.home.list.others: true
