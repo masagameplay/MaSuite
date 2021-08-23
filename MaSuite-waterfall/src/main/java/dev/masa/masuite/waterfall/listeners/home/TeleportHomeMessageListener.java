@@ -82,7 +82,7 @@ public class TeleportHomeMessageListener implements Listener {
     private void teleport(ProxiedPlayer player, Optional<Home> home) {
         Audience audience = this.plugin.adventure().player(player);
         if (home.isEmpty()) {
-            audience.sendMessage(this.plugin.homeMessages().homeNotFound());
+            audience.sendMessage(this.plugin.messages().homes().homeNotFound());
             return;
         }
 
@@ -92,7 +92,7 @@ public class TeleportHomeMessageListener implements Listener {
                 .build();
 
         this.plugin.teleportationService().teleportPlayerToLocation(player, home.get().location(), done -> {
-            audience.sendMessage(this.plugin.homeMessages().homeTeleported().replaceText(replacement));
+            audience.sendMessage(this.plugin.messages().homes().homeTeleported().replaceText(replacement));
         });
     }
 }

@@ -5,24 +5,31 @@ package dev.masa.masuite.common.objects;
  */
 public enum MaSuiteMessage {
     // Main channel
-    MAIN ("BungeeCord"),
+    MAIN("BungeeCord"),
     // Setup servers
-    SETUP ("masuite:setup"),
+    SETUP("masuite:setup"),
 
     // User
-    USER_INFO ("masuite:user:info"),
+    USER_INFO("masuite:user:info"),
+
+    // Warps
+    WARPS_SET("masuite:warps:set"),
+    WARPS_DELETE("masuite:warps:delete"),
+    WARPS_TELEPORT("masuite:warps:teleport"),
+    WARPS_LIST("masuite:warps:list"),
+
     // Homes
-    HOMES_SET ("masuite:homes:set"),
-    HOMES_SET_OTHERS ("masuite:homes:set:others"),
-    HOMES_DELETE ("masuite:homes:delete"),
-    HOMES_DELETE_OTHERS ("masuite:homes:delete:others"),
-    HOMES_TELEPORT ("masuite:homes:teleport"),
-    HOMES_TELEPORT_OTHERS ("masuite:homes:teleport:others"),
-    HOMES_LIST ("masuite:homes:list"),
-    HOMES_LIST_OTHERS ("masuite:homes:list:others"),
+    HOMES_SET("masuite:homes:set"),
+    HOMES_SET_OTHERS("masuite:homes:set:others"),
+    HOMES_DELETE("masuite:homes:delete"),
+    HOMES_DELETE_OTHERS("masuite:homes:delete:others"),
+    HOMES_TELEPORT("masuite:homes:teleport"),
+    HOMES_TELEPORT_OTHERS("masuite:homes:teleport:others"),
+    HOMES_LIST("masuite:homes:list"),
+    HOMES_LIST_OTHERS("masuite:homes:list:others"),
     // Teleportation
-    TELEPORT_TO_LOCATION ("masuite:user:teleport:location"),
-    TELEPORT_TO_PLAYER ("masuite:user:teleport:player");
+    TELEPORT_TO_LOCATION("masuite:user:teleport:location"),
+    TELEPORT_TO_PLAYER("masuite:user:teleport:player");
 
     public final String channel;
 

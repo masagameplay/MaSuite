@@ -4,7 +4,15 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.CooldownService;
-import dev.masa.masuite.paper.commands.*;
+import dev.masa.masuite.paper.commands.home.DelHomeCommand;
+import dev.masa.masuite.paper.commands.home.ListHomeCommand;
+import dev.masa.masuite.paper.commands.home.SetHomeCommand;
+import dev.masa.masuite.paper.commands.home.TeleportHomeCommand;
+import dev.masa.masuite.paper.commands.user.UserInfoCommand;
+import dev.masa.masuite.paper.commands.warp.DelWarpCommand;
+import dev.masa.masuite.paper.commands.warp.ListWarpCommand;
+import dev.masa.masuite.paper.commands.warp.SetWarpCommand;
+import dev.masa.masuite.paper.commands.warp.TeleportWarpCommand;
 import dev.masa.masuite.paper.listeners.PlayerJoinListener;
 import dev.masa.masuite.paper.listeners.UserTeleportationMessageListener;
 import lombok.Getter;
@@ -39,6 +47,11 @@ public final class MaSuitePaper extends JavaPlugin {
         this.manager.registerCommand(new DelHomeCommand());
         this.manager.registerCommand(new ListHomeCommand());
 
+        this.manager.registerCommand(new SetWarpCommand());
+        this.manager.registerCommand(new TeleportWarpCommand());
+        this.manager.registerCommand(new DelWarpCommand());
+        this.manager.registerCommand(new ListWarpCommand());
+
         this.manager.getCommandConditions().addCondition("cooldown", c -> {
             UUID uuid = c.getIssuer().getUniqueId();
 
@@ -58,6 +71,7 @@ public final class MaSuitePaper extends JavaPlugin {
         this.getServer().getMessenger().registerIncomingPluginChannel(this, MaSuiteMessage.MAIN.channel, new UserTeleportationMessageListener(this));
 
         this.cooldownService().addCooldownLength("homes", 3);
+        this.cooldownService().addCooldownLength("warps", 3);
     }
 
     @Override

@@ -4,10 +4,10 @@ import dev.masa.masuite.common.AbstractMaSuitePlugin;
 import dev.masa.masuite.common.configuration.MaSuiteConfig;
 import dev.masa.masuite.common.configuration.MessagesConfig;
 import dev.masa.masuite.common.configuration.home.HomeConfig;
-import dev.masa.masuite.common.configuration.home.HomeMessagesConfig;
 import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
+import dev.masa.masuite.common.services.WarpService;
 import dev.masa.masuite.waterfall.listeners.home.DeleteHomeMessageListener;
 import dev.masa.masuite.waterfall.listeners.home.ListHomeMessageListener;
 import dev.masa.masuite.waterfall.listeners.home.SetHomeMessageListener;
@@ -15,6 +15,10 @@ import dev.masa.masuite.waterfall.listeners.home.TeleportHomeMessageListener;
 import dev.masa.masuite.waterfall.listeners.user.UserLeaveListener;
 import dev.masa.masuite.waterfall.listeners.user.UserLoginListener;
 import dev.masa.masuite.waterfall.listeners.user.UserPluginMessageListener;
+import dev.masa.masuite.waterfall.listeners.warp.DeleteWarpMessageListener;
+import dev.masa.masuite.waterfall.listeners.warp.ListWarpMessageListener;
+import dev.masa.masuite.waterfall.listeners.warp.SetWarpMessageListener;
+import dev.masa.masuite.waterfall.listeners.warp.TeleportWarpMessageListener;
 import dev.masa.masuite.waterfall.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -45,6 +49,9 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
     private HomeService homeService;
 
     @Getter
+    private WarpService warpService;
+
+    @Getter
     private TeleportationService teleportationService;
 
     @Getter
@@ -55,9 +62,6 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
 
     @Getter
     private MessagesConfig messages;
-
-    @Getter
-    private HomeMessagesConfig homeMessages;
 
     private BungeeAudiences adventure;
 
@@ -92,6 +96,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
 
         this.userService = new UserService(databaseService);
         this.homeService = new HomeService(databaseService);
+        this.warpService = new WarpService(databaseService);
         this.teleportationService = new TeleportationService(this);
 
         // Add listeners
@@ -103,6 +108,11 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new TeleportHomeMessageListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new DeleteHomeMessageListener(this));
         this.loader.getProxy().getPluginManager().registerListener(this.loader, new ListHomeMessageListener(this));
+
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new SetWarpMessageListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new TeleportWarpMessageListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new DeleteWarpMessageListener(this));
+        this.loader.getProxy().getPluginManager().registerListener(this.loader, new ListWarpMessageListener(this));
     }
 
     @Override
@@ -147,25 +157,6 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
             this.messages = MessagesConfig.loadFrom(messagesNode);
             this.messages.saveTo(messagesNode);
             messagesLoader.save(messagesNode);
-        } catch (ConfigurateException e) {
-            e.printStackTrace();
-        }
-
-        YamlConfigurationLoader homeMessagesLoader = YamlConfigurationLoader.builder()
-                .file(new File("plugins/MaSuite/homes/messages.yml"))
-                .defaultOptions(opts ->
-                        opts.shouldCopyDefaults(true)
-                                .serializers(build -> build.registerAll(ConfigurateComponentSerializer.configurate().serializers()))
-                )
-                .nodeStyle(NodeStyle.BLOCK)
-                .build();
-
-        CommentedConfigurationNode homeMessagesNode;
-        try {
-            homeMessagesNode = homeMessagesLoader.load();
-            this.homeMessages = HomeMessagesConfig.loadFrom(homeMessagesNode);
-            this.homeMessages.saveTo(homeMessagesNode);
-            homeMessagesLoader.save(homeMessagesNode);
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }

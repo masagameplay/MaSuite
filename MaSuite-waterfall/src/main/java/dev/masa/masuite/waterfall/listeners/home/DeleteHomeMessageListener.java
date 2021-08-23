@@ -85,7 +85,7 @@ public class DeleteHomeMessageListener implements Listener {
     private void delete(ProxiedPlayer player, Optional<Home> home) {
         Audience audience = this.plugin.adventure().player(player);
         if(home.isEmpty()) {
-            audience.sendMessage(this.plugin.homeMessages().homeNotFound());
+            audience.sendMessage(this.plugin.messages().homes().homeNotFound());
             return;
         }
 
@@ -96,7 +96,7 @@ public class DeleteHomeMessageListener implements Listener {
 
         this.plugin.homeService().deleteHome(home.get(), done -> {
             if(done) {
-                audience.sendMessage(this.plugin.homeMessages().homeDeleted().replaceText(replacement));
+                audience.sendMessage(this.plugin.messages().homes().homeDeleted().replaceText(replacement));
             } else {
                 audience.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));
             }

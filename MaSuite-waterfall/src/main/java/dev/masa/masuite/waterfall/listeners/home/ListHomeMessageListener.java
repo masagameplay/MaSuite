@@ -43,7 +43,7 @@ public class ListHomeMessageListener implements Listener {
 
         List<Home> homes = this.plugin.homeService().homes(player.getUniqueId());
 
-        this.listHomes(player, homes, this.plugin.homeMessages().homeListName(), player.getName());
+        this.listHomes(player, homes, this.plugin.messages().homes().homeListName(), player.getName());
 
     }
 
@@ -73,13 +73,13 @@ public class ListHomeMessageListener implements Listener {
         // Query homes and send them to player
         List<Home> homes = this.plugin.homeService().homes(user.get().uniqueId());
 
-        this.listHomes(player, homes, this.plugin.homeMessages().homeListTitleOthers(), user.get().username());
+        this.listHomes(player, homes, this.plugin.messages().homes().homeListTitleOthers(), user.get().username());
     }
 
     private void listHomes(ProxiedPlayer player, List<Home> homes, Component title, String ownerName) {
         Audience audience = this.plugin.adventure().player(player);
 
-        Component message = this.plugin.homeMessages().homeListTitle();
+        Component message = this.plugin.messages().homes().homeListTitle();
 
         for (Home home : homes) {
             TextReplacementConfig replacement = TextReplacementConfig.builder()
@@ -88,7 +88,7 @@ public class ListHomeMessageListener implements Listener {
                     .match("%home%")
                     .replacement(home.name())
                     .build();
-            message = message.append(title.replaceText(replacement)).append(this.plugin.homeMessages().homeListSplitter());
+            message = message.append(title.replaceText(replacement)).append(this.plugin.messages().homes().homeListSplitter());
         }
 
         audience.sendMessage(message);

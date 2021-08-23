@@ -29,7 +29,7 @@ public class SetHomeMessageListener implements Listener {
     }
 
     @EventHandler
-    public void createHomer(PluginMessageEvent event) throws IOException {
+    public void createHome(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
@@ -102,9 +102,9 @@ public class SetHomeMessageListener implements Listener {
                 return;
             }
             if (isCreated) {
-                audience.sendMessage(this.plugin.homeMessages().homeSet().replaceText(replacement));
+                audience.sendMessage(this.plugin.messages().homes().homeSet().replaceText(replacement));
             } else {
-                audience.sendMessage(this.plugin.homeMessages().homeUpdated().replaceText(replacement));
+                audience.sendMessage(this.plugin.messages().homes().homeUpdated().replaceText(replacement));
             }
         });
     }
