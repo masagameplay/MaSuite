@@ -1,5 +1,7 @@
 package dev.masa.masuite.common.configuration;
 
+import dev.masa.masuite.common.configuration.home.HomeMessagesConfig;
+import dev.masa.masuite.common.configuration.warp.WarpMessagesConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
@@ -21,6 +23,13 @@ public class MessagesConfig {
     @Setting("player-not-found")
     private String playerNotFound = "&cCould not find player.";
 
+    @Getter
+    @Setting("homes")
+    private HomeMessagesConfig homes = new HomeMessagesConfig();
+
+    @Getter
+    @Setting("warps")
+    private WarpMessagesConfig warps = new WarpMessagesConfig();
 
     private static final ObjectMapper<MessagesConfig> MAPPER;
 
