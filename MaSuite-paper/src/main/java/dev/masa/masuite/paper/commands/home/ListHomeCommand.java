@@ -1,4 +1,4 @@
-package dev.masa.masuite.paper.commands;
+package dev.masa.masuite.paper.commands.home;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
