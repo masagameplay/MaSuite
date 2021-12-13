@@ -1,47 +1,43 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     `java-library`
+
     id("com.github.johnrengelman.shadow")
 }
 
 repositories {
-    mavenCentral()
     maven {
-        name = "velocitypowered-repo"
-        url = uri("https://nexus.velocitypowered.com/repository/maven-public/")
-    }
-    maven {
-        name = "minecraft-libraries"
-        url = uri("https://libraries.minecraft.net/")
-    }
-    maven {
-        name = "spongepowered-repo"
-        url = uri("https://repo.spongepowered.org/maven")
+        name = "velocity"
+        url = uri("https://repo.velocitypowered.com/snapshots/")
     }
 }
 
 dependencies {
     implementation(project(":masuite-common"))
-    implementation("com.velocitypowered:velocity-api:3.0.0")
-    annotationProcessor("com.velocitypowered:velocity-api:3.0.0")
+
+    compileOnly("com.velocitypowered:velocity-api:3.0.1-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.0.1-SNAPSHOT")
+
+    compileOnly("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
+
+    implementation("org.spongepowered:configurate-yaml:4.1.1")
+    implementation("net.kyori:adventure-serializer-configurate4:4.8.1")
 }
 
-tasks.shadowJar {
-    dependencies {
-        include(dependency(":masuite-common"))
-    }
+tasks.create<ConfigureShadowRelocation>("relocateShadowJar") {
+    target = tasks["shadowJar"] as ShadowJar
+    prefix = "dev.masa.masuite.libs"
 }
 
-// TODO: Solve
-/*
-tasks.processSources(type: Sync) {
-    from sourceSets.main.java.srcDirs
-    inputs.property "version", version
-    filter ReplaceTokens, tokens: [version: version]
-    into "$buildDir/src"
-}*/
+tasks.withType<ShadowJar> {
+    dependsOn(tasks["relocateShadowJar"])
 
-//compileJava.source = processSources.outputs
+    mergeServiceFiles()
+}
 
-tasks.build {
+tasks.named("assemble").configure {
     dependsOn("shadowJar")
 }

@@ -6,7 +6,6 @@ import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -61,12 +60,14 @@ public class TeleportHomeMessageListener implements Listener {
 
         ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
 
+        Audience audience = this.plugin.adventure().player(player);
+
         // Get targeted user
         String username = in.readUTF();
         Optional<User> user = this.plugin.userService().user(username);
 
         if (user.isEmpty()) {
-            player.sendMessage(new TextComponent(this.plugin.messages().playerNotFound()));
+            audience.sendMessage(this.plugin.messages().playerNotFound());
             return;
         }
 

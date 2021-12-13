@@ -4,11 +4,6 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
-java {
-    sourceCompatibility = JavaVersion.toVersion(16)
-    targetCompatibility = JavaVersion.toVersion(16)
-}
-
 repositories {
     maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
     maven {
@@ -20,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(project(":masuite-common"))
-    compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
 
     compileOnly("org.projectlombok:lombok:1.18.20")
@@ -41,7 +36,7 @@ tasks.processResources {
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
     options.isFork = true
-    options.forkOptions.executable = "javac"
+    // options.forkOptions.executable = "javac"
     options.encoding = "UTF-8"
 }
 
@@ -52,4 +47,8 @@ tasks.withType<ShadowJar> {
 
 tasks.build {
     dependsOn("shadowJar");
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }

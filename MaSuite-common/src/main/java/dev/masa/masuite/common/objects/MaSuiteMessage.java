@@ -5,7 +5,7 @@ package dev.masa.masuite.common.objects;
  */
 public enum MaSuiteMessage {
     // Main channel
-    MAIN("BungeeCord"),
+    MAIN("masuite:main"),
     // Setup servers
     SETUP("masuite:setup"),
 

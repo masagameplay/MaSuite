@@ -1,97 +1,78 @@
-package dev.masa.masuite.waterfall.listeners.home;
+package dev.masa.masuite.velocity.listeners.home;
 
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.PluginMessageEvent;
+import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
-import dev.masa.masuite.waterfall.MaSuiteWaterfall;
-import net.kyori.adventure.audience.Audience;
+import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-public class SetHomeMessageListener implements Listener {
+import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-    private final MaSuiteWaterfall plugin;
+public class SetHomeMessageListener {
 
-    public SetHomeMessageListener(MaSuiteWaterfall plugin) {
+    private final MaSuiteVelocity plugin;
+
+    public SetHomeMessageListener(MaSuiteVelocity plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @Subscribe
     public void createHome(PluginMessageEvent event) throws IOException {
-        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
-            return;
-        }
+        if(!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
         if (!channel.equals(MaSuiteMessage.HOMES_SET.channel)) {
             return;
         }
-
-        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
-
+        Player player = (Player) event.getTarget();
         String name = in.readUTF();
-
-        // Deserialize location and assign correct server
         Location loc = new Location().deserialize(in.readUTF());
-        loc.server(player.getServer().getInfo().getName());
+        loc.server(player.getCurrentServer().get().getServerInfo().getName());
 
         Home home = new Home(name, player.getUniqueId(), loc);
-
         this.createHome(player, home);
     }
 
-    @EventHandler
+    @Subscribe
     public void createHomeOthers(PluginMessageEvent event) throws IOException {
-        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
-            return;
-        }
+        if(!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
         if (!channel.equals(MaSuiteMessage.HOMES_SET_OTHERS.channel)) {
             return;
         }
+        Player player = (Player) event.getTarget();
 
-        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
-
-        // Get targeted user
         String username = in.readUTF();
         Optional<User> user = this.plugin.userService().user(username);
 
-        Audience audience = this.plugin.adventure().player(player);
-
         if (user.isEmpty()) {
-            audience.sendMessage(this.plugin.messages().playerNotFound());
+            player.sendMessage(this.plugin.messages().playerNotFound());
             return;
         }
 
-        // Build home
         String name = in.readUTF();
-        // Deserialize location and assign correct server
         Location loc = new Location().deserialize(in.readUTF());
-        loc.server(player.getServer().getInfo().getName());
+        loc.server(player.getCurrentServer().get().getServerInfo().getName());
 
         Home home = new Home(name, user.get().uniqueId(), loc);
-
         this.createHome(player, home);
-
     }
 
-    private void createHome(ProxiedPlayer player, Home home) {
-        Audience audience = this.plugin.adventure().player(player);
-
+    private void createHome(Player player, Home home) {
         TextReplacementConfig replacement = TextReplacementConfig.builder()
                 .match("%home%")
                 .replacement(home.name())
@@ -99,15 +80,14 @@ public class SetHomeMessageListener implements Listener {
 
         this.plugin.homeService().createOrUpdateHome(home, (done, isCreated) -> {
             if (!done) {
-                audience.sendMessage(Component.text("An error occurred while creating / updating home.", NamedTextColor.RED));
+                player.sendMessage(Component.text("An error occurred while creating / updating home.", NamedTextColor.RED));
                 return;
             }
             if (isCreated) {
-                audience.sendMessage(this.plugin.messages().homes().homeSet().replaceText(replacement));
+                player.sendMessage(this.plugin.messages().homes().homeSet().replaceText(replacement));
             } else {
-                audience.sendMessage(this.plugin.messages().homes().homeUpdated().replaceText(replacement));
+                player.sendMessage(this.plugin.messages().homes().homeUpdated().replaceText(replacement));
             }
         });
     }
-
 }

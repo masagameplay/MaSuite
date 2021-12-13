@@ -5,6 +5,8 @@ import dev.masa.masuite.common.configuration.warp.WarpMessagesConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.ObjectMapper;
@@ -17,11 +19,11 @@ public class MessagesConfig {
 
     @Getter
     @Setting("player-not-online")
-    private String playerNotOnline = "&cPlayer is not online.";
+    private Component playerNotOnline = Component.text("Player is not online.", NamedTextColor.RED);
 
     @Getter
     @Setting("player-not-found")
-    private String playerNotFound = "&cCould not find player.";
+    private Component playerNotFound = Component.text("Could not find player.", NamedTextColor.RED);
 
     @Getter
     @Setting("homes")

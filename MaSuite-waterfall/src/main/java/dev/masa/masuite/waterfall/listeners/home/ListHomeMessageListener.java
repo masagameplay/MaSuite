@@ -7,7 +7,6 @@ import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -65,8 +64,10 @@ public class ListHomeMessageListener implements Listener {
         String username = in.readUTF();
         Optional<User> user = this.plugin.userService().user(username);
 
+        Audience audience = this.plugin.adventure().player(player);
+
         if (user.isEmpty()) {
-            player.sendMessage(new TextComponent(this.plugin.messages().playerNotFound()));
+            audience.sendMessage(this.plugin.messages().playerNotFound());
             return;
         }
 
