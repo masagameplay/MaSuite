@@ -13,18 +13,18 @@ repositories {
 dependencies {
     api(project(":masuite-api"))
 
-    implementation("mysql:mysql-connector-java:5.1.46")
+    implementation("mysql:mysql-connector-java:8.0.25")
 
-    compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
-    implementation("com.j256.ormlite:ormlite-core:5.6")
-    implementation("com.j256.ormlite:ormlite-jdbc:5.6")
+    compileOnly("org.projectlombok:lombok:1.18.22")
+    annotationProcessor("org.projectlombok:lombok:1.18.22")
+    implementation("com.j256.ormlite:ormlite-core:5.7")
+    implementation("com.j256.ormlite:ormlite-jdbc:5.7")
     implementation("javax.persistence:javax.persistence-api:2.2")
 
     implementation("org.spongepowered:configurate-yaml:4.1.2")
-    implementation("com.google.code.gson:gson:2.8.7")
+    implementation("com.google.code.gson:gson:2.8.9")
 
-    compileOnly("net.kyori:adventure-api:4.8.1")
+    compileOnly("net.kyori:adventure-api:4.9.3")
 }
 
 java {

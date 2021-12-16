@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    `java`
+    java
     `java-library`
     id("com.github.johnrengelman.shadow")
 }
@@ -20,15 +20,15 @@ repositories {
 
 dependencies {
     api(project(":masuite-common"))
-    compileOnly("io.github.waterfallmc:waterfall-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("io.github.waterfallmc:waterfall-api:1.18-R0.1-SNAPSHOT")
 
-    implementation("net.kyori:adventure-platform-bungeecord:4.0.0-SNAPSHOT")
-    implementation("org.spongepowered:configurate-yaml:4.1.1")
+    implementation("net.kyori:adventure-platform-bungeecord:4.0.0")
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
 
-    implementation("net.kyori:adventure-serializer-configurate4:4.8.1")
+    implementation("net.kyori:adventure-serializer-configurate4:4.9.3")
 
-    compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
+    compileOnly("org.projectlombok:lombok:1.18.22")
+    annotationProcessor("org.projectlombok:lombok:1.18.22")
 }
 
 tasks.withType<ShadowJar> {

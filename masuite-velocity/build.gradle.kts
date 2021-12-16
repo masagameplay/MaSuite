@@ -20,11 +20,11 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.0.1-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.0.1-SNAPSHOT")
 
-    compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
+    compileOnly("org.projectlombok:lombok:1.18.22")
+    annotationProcessor("org.projectlombok:lombok:1.18.22")
 
-    implementation("org.spongepowered:configurate-yaml:4.1.1")
-    implementation("net.kyori:adventure-serializer-configurate4:4.8.1")
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
+    implementation("net.kyori:adventure-serializer-configurate4:4.9.3")
 }
 
 tasks.create<ConfigureShadowRelocation>("relocateShadowJar") {
