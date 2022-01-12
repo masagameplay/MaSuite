@@ -13,6 +13,7 @@ public class TeleportCommand extends BaseCommand {
     @Default
     @CommandPermission("masuite.teleport.player")
     @Description("Teleport to player")
+    @CommandCompletion("@masuite_players")
     public void teleportToPlayer(Player player, @Single String target) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.TELEPORT_TO_PLAYER, target);
         bpm.send();
@@ -21,6 +22,7 @@ public class TeleportCommand extends BaseCommand {
     @Default
     @CommandPermission("masuite.teleport.player.others")
     @Description("Teleport player to player")
+    @CommandCompletion("@masuite_players @masuite_players")
     public void teleportPlayerToPlayer(Player player, @Single String target, @Single String secondPlayer) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.TELEPORT_PLAYER_TO_PLAYER, target, secondPlayer);
         bpm.send();

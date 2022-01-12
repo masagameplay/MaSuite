@@ -2,17 +2,13 @@ package dev.masa.masuite.velocity.listeners.user;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
+import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
+import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 
 import java.util.Date;
 
-public class UserLeaveListener {
-
-    private final MaSuiteVelocity plugin;
-
-    public UserLeaveListener(MaSuiteVelocity plugin) {
-        this.plugin = plugin;
-    }
+public record UserLeaveListener(MaSuiteVelocity plugin) {
 
     @Subscribe
     public void onLeave(DisconnectEvent event) {
@@ -20,5 +16,13 @@ public class UserLeaveListener {
             user.lastLogin(new Date());
             this.plugin.userService().createOrUpdateUser(user);
         });
+
+        for (var server : this.plugin().proxy().getAllServers()) {
+            server.ping().whenComplete((serverPing, throwable) -> {
+                if (throwable != null) return;
+                var vpm = new VelocityPluginMessage(server, MaSuiteMessage.REMOVE_USER, event.getPlayer().getUsername());
+                vpm.send();
+            });
+        }
     }
 }

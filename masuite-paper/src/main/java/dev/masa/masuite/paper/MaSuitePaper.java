@@ -14,6 +14,7 @@ import dev.masa.masuite.paper.commands.warp.DeleteWarpCommand;
 import dev.masa.masuite.paper.commands.warp.ListWarpCommand;
 import dev.masa.masuite.paper.commands.warp.SetWarpCommand;
 import dev.masa.masuite.paper.commands.warp.TeleportWarpCommand;
+import dev.masa.masuite.paper.listeners.MaSuiteSetupListener;
 import dev.masa.masuite.paper.listeners.PlayerJoinListener;
 import dev.masa.masuite.paper.listeners.UserTeleportationMessageListener;
 import lombok.Getter;
@@ -21,6 +22,8 @@ import lombok.experimental.Accessors;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,6 +39,9 @@ public final class MaSuitePaper extends JavaPlugin {
     private final ConcurrentHashMap<UUID, Location> locationTeleportationQueue = new ConcurrentHashMap<>();
     @Getter
     private final ConcurrentHashMap<UUID, UUID> playerTeleportationQueue = new ConcurrentHashMap<>();
+
+    @Getter
+    private final List<String> onlinePlayers = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -68,10 +74,13 @@ public final class MaSuitePaper extends JavaPlugin {
             }
         });
 
+        manager.getCommandCompletions().registerCompletion("masuite_players", c -> this.onlinePlayers());
+
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, MaSuiteMessage.MAIN.channel);
         this.getServer().getMessenger().registerIncomingPluginChannel(this, MaSuiteMessage.MAIN.channel, new UserTeleportationMessageListener(this));
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, MaSuiteMessage.MAIN.channel, new MaSuiteSetupListener(this));
 
         this.cooldownService().addCooldownLength("homes", 3);
         this.cooldownService().addCooldownLength("warps", 3);

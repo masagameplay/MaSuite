@@ -11,6 +11,8 @@ public enum MaSuiteMessage {
 
     // User
     USER_INFO("masuite:user:info"),
+    ADD_USER("masuite:user:add"),
+    REMOVE_USER("masuite:user:remove"),
 
     // Warps
     WARPS_SET("masuite:warps:set"),

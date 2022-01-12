@@ -10,13 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class MaSuiteSetupListener implements PluginMessageListener {
-
-    public final MaSuitePaper plugin;
-
-    public MaSuiteSetupListener(MaSuitePaper plugin) {
-        this.plugin = plugin;
-    }
+public record MaSuiteSetupListener(MaSuitePaper plugin) implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player pl, @NotNull byte[] message) {
@@ -26,11 +20,23 @@ public class MaSuiteSetupListener implements PluginMessageListener {
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(message));
         try {
             String subchannel = in.readUTF();
-
-            if(!channel.equals(MaSuiteMessage.SETUP.channel)) {
+            if (subchannel.equals(MaSuiteMessage.ADD_USER.channel)) {
+                var username = in.readUTF();
+                this.plugin.onlinePlayers().add(username);
+                this.plugin.getLogger().info("Added player " + username);
                 return;
             }
 
+            if (subchannel.equals(MaSuiteMessage.REMOVE_USER.channel)) {
+                var username = in.readUTF();
+                this.plugin.onlinePlayers().remove(username);
+                this.plugin.getLogger().info("Removed player " + username);
+                return;
+            }
+
+            if (!subchannel.equals(MaSuiteMessage.SETUP.channel)) {
+                return;
+            }
 
 
         } catch (IOException e) {

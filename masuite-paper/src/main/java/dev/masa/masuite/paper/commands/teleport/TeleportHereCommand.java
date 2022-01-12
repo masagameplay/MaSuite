@@ -12,6 +12,7 @@ public class TeleportHereCommand extends BaseCommand {
     @Default
     @CommandPermission("masuite.teleport.player.here")
     @Description("Teleport to player to your position")
+    @CommandCompletion("@masuite_players")
     public void teleportPlayerToHere(Player player, @Single String target) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.TELEPORT_PLAYER_TO_PLAYER, target, player.getName());
         bpm.send();

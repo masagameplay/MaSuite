@@ -1,10 +1,7 @@
 package dev.masa.masuite.paper.commands.home;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.*;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.paper.utils.BukkitPluginMessage;
 import org.bukkit.entity.Player;
@@ -23,7 +20,8 @@ public class ListHomeCommand extends BaseCommand {
     @Default()
     @CommandPermission("masuite.home.list.others")
     @Description("List all of other player's homes")
-    public void listOtherHomes(Player player, String user) {
+    @CommandCompletion("@masuite_players")
+    public void listOtherHomes(Player player, @Single String user) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_LIST_OTHERS, user);
         bpm.send();
     }

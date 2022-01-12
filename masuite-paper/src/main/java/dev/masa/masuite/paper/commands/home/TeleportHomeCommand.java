@@ -21,6 +21,7 @@ public class TeleportHomeCommand extends BaseCommand {
     @Default()
     @CommandPermission("masuite.home.teleport.others")
     @Description("Teleport to other player's home")
+    @CommandCompletion("@masuite_players")
     public void teleportHome(Player player, String user, @Single String home) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT_OTHERS, user, home);
         bpm.send();
