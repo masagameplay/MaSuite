@@ -5,7 +5,7 @@ version = "1.0.0-SNAPSHOT"
 
 plugins {
     `java`
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.6.10"
 
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
