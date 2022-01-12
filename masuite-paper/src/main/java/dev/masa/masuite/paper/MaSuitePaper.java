@@ -4,11 +4,12 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.CooldownService;
-import dev.masa.masuite.paper.commands.home.DelHomeCommand;
+import dev.masa.masuite.paper.commands.home.DeleteHomeCommand;
 import dev.masa.masuite.paper.commands.home.ListHomeCommand;
 import dev.masa.masuite.paper.commands.home.SetHomeCommand;
 import dev.masa.masuite.paper.commands.home.TeleportHomeCommand;
-import dev.masa.masuite.paper.commands.user.UserInfoCommand;
+import dev.masa.masuite.paper.commands.teleport.TeleportCommand;
+import dev.masa.masuite.paper.commands.teleport.TeleportHereCommand;
 import dev.masa.masuite.paper.commands.warp.DelWarpCommand;
 import dev.masa.masuite.paper.commands.warp.ListWarpCommand;
 import dev.masa.masuite.paper.commands.warp.SetWarpCommand;
@@ -34,23 +35,25 @@ public final class MaSuitePaper extends JavaPlugin {
     @Getter
     private final ConcurrentHashMap<UUID, Location> locationTeleportationQueue = new ConcurrentHashMap<>();
     @Getter
-    private final ConcurrentHashMap<UUID, Location> playerTeleportationQueue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, UUID> playerTeleportationQueue = new ConcurrentHashMap<>();
 
     @Override
     public void onEnable() {
         this.cooldownService = new CooldownService();
         this.manager = new PaperCommandManager(this);
 
-        this.manager.registerCommand(new UserInfoCommand());
         this.manager.registerCommand(new SetHomeCommand());
         this.manager.registerCommand(new TeleportHomeCommand());
-        this.manager.registerCommand(new DelHomeCommand());
+        this.manager.registerCommand(new DeleteHomeCommand());
         this.manager.registerCommand(new ListHomeCommand());
 
         this.manager.registerCommand(new SetWarpCommand());
         this.manager.registerCommand(new TeleportWarpCommand());
         this.manager.registerCommand(new DelWarpCommand());
         this.manager.registerCommand(new ListWarpCommand());
+
+        this.manager.registerCommand(new TeleportCommand());
+        this.manager.registerCommand(new TeleportHereCommand());
 
         this.manager.getCommandConditions().addCondition("cooldown", c -> {
             UUID uuid = c.getIssuer().getUniqueId();

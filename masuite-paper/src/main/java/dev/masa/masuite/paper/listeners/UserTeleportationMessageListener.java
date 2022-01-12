@@ -43,8 +43,23 @@ public class UserTeleportationMessageListener implements PluginMessageListener {
                 }
             }
 
-            // TODO: Player to Player Teleport
+            if (subchannel.equals(MaSuiteMessage.TELEPORT_TO_PLAYER.channel)) {
+                UUID playerUUID = UUID.fromString(in.readUTF());
+                UUID targetUUID = UUID.fromString(in.readUTF());
 
+                Player player = this.plugin.getServer().getPlayer(playerUUID);
+                Player target = this.plugin.getServer().getPlayer(targetUUID);
+
+                if (player == null) {
+                    this.plugin.playerTeleportationQueue().put(playerUUID, targetUUID);
+                } else {
+                    if (target == null) {
+                        this.plugin.getLogger().info("[Teleports] Player with unique id " + targetUUID + " not found. Cancelled player " + playerUUID + " teleportation to their location.");
+                        return;
+                    }
+                    player.teleport(target);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

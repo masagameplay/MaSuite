@@ -15,8 +15,20 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if (this.plugin.locationTeleportationQueue().containsKey(event.getPlayer().getUniqueId())) {
-            event.getPlayer().teleport(this.plugin.locationTeleportationQueue().get(event.getPlayer().getUniqueId()));
+        var targetLocation = this.plugin.locationTeleportationQueue().get(event.getPlayer().getUniqueId());
+        if (targetLocation != null) {
+            event.getPlayer().teleport(targetLocation);
+            return;
+        }
+
+        var targetUUID = this.plugin.playerTeleportationQueue().get(event.getPlayer().getUniqueId());
+        if (targetUUID != null) {
+            var targetPlayer = this.plugin.getServer().getPlayer(targetUUID);
+            if (targetPlayer == null) {
+                this.plugin.getLogger().info("[Teleports] Player with unique id " + targetUUID + " not found. Cancelled player " + event.getPlayer().getUniqueId() + " teleportation to their location.");
+                return;
+            }
+            event.getPlayer().teleport(targetPlayer);
         }
     }
 }
