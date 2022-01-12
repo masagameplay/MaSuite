@@ -7,7 +7,7 @@ import dev.masa.masuite.paper.utils.BukkitPluginMessage;
 import org.bukkit.entity.Player;
 
 @CommandAlias("delwarp|deletewarp|removewarp")
-public class DelWarpCommand extends BaseCommand {
+public class DeleteWarpCommand extends BaseCommand {
 
     @Default()
     @CommandPermission("masuite.warp.delete")
