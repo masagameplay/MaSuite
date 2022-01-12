@@ -13,6 +13,8 @@ import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
 import dev.masa.masuite.common.services.WarpService;
+import dev.masa.masuite.velocity.listeners.home.DeleteHomeMessageListener;
+import dev.masa.masuite.velocity.listeners.home.ListHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.SetHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.TeleportHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.teleport.TeleportMessageListener;
@@ -98,8 +100,11 @@ public class MaSuiteVelocity  {
 
         this.proxy.getEventManager().register(this, new UserLoginListener(this));
         this.proxy.getEventManager().register(this, new UserLeaveListener(this));
+
         this.proxy.getEventManager().register(this, new TeleportHomeMessageListener(this));
         this.proxy.getEventManager().register(this, new SetHomeMessageListener(this));
+        this.proxy.getEventManager().register(this, new DeleteHomeMessageListener(this));
+        this.proxy.getEventManager().register(this, new ListHomeMessageListener(this));
 
         this.proxy.getEventManager().register(this, new SetWarpMessageListener(this));
         this.proxy.getEventManager().register(this, new TeleportWarpMessageListener(this));
