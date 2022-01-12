@@ -17,8 +17,8 @@ repositories {
 dependencies {
     implementation(project(":masuite-common"))
 
-    compileOnly("com.velocitypowered:velocity-api:3.0.1-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.0.1-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:3.1.1")
+    annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
 
     compileOnly("org.projectlombok:lombok:1.18.22")
     annotationProcessor("org.projectlombok:lombok:1.18.22")
