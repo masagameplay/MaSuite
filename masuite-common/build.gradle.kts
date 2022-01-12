@@ -27,8 +27,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion(16)
-    targetCompatibility = JavaVersion.toVersion(16)
+    sourceCompatibility = JavaVersion.toVersion(17)
+    targetCompatibility = JavaVersion.toVersion(17)
 }
 
 tasks.withType(AbstractArchiveTask::class).configureEach {
