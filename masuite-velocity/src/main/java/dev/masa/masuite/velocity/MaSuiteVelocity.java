@@ -12,13 +12,19 @@ import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.DatabaseService;
 import dev.masa.masuite.common.services.HomeService;
 import dev.masa.masuite.common.services.UserService;
+import dev.masa.masuite.common.services.WarpService;
 import dev.masa.masuite.velocity.listeners.home.SetHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.TeleportHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.user.UserLeaveListener;
 import dev.masa.masuite.velocity.listeners.user.UserLoginListener;
+import dev.masa.masuite.velocity.listeners.warp.DeleteWarpMessageListener;
+import dev.masa.masuite.velocity.listeners.warp.ListWarpMessageListener;
+import dev.masa.masuite.velocity.listeners.warp.SetWarpMessageListener;
+import dev.masa.masuite.velocity.listeners.warp.TeleportWarpMessageListener;
 import dev.masa.masuite.velocity.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -54,6 +60,9 @@ public class MaSuiteVelocity  {
     private HomeService homeService;
 
     @Getter
+    private WarpService warpService;
+
+    @Getter
     private TeleportationService teleportationService;
 
     @Getter
@@ -64,6 +73,15 @@ public class MaSuiteVelocity  {
 
     @Getter
     private MessagesConfig messages;
+
+    private Audience adventure;
+
+    public Audience adventure() {
+        if (this.adventure == null) {
+            throw new IllegalStateException("Cannot retrieve audience provider while plugin is not enabled");
+        }
+        return this.adventure;
+    }
 
     public static MaSuiteVelocity MASUITE_INSTANCE;
 
@@ -81,14 +99,22 @@ public class MaSuiteVelocity  {
             this.logger.error("Could not connect to database.");
         }
 
+        this.adventure = Audience.audience(this.proxy.getAllPlayers());
+
         this.userService = new UserService(databaseService);
         this.homeService = new HomeService(databaseService);
+        this.warpService = new WarpService(databaseService);
         this.teleportationService = new TeleportationService(this);
 
         this.proxy.getEventManager().register(this, new UserLoginListener(this));
         this.proxy.getEventManager().register(this, new UserLeaveListener(this));
         this.proxy.getEventManager().register(this, new TeleportHomeMessageListener(this));
         this.proxy.getEventManager().register(this, new SetHomeMessageListener(this));
+
+        this.proxy.getEventManager().register(this, new SetWarpMessageListener(this));
+        this.proxy.getEventManager().register(this, new TeleportWarpMessageListener(this));
+        this.proxy.getEventManager().register(this, new DeleteWarpMessageListener(this));
+        this.proxy.getEventManager().register(this, new ListWarpMessageListener(this));
 
         this.proxy().getChannelRegistrar().register(MASUITE_MAIN_CHANNEL);
 
