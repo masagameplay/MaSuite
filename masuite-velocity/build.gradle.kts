@@ -29,9 +29,8 @@ tasks.withType(AbstractArchiveTask::class).configureEach {
 }
 
 tasks.withType<ShadowJar> {
-    val prefix = "dev.masa.masuite.libs.gson."
+    val prefix = "dev.masa.masuite.libs."
 
-    relocate("com.google.gson", prefix + "gson")
     relocate("org.spongepowered", prefix + "spongepowered")
 }
 

@@ -21,7 +21,7 @@ dependencies {
     implementation("javax.persistence:javax.persistence-api:2.2")
 
     implementation("org.spongepowered:configurate-yaml:4.1.2")
-    implementation("com.google.code.gson:gson:2.8.9")
+    compileOnly("com.google.code.gson:gson:2.8.9")
 
     compileOnly("net.kyori:adventure-api:4.9.3")
 }
@@ -37,9 +37,8 @@ tasks.withType(AbstractArchiveTask::class).configureEach {
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    val prefix = "dev.masa.masuite.libs.gson."
+    val prefix = "dev.masa.masuite.libs."
 
-    relocate("com.google.gson", prefix + "gson")
     relocate("com.j256.ormlite", prefix + "ormlite")
     relocate("javax.persistence", prefix + "persistence")
     relocate("org.spongepowered", prefix + "spongepowered")
