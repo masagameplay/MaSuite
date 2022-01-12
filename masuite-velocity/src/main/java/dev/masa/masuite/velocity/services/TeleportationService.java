@@ -20,6 +20,11 @@ public class TeleportationService implements ITeleportationService<Player, Locat
 
     @Override
     public void teleportPlayerToLocation(Player player, Location location, Consumer<Boolean> done) {
+        // If location does not have server specified, the server will be the same as players current server
+        if(location.server() == null) {
+            location.server(player.getCurrentServer().get().getServerInfo().getName());
+        }
+
         this.plugin.proxy().getServer(location.server()).ifPresent(registeredServer -> {
             VelocityPluginMessage message = new VelocityPluginMessage(registeredServer, MaSuiteMessage.TELEPORT_TO_LOCATION, player.getUniqueId().toString(), location.serialize());
             this.connectAndSendPlayer(player, registeredServer, message, done);

@@ -1,5 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.teleport;
 
+import dev.masa.masuite.api.proxy.listeners.teleport.ITeleportMessageListener;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
@@ -12,10 +13,10 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listener {
+public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listener, ITeleportMessageListener<PluginMessageEvent> {
 
     @EventHandler
-    public void teleportHome(PluginMessageEvent event) throws IOException {
+    public void teleportToPlayer(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
@@ -44,7 +45,7 @@ public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listen
     }
 
     @EventHandler
-    public void teleportHomeOthers(PluginMessageEvent event) throws IOException {
+    public void teleportPlayerToPlayer(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
@@ -79,5 +80,15 @@ public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listen
         });
 
 
+    }
+
+    @Override
+    public void teleportToLocation(PluginMessageEvent event) throws IOException {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void teleportPlayerToLocation(PluginMessageEvent event) throws IOException {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

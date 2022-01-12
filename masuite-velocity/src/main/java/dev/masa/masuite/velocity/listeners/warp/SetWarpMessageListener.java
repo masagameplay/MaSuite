@@ -3,6 +3,7 @@ package dev.masa.masuite.velocity.listeners.warp;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
+import dev.masa.masuite.api.proxy.listeners.warp.ISetWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
@@ -17,13 +18,7 @@ import java.io.IOException;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public class SetWarpMessageListener {
-
-    private final MaSuiteVelocity plugin;
-
-    public SetWarpMessageListener(MaSuiteVelocity plugin) {
-        this.plugin = plugin;
-    }
+public record SetWarpMessageListener(MaSuiteVelocity plugin) implements ISetWarpMessageListener<PluginMessageEvent> {
 
     @Subscribe
     public void createWarp(PluginMessageEvent event) throws IOException {
@@ -47,7 +42,7 @@ public class SetWarpMessageListener {
         // Deserialize location and assign correct server
         Location loc = new Location().deserialize(location);
         player.getCurrentServer().ifPresentOrElse(serverConnection -> loc.server(serverConnection.getServerInfo().getName()), () -> {
-            throw new IllegalStateException("Server of player "+player.getUsername()+" not found");
+            throw new IllegalStateException("Server of player " + player.getUsername() + " not found");
         });
 
         Warp warp = new Warp(name, loc, isPublic, global);

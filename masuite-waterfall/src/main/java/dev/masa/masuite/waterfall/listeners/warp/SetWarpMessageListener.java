@@ -1,5 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.warp;
 
+import dev.masa.masuite.api.proxy.listeners.warp.ISetWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
@@ -17,13 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class SetWarpMessageListener implements Listener {
-
-    private final MaSuiteWaterfall plugin;
-
-    public SetWarpMessageListener(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record SetWarpMessageListener(MaSuiteWaterfall plugin) implements Listener, ISetWarpMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void createWarp(PluginMessageEvent event) throws IOException {

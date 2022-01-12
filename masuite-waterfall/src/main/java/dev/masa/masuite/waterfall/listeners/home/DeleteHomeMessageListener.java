@@ -1,5 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
+import dev.masa.masuite.api.proxy.listeners.home.IDeleteHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
@@ -18,17 +19,11 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-public class DeleteHomeMessageListener implements Listener {
-
-    private final MaSuiteWaterfall plugin;
-
-    public DeleteHomeMessageListener(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record DeleteHomeMessageListener(MaSuiteWaterfall plugin) implements Listener, IDeleteHomeMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void deleteHome(PluginMessageEvent event) throws IOException {
-        if(!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
 
@@ -49,7 +44,7 @@ public class DeleteHomeMessageListener implements Listener {
 
     @EventHandler
     public void deleteHomeOthers(PluginMessageEvent event) throws IOException {
-        if(!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
         }
 
@@ -82,10 +77,9 @@ public class DeleteHomeMessageListener implements Listener {
     }
 
 
-
     private void delete(ProxiedPlayer player, Optional<Home> home) {
         Audience audience = this.plugin.adventure().player(player);
-        if(home.isEmpty()) {
+        if (home.isEmpty()) {
             audience.sendMessage(this.plugin.messages().homes().homeNotFound());
             return;
         }
@@ -96,7 +90,7 @@ public class DeleteHomeMessageListener implements Listener {
                 .build();
 
         this.plugin.homeService().deleteHome(home.get(), done -> {
-            if(done) {
+            if (done) {
                 audience.sendMessage(this.plugin.messages().homes().homeDeleted().replaceText(replacement));
             } else {
                 audience.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));

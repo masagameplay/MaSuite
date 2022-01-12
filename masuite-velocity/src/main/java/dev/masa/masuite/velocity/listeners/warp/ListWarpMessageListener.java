@@ -3,10 +3,10 @@ package dev.masa.masuite.velocity.listeners.warp;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
+import dev.masa.masuite.api.proxy.listeners.warp.IListWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 
@@ -17,13 +17,7 @@ import java.util.List;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public class ListWarpMessageListener {
-
-    private final MaSuiteVelocity plugin;
-
-    public ListWarpMessageListener(MaSuiteVelocity plugin) {
-        this.plugin = plugin;
-    }
+public record ListWarpMessageListener(MaSuiteVelocity plugin) implements IListWarpMessageListener<PluginMessageEvent> {
 
     @Subscribe
     public void listWarps(PluginMessageEvent event) throws IOException {

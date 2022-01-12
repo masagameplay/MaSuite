@@ -1,5 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.warp;
 
+import dev.masa.masuite.api.proxy.listeners.warp.IDeleteWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
@@ -17,13 +18,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-public class DeleteWarpMessageListener implements Listener {
-
-    private final MaSuiteWaterfall plugin;
-
-    public DeleteWarpMessageListener(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record DeleteWarpMessageListener(MaSuiteWaterfall plugin) implements Listener, IDeleteWarpMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void deleteWarp(PluginMessageEvent event) throws IOException {

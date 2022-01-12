@@ -3,6 +3,7 @@ package dev.masa.masuite.velocity.listeners.home;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
+import dev.masa.masuite.api.proxy.listeners.home.ITeleportHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
@@ -16,16 +17,10 @@ import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public class TeleportHomeMessageListener {
-
-    private final MaSuiteVelocity plugin;
-
-    public TeleportHomeMessageListener(MaSuiteVelocity plugin) {
-        this.plugin = plugin;
-    }
+public record TeleportHomeMessageListener(MaSuiteVelocity plugin) implements ITeleportHomeMessageListener<PluginMessageEvent> {
 
     @Subscribe
-    public void teleportToHome(PluginMessageEvent event) throws IOException {
+    public void teleportHome(PluginMessageEvent event) throws IOException {
         if (!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
@@ -43,7 +38,7 @@ public class TeleportHomeMessageListener {
     }
 
     @Subscribe
-    public void teleportToHomeOthers(PluginMessageEvent event) throws IOException {
+    public void teleportHomeOthers(PluginMessageEvent event) throws IOException {
         if (!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));

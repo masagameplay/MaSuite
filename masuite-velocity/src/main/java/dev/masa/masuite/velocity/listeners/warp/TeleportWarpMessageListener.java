@@ -3,6 +3,7 @@ package dev.masa.masuite.velocity.listeners.warp;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
+import dev.masa.masuite.api.proxy.listeners.warp.ITeleportWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public record TeleportWarpMessageListener(MaSuiteVelocity plugin) {
+public record TeleportWarpMessageListener(MaSuiteVelocity plugin) implements ITeleportWarpMessageListener<PluginMessageEvent> {
 
     @Subscribe
     public void teleportWarp(PluginMessageEvent event) throws IOException {

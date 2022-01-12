@@ -1,5 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
+import dev.masa.masuite.api.proxy.listeners.home.ISetHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.Location;
@@ -19,13 +20,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-public class SetHomeMessageListener implements Listener {
-
-    private final MaSuiteWaterfall plugin;
-
-    public SetHomeMessageListener(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record SetHomeMessageListener(MaSuiteWaterfall plugin) implements Listener, ISetHomeMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void createHome(PluginMessageEvent event) throws IOException {

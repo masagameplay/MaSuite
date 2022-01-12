@@ -1,5 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
+import dev.masa.masuite.api.proxy.listeners.home.ITeleportHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
@@ -16,13 +17,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-public class TeleportHomeMessageListener implements Listener {
-
-    private final MaSuiteWaterfall plugin;
-
-    public TeleportHomeMessageListener(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record TeleportHomeMessageListener(MaSuiteWaterfall plugin) implements Listener, ITeleportHomeMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void teleportHome(PluginMessageEvent event) throws IOException {
