@@ -22,7 +22,7 @@ dependencies {
     api(project(":masuite-common"))
     compileOnly("io.github.waterfallmc:waterfall-api:1.18-R0.1-SNAPSHOT")
 
-    implementation("net.kyori:adventure-platform-bungeecord:4.0.0")
+    implementation("net.kyori:adventure-platform-bungeecord:4.0.1")
     implementation("org.spongepowered:configurate-yaml:4.1.2")
 
     implementation("net.kyori:adventure-serializer-configurate4:4.9.3")
