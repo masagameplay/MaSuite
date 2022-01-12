@@ -7,7 +7,7 @@ import dev.masa.masuite.paper.utils.BukkitPluginMessage;
 import org.bukkit.entity.Player;
 
 @CommandAlias("delhome|deletehome|removehome")
-public class DelHomeCommand extends BaseCommand {
+public class DeleteHomeCommand extends BaseCommand {
 
     @Default()
     @CommandPermission("masuite.home.delete")
