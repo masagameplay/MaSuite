@@ -11,12 +11,12 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion(16)
-    targetCompatibility = JavaVersion.toVersion(16)
+    sourceCompatibility = JavaVersion.toVersion(17)
+    targetCompatibility = JavaVersion.toVersion(17)
 }
 
 tasks.wrapper {
-    gradleVersion = "7.1.1"
+    gradleVersion = "7.3.3"
 }
 
 allprojects {
@@ -31,7 +31,7 @@ allprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "1.16"
+            jvmTarget = "1.17"
         }
     }
 

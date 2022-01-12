@@ -21,25 +21,28 @@ dependencies {
     implementation("javax.persistence:javax.persistence-api:2.2")
 
     implementation("org.spongepowered:configurate-yaml:4.1.2")
-    implementation("com.google.code.gson:gson:2.8.9")
+    compileOnly("com.google.code.gson:gson:2.8.9")
 
     compileOnly("net.kyori:adventure-api:4.9.3")
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion(16)
-    targetCompatibility = JavaVersion.toVersion(16)
+    sourceCompatibility = JavaVersion.toVersion(17)
+    targetCompatibility = JavaVersion.toVersion(17)
 }
 
-tasks.create<ConfigureShadowRelocation>("relocateShadowJar") {
-    target = tasks["shadowJar"] as ShadowJar
-    prefix = "dev.masa.masuite.libs"
+tasks.withType(AbstractArchiveTask::class).configureEach {
+    isReproducibleFileOrder = true
+    isPreserveFileTimestamps = false
 }
 
-tasks.withType<ShadowJar> {
-    dependsOn(tasks["relocateShadowJar"])
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    val prefix = "dev.masa.masuite.libs."
 
-    mergeServiceFiles()
+    relocate("com.j256.ormlite", prefix + "ormlite")
+    relocate("javax.persistence", prefix + "persistence")
+    relocate("org.spongepowered", prefix + "spongepowered")
+    relocate("mysql", prefix + "mysql")
 }
 
 tasks.named("assemble").configure {
