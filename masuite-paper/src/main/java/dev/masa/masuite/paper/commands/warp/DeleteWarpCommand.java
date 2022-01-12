@@ -13,7 +13,7 @@ public class DeleteWarpCommand extends BaseCommand {
     @CommandPermission("masuite.warp.delete")
     @Description("Delete warp")
     @CommandCompletion("@warps")
-    public void deleteHome(Player player, @Single String warp) {
+    public void deleteWarp(Player player, @Single String warp) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.WARPS_DELETE, warp);
         bpm.send();
     }
