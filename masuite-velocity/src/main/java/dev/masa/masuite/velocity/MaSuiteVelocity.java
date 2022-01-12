@@ -15,6 +15,7 @@ import dev.masa.masuite.common.services.UserService;
 import dev.masa.masuite.common.services.WarpService;
 import dev.masa.masuite.velocity.listeners.home.SetHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.TeleportHomeMessageListener;
+import dev.masa.masuite.velocity.listeners.teleport.TeleportMessageListener;
 import dev.masa.masuite.velocity.listeners.user.UserLeaveListener;
 import dev.masa.masuite.velocity.listeners.user.UserLoginListener;
 import dev.masa.masuite.velocity.listeners.warp.DeleteWarpMessageListener;
@@ -47,7 +48,7 @@ import java.sql.SQLException;
 public class MaSuiteVelocity  {
 
     @Inject
-    private Logger logger;
+    public Logger logger;
 
     @Inject
     @Getter
@@ -104,6 +105,8 @@ public class MaSuiteVelocity  {
         this.proxy.getEventManager().register(this, new TeleportWarpMessageListener(this));
         this.proxy.getEventManager().register(this, new DeleteWarpMessageListener(this));
         this.proxy.getEventManager().register(this, new ListWarpMessageListener(this));
+
+        this.proxy.getEventManager().register(this, new TeleportMessageListener(this));
 
         this.proxy().getChannelRegistrar().register(MASUITE_MAIN_CHANNEL);
 

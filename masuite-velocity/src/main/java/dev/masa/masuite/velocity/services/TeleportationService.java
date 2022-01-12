@@ -29,7 +29,7 @@ public class TeleportationService implements ITeleportationService<Player, Locat
     @Override
     public void teleportPlayerToPlayer(Player player, Player target, Consumer<Boolean> done) {
         player.getCurrentServer().ifPresent(server -> {
-            VelocityPluginMessage message = new VelocityPluginMessage(server.getServer(), MaSuiteMessage.TELEPORT_TO_PLAYER, target.getUniqueId().toString());
+            VelocityPluginMessage message = new VelocityPluginMessage(server.getServer(), MaSuiteMessage.TELEPORT_TO_PLAYER, player.getUniqueId().toString(), target.getUniqueId().toString());
             this.connectAndSendPlayer(player, server.getServer(), message, done);
         });
     }

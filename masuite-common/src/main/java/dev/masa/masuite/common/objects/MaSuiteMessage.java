@@ -29,7 +29,9 @@ public enum MaSuiteMessage {
     HOMES_LIST_OTHERS("masuite:homes:list:others"),
     // Teleportation
     TELEPORT_TO_LOCATION("masuite:user:teleport:location"),
-    TELEPORT_TO_PLAYER("masuite:user:teleport:player");
+    TELEPORT_TO_PLAYER("masuite:user:teleport:player"),
+
+    TELEPORT_PLAYER_TO_PLAYER("masuite:user:teleport:player:other");
 
     public final String channel;
 

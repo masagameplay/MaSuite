@@ -28,7 +28,7 @@ public class TeleportationService implements ITeleportationService<ProxiedPlayer
     @Override
     public void teleportPlayerToPlayer(ProxiedPlayer player, ProxiedPlayer target, Consumer<Boolean> done) {
         ServerInfo destinationServer = target.getServer().getInfo();
-        BungeePluginMessage message = new BungeePluginMessage(destinationServer, MaSuiteMessage.TELEPORT_TO_PLAYER, target.getUniqueId().toString());
+        BungeePluginMessage message = new BungeePluginMessage(destinationServer, MaSuiteMessage.TELEPORT_TO_PLAYER, player.getUniqueId().toString(), target.getUniqueId().toString());
         this.connectAndSendPlayer(player, destinationServer, message, done);
     }
 
