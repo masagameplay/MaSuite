@@ -20,3 +20,34 @@ permissions:
       masuite.home.delete.others: true
       masuite.home.teleport.others: true
       masuite.home.list.others: true
+
+  masuite.warp.user:
+    description: User permissions for Warps
+    children:
+      masuite.warp.list: true
+      masuite.warp.list.global: true
+      masuite.warp.list.server: true
+      masuite.warp.teleport: true
+  masuite.warp.staff:
+    description: Staff permissions for Warps
+    children:
+      masuite.warp.list.hidden: true
+      masuite.warp.delete: true
+      masuite.warp.set: true
+
+  masuite.teleport.user:
+    description: User permissions for Teleport
+    children:
+      masuite.teleport.request.to.create: true
+      masuite.teleport.request.here.create: true
+      masuite.teleport.request.accept: true
+      masuite.teleport.request.deny: true
+      masuite.teleport.request.lock: true
+  masuite.teleport.staff:
+    description: Staff permissions for Teleport
+    children:
+      masuite.teleport.player: true
+      masuite.teleport.player.others: true
+      masuite.teleport.player.here: true
+      masuite.teleport.location: true
+      masuite.teleport.location.others: true
