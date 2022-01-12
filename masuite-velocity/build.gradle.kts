@@ -8,10 +8,7 @@ plugins {
 }
 
 repositories {
-    maven {
-        name = "velocity"
-        url = uri("https://repo.velocitypowered.com/snapshots/")
-    }
+    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
 }
 
 dependencies {

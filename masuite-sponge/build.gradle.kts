@@ -1,8 +1,7 @@
 import org.spongepowered.gradle.plugin.config.PluginLoaders
-import org.spongepowered.plugin.metadata.PluginDependency
+import org.spongepowered.plugin.metadata.model.PluginDependency
 
 plugins {
-    `java`
     `java-library`
     id("com.github.johnrengelman.shadow")
     id("org.spongepowered.gradle.plugin") version "2.0.0"
@@ -17,16 +16,20 @@ dependencies {
 }
 
 sponge {
-    apiVersion("8.0.0")
-    plugin("MaSuite") {
-        loader(PluginLoaders.JAVA_PLAIN)
+    apiVersion("8.0.0-SNAPSHOT")
+    license("All Rights Reserved")
+    loader {
+        name(PluginLoaders.JAVA_PLAIN)
+        version("1.0")
+    }
+    plugin("masuite") {
         displayName("MaSuite")
-        mainClass("dev.masa.masuite.sponge.MaSuiteSponge")
-        description("Proxy wide homes, teleportations and warps")
+        entrypoint("dev.masa.masuite.sponge.MaSuiteSponge")
+        description("My plugin description")
         links {
             homepage("https://masa.dev")
-            // source("https://spongepowered.org/source")
-            // issues("https://spongepowered.org/issues")
+            source("https://github.com/Makkarakiska/MaSuite")
+            issues("https://github.com/Makkarakiska/MaSuite/issues")
         }
         contributor("Masa") {
             description("Author")
