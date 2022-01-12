@@ -50,3 +50,8 @@ tasks.withType<JavaCompile> {
 tasks.build {
     dependsOn("shadowJar")
 }
+
+artifacts {
+    val version = System.getenv("BUILD_NUMBER") ?: "0"
+    base.archivesName.set("${project.name}-${parent!!.version}-RC${version}")
+}

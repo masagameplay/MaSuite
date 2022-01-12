@@ -30,10 +30,15 @@ tasks.withType(AbstractArchiveTask::class).configureEach {
 
 tasks.withType<ShadowJar> {
     val prefix = "dev.masa.masuite.libs."
-
     relocate("org.spongepowered", prefix + "spongepowered")
+    archiveClassifier.set("")
 }
 
 tasks.named("assemble").configure {
     dependsOn("shadowJar")
+}
+
+artifacts {
+    val version = System.getenv("BUILD_NUMBER") ?: "0"
+    base.archivesName.set("${project.name}-${parent!!.version}-RC${version}")
 }

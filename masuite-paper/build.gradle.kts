@@ -14,7 +14,11 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":masuite-common"))
+    implementation(project(":masuite-common")) {
+        exclude("javax.persistence")
+        exclude("com.j256.ormlite")
+        exclude("mysql")
+    }
     compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
 
@@ -43,6 +47,7 @@ tasks.withType<JavaCompile> {
 tasks.withType<ShadowJar> {
     relocate("co.aikar.commands", "dev.masa.masuite.libs.acf")
     relocate("co.aikar.locales", "dev.masa.masuite.libs.locales")
+
 }
 
 tasks.build {
@@ -51,4 +56,9 @@ tasks.build {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+artifacts {
+    val version = System.getenv("BUILD_NUMBER") ?: "0"
+    base.archivesName.set("${project.name}-${parent!!.version}-RC${version}")
 }

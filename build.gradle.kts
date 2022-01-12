@@ -1,10 +1,10 @@
-group = "dev.masa"
-version = "1.0.0-SNAPSHOT"
-
 plugins {
     `java`
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
+
+group = "dev.masa.masuite"
+version = "4.0.0-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.toVersion(17)
