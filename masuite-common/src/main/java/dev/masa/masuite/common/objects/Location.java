@@ -30,6 +30,14 @@ public class Location implements ILocation {
         this.world = world;
     }
 
+    public Location(double x, double y, double z, String world) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.world = world;
+    }
+
+
     public String serialize() {
         return new Gson().toJson(this);
     }

@@ -30,8 +30,8 @@ public enum MaSuiteMessage {
     // Teleportation
     TELEPORT_TO_LOCATION("masuite:user:teleport:location"),
     TELEPORT_TO_PLAYER("masuite:user:teleport:player"),
-
-    TELEPORT_PLAYER_TO_PLAYER("masuite:user:teleport:player:other");
+    TELEPORT_PLAYER_TO_PLAYER("masuite:user:teleport:player:other"),
+    TELEPORT_PLAYER_TO_LOCATION("masuite:user:teleport:location:other");
 
     public final String channel;
 
