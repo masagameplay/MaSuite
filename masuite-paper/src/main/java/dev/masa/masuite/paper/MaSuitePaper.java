@@ -10,7 +10,7 @@ import dev.masa.masuite.paper.commands.home.SetHomeCommand;
 import dev.masa.masuite.paper.commands.home.TeleportHomeCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportHereCommand;
-import dev.masa.masuite.paper.commands.warp.DelWarpCommand;
+import dev.masa.masuite.paper.commands.warp.DeleteWarpCommand;
 import dev.masa.masuite.paper.commands.warp.ListWarpCommand;
 import dev.masa.masuite.paper.commands.warp.SetWarpCommand;
 import dev.masa.masuite.paper.commands.warp.TeleportWarpCommand;
@@ -49,7 +49,7 @@ public final class MaSuitePaper extends JavaPlugin {
 
         this.manager.registerCommand(new SetWarpCommand());
         this.manager.registerCommand(new TeleportWarpCommand());
-        this.manager.registerCommand(new DelWarpCommand());
+        this.manager.registerCommand(new DeleteWarpCommand());
         this.manager.registerCommand(new ListWarpCommand());
 
         this.manager.registerCommand(new TeleportCommand());
