@@ -1,5 +1,6 @@
 package dev.masa.masuite.common.configuration;
 
+import dev.masa.masuite.common.configuration.warp.WarpSettingsConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
@@ -18,6 +19,11 @@ public class MaSuiteConfig {
     @Comment("Database settings")
     @Setting("database")
     private DatabaseConfig database = new DatabaseConfig();
+
+    @Getter
+    @Comment("Warps settings")
+    @Setting("warps")
+    private WarpSettingsConfig warps = new WarpSettingsConfig();
 
     @ConfigSerializable
     static public class DatabaseConfig {

@@ -15,13 +15,7 @@ import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public class TeleportWarpMessageListener {
-
-    private final MaSuiteVelocity plugin;
-
-    public TeleportWarpMessageListener(MaSuiteVelocity plugin) {
-        this.plugin = plugin;
-    }
+public record TeleportWarpMessageListener(MaSuiteVelocity plugin) {
 
     @Subscribe
     public void teleportWarp(PluginMessageEvent event) throws IOException {
@@ -36,6 +30,10 @@ public class TeleportWarpMessageListener {
         Player player = (Player) event.getTarget();
 
         String name = in.readUTF();
+        boolean permissionToWarpName = in.readBoolean();
+        boolean permissionToGlobal = in.readBoolean();
+        boolean permissionToServer = in.readBoolean();
+        boolean permissionToHidden = in.readBoolean();
 
         Optional<Warp> warp = this.plugin.warpService().warp(name);
 
@@ -43,6 +41,27 @@ public class TeleportWarpMessageListener {
             player.sendMessage(this.plugin.messages().warps().warpNotFound());
             return;
         }
+
+        if (this.plugin.config().warps().enablePerWarpPermission() && !permissionToWarpName) {
+            player.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (warp.get().isGlobal() && !permissionToGlobal) {
+            player.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (!warp.get().isGlobal() && !permissionToServer) {
+            player.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (!warp.get().isPublic() && !permissionToHidden) {
+            player.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
 
         TextReplacementConfig replacement = TextReplacementConfig.builder()
                 .match("%warp%")

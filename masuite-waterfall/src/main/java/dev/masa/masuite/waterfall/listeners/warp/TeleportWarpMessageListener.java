@@ -15,13 +15,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-public class TeleportWarpMessageListener implements Listener {
-
-    private final MaSuiteWaterfall plugin;
-
-    public TeleportWarpMessageListener(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record TeleportWarpMessageListener(MaSuiteWaterfall plugin) implements Listener {
 
     @EventHandler
     public void teleportWarp(PluginMessageEvent event) throws IOException {
@@ -38,11 +32,35 @@ public class TeleportWarpMessageListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
 
         String name = in.readUTF();
+        boolean permissionToWarpName = in.readBoolean();
+        boolean permissionToGlobal = in.readBoolean();
+        boolean permissionToServer = in.readBoolean();
+        boolean permissionToHidden = in.readBoolean();
 
         Optional<Warp> warp = this.plugin.warpService().warp(name);
 
         Audience audience = this.plugin.adventure().player(player);
         if (warp.isEmpty()) {
+            audience.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (this.plugin.config().warps().enablePerWarpPermission() && !permissionToWarpName) {
+            audience.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (warp.get().isGlobal() && !permissionToGlobal) {
+            audience.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (!warp.get().isGlobal() && !permissionToServer) {
+            audience.sendMessage(this.plugin.messages().warps().warpNotFound());
+            return;
+        }
+
+        if (!warp.get().isPublic() && !permissionToHidden) {
             audience.sendMessage(this.plugin.messages().warps().warpNotFound());
             return;
         }

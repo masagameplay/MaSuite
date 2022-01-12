@@ -15,7 +15,11 @@ public class TeleportWarpCommand extends BaseCommand {
     @Conditions("cooldown:type=warps,bypass=masuite.warp.cooldown.bypass")
     @CommandCompletion("@warps")
     public void teleportWarp(Player player, @Single String warp) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.WARPS_TELEPORT, warp);
+        boolean permissionToWarpName = player.hasPermission("masuite.warp.to." + warp);
+        boolean permissionToGlobal = player.hasPermission("masuite.warp.global");
+        boolean permissionToServer = player.hasPermission("masuite.warp.server");
+        boolean permissionToHidden = player.hasPermission("masuite.warp.hidden");
+        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.WARPS_TELEPORT, warp, permissionToWarpName, permissionToGlobal, permissionToServer, permissionToHidden);
         bpm.send();
     }
 
