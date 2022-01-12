@@ -15,7 +15,7 @@ public class TeleportWarpCommand extends BaseCommand {
     @Conditions("cooldown:type=warps,bypass=masuite.warp.cooldown.bypass")
     @CommandCompletion("@warps")
     public void teleportWarp(Player player, @Single String warp) {
-        boolean permissionToWarpName = player.hasPermission("masuite.warp.to." + warp);
+        boolean permissionToWarpName = player.hasPermission("masuite.warp.to." + warp) || player.hasPermission("masuite.warp.to.*");
         boolean permissionToGlobal = player.hasPermission("masuite.warp.global");
         boolean permissionToServer = player.hasPermission("masuite.warp.server");
         boolean permissionToHidden = player.hasPermission("masuite.warp.hidden");
