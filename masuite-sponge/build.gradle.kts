@@ -5,7 +5,7 @@ plugins {
     `java`
     `java-library`
     id("com.github.johnrengelman.shadow")
-    id("org.spongepowered.gradle.plugin") version "1.1.1"
+    id("org.spongepowered.gradle.plugin") version "2.0.0"
 }
 
 repositories {
