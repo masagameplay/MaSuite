@@ -31,15 +31,19 @@ java {
     targetCompatibility = JavaVersion.toVersion(16)
 }
 
-tasks.create<ConfigureShadowRelocation>("relocateShadowJar") {
-    target = tasks["shadowJar"] as ShadowJar
-    prefix = "dev.masa.masuite.libs"
+tasks.withType(AbstractArchiveTask::class).configureEach {
+    isReproducibleFileOrder = true
+    isPreserveFileTimestamps = false
 }
 
-tasks.withType<ShadowJar> {
-    dependsOn(tasks["relocateShadowJar"])
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    val prefix = "dev.masa.masuite.libs.gson."
 
-    mergeServiceFiles()
+    relocate("com.google.gson", prefix + "gson")
+    relocate("com.j256.ormlite", prefix + "ormlite")
+    relocate("javax.persistence", prefix + "persistence")
+    relocate("org.spongepowered", prefix + "spongepowered")
+    relocate("mysql", prefix + "mysql")
 }
 
 tasks.named("assemble").configure {

@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
@@ -24,15 +23,16 @@ dependencies {
     implementation("net.kyori:adventure-serializer-configurate4:4.9.3")
 }
 
-tasks.create<ConfigureShadowRelocation>("relocateShadowJar") {
-    target = tasks["shadowJar"] as ShadowJar
-    prefix = "dev.masa.masuite.libs"
+tasks.withType(AbstractArchiveTask::class).configureEach {
+    isReproducibleFileOrder = true
+    isPreserveFileTimestamps = false
 }
 
 tasks.withType<ShadowJar> {
-    dependsOn(tasks["relocateShadowJar"])
+    val prefix = "dev.masa.masuite.libs.gson."
 
-    mergeServiceFiles()
+    relocate("com.google.gson", prefix + "gson")
+    relocate("org.spongepowered", prefix + "spongepowered")
 }
 
 tasks.named("assemble").configure {
