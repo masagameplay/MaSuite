@@ -33,7 +33,7 @@ public class DeleteWarpMessageListener implements Listener {
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String channel = in.readUTF();
-        if (!channel.equals(MaSuiteMessage.HOMES_DELETE.channel)) {
+        if (!channel.equals(MaSuiteMessage.WARPS_DELETE.channel)) {
             return;
         }
 
