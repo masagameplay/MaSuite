@@ -74,15 +74,6 @@ public class MaSuiteVelocity  {
     @Getter
     private MessagesConfig messages;
 
-    private Audience adventure;
-
-    public Audience adventure() {
-        if (this.adventure == null) {
-            throw new IllegalStateException("Cannot retrieve audience provider while plugin is not enabled");
-        }
-        return this.adventure;
-    }
-
     public static MaSuiteVelocity MASUITE_INSTANCE;
 
     public static MinecraftChannelIdentifier MASUITE_MAIN_CHANNEL = MinecraftChannelIdentifier.from(MaSuiteMessage.MAIN.channel);
@@ -98,8 +89,6 @@ public class MaSuiteVelocity  {
             ex.printStackTrace();
             this.logger.error("Could not connect to database.");
         }
-
-        this.adventure = Audience.audience(this.proxy.getAllPlayers());
 
         this.userService = new UserService(databaseService);
         this.homeService = new HomeService(databaseService);
