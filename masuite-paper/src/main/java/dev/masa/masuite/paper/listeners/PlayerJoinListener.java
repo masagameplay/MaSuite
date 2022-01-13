@@ -5,13 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoinListener implements Listener {
-
-    private final MaSuitePaper plugin;
-
-    public PlayerJoinListener(MaSuitePaper plugin) {
-        this.plugin = plugin;
-    }
+public record PlayerJoinListener(MaSuitePaper plugin) implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {

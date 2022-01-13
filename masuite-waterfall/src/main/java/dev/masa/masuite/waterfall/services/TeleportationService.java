@@ -10,13 +10,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.function.Consumer;
 
-public class TeleportationService implements ITeleportationService<ProxiedPlayer, Location> {
-
-    private final MaSuiteWaterfall plugin;
-
-    public TeleportationService(MaSuiteWaterfall plugin) {
-        this.plugin = plugin;
-    }
+public record TeleportationService(MaSuiteWaterfall plugin) implements ITeleportationService<ProxiedPlayer, Location> {
 
     @Override
     public void teleportPlayerToLocation(ProxiedPlayer player, Location location, Consumer<Boolean> done) {

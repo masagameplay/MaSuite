@@ -10,18 +10,12 @@ import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 
 import java.util.function.Consumer;
 
-public class TeleportationService implements ITeleportationService<Player, Location> {
-
-    private final MaSuiteVelocity plugin;
-
-    public TeleportationService(MaSuiteVelocity plugin) {
-        this.plugin = plugin;
-    }
+public record TeleportationService(MaSuiteVelocity plugin) implements ITeleportationService<Player, Location> {
 
     @Override
     public void teleportPlayerToLocation(Player player, Location location, Consumer<Boolean> done) {
         // If location does not have server specified, the server will be the same as players current server
-        if(location.server() == null) {
+        if (location.server() == null) {
             location.server(player.getCurrentServer().get().getServerInfo().getName());
         }
 
@@ -33,14 +27,14 @@ public class TeleportationService implements ITeleportationService<Player, Locat
 
     @Override
     public void teleportPlayerToPlayer(Player player, Player target, Consumer<Boolean> done) {
-        player.getCurrentServer().ifPresent(server -> {
+        target.getCurrentServer().ifPresent(server -> {
             VelocityPluginMessage message = new VelocityPluginMessage(server.getServer(), MaSuiteMessage.TELEPORT_TO_PLAYER, player.getUniqueId().toString(), target.getUniqueId().toString());
             this.connectAndSendPlayer(player, server.getServer(), message, done);
         });
     }
 
     private void connectAndSendPlayer(Player player, RegisteredServer registeredServer, VelocityPluginMessage message, Consumer<Boolean> done) {
-        if(player.getCurrentServer().isPresent() && player.getCurrentServer().get().getServerInfo().equals(registeredServer.getServerInfo())) {
+        if (player.getCurrentServer().isPresent() && player.getCurrentServer().get().getServerInfo().equals(registeredServer.getServerInfo())) {
             message.send();
             done.accept(true);
             return;
