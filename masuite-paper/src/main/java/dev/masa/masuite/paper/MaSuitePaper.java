@@ -74,7 +74,7 @@ public final class MaSuitePaper extends JavaPlugin {
             }
         });
 
-        manager.getCommandCompletions().registerCompletion("masuite_players", c -> this.onlinePlayers());
+        manager.getCommandCompletions().registerAsyncCompletion("masuite_players", c -> this.onlinePlayers());
 
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
