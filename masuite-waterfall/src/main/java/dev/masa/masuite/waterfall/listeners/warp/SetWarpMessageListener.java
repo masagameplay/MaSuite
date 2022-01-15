@@ -4,10 +4,10 @@ import dev.masa.masuite.api.proxy.listeners.warp.ISetWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -18,7 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public record SetWarpMessageListener(MaSuiteWaterfall plugin) implements Listener, ISetWarpMessageListener<PluginMessageEvent> {
+public record SetWarpMessageListener(
+        MaSuiteWaterfall plugin) implements Listener, ISetWarpMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void createWarp(PluginMessageEvent event) throws IOException {
@@ -47,20 +48,15 @@ public record SetWarpMessageListener(MaSuiteWaterfall plugin) implements Listene
 
         Audience audience = this.plugin.adventure().player(player);
 
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%warp%")
-                .replacement(warp.name())
-                .build();
-
         this.plugin.warpService().createOrUpdateWarp(warp, (done, isCreated) -> {
             if (!done) {
                 audience.sendMessage(Component.text("An error occurred while creating / updating warp.", NamedTextColor.RED));
                 return;
             }
             if (isCreated) {
-                audience.sendMessage(this.plugin.messages().warps().warpCreated().replaceText(replacement));
+                MessageService.sendMessage(audience, this.plugin.messages().warps().warpCreated(), MessageService.Templates.warpTemplate(warp));
             } else {
-                audience.sendMessage(this.plugin.messages().warps().warpUpdated().replaceText(replacement));
+                MessageService.sendMessage(audience, this.plugin.messages().warps().warpUpdated(), MessageService.Templates.warpTemplate(warp));
             }
         });
     }

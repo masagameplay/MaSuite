@@ -6,9 +6,10 @@ import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import dev.masa.masuite.api.proxy.listeners.warp.IListWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -37,19 +38,11 @@ public record ListWarpMessageListener(MaSuiteVelocity plugin) implements IListWa
 
         List<Warp> warps = this.plugin.warpService().warps();
 
-        Component message = this.plugin.messages().warps().globalListTitle();
+        Component message = MiniMessage.get().parse(this.plugin.messages().warps().globalListTitle());
 
         // TODO: Fix listing
         for (Warp warp : warps) {
-            TextReplacementConfig replacement = TextReplacementConfig.builder()
-                    .match("%warp%")
-                    .replacement(warp.name())
-                    .match("%server%")
-                    .replacement(warp.location().server())
-                    .build();
-
-
-            // message = message.append(message.replaceText(replacement)).append(this.plugin.homeMessages().homeListSplitter());
+            message = message.append(MiniMessage.get().parse(this.plugin.messages().warps().warpListName(), MessageService.Templates.warpTemplate(warp))).append(MiniMessage.get().parse(this.plugin.messages().warps().warpListSplitter()));
         }
 
         executor.sendMessage(message);

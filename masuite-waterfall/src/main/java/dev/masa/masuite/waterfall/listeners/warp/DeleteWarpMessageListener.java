@@ -3,10 +3,10 @@ package dev.masa.masuite.waterfall.listeners.warp;
 import dev.masa.masuite.api.proxy.listeners.warp.IDeleteWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -40,18 +40,13 @@ public record DeleteWarpMessageListener(MaSuiteWaterfall plugin) implements List
 
         Audience audience = this.plugin.adventure().player(player);
         if (warp.isEmpty()) {
-            audience.sendMessage(this.plugin.messages().warps().warpNotFound());
+            MessageService.sendMessage(audience, this.plugin.messages().warps().warpNotFound());
             return;
         }
 
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%warp%")
-                .replacement(warp.get().name())
-                .build();
-
         this.plugin.warpService().deleteWarp(warp.get(), done -> {
             if (done) {
-                audience.sendMessage(this.plugin.messages().warps().warpDeleted().replaceText(replacement));
+                MessageService.sendMessage(audience, this.plugin.messages().warps().warpDeleted(), MessageService.Templates.warpTemplate(warp.get()));
             } else {
                 audience.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));
             }

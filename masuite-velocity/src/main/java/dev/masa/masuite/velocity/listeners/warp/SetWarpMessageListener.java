@@ -7,9 +7,9 @@ import dev.masa.masuite.api.proxy.listeners.warp.ISetWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.ByteArrayInputStream;
@@ -47,20 +47,15 @@ public record SetWarpMessageListener(MaSuiteVelocity plugin) implements ISetWarp
 
         Warp warp = new Warp(name, loc, isPublic, global);
 
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%warp%")
-                .replacement(warp.name())
-                .build();
-
         this.plugin.warpService().createOrUpdateWarp(warp, (done, isCreated) -> {
             if (!done) {
                 player.sendMessage(Component.text("An error occurred while creating / updating warp.", NamedTextColor.RED));
                 return;
             }
             if (isCreated) {
-                player.sendMessage(this.plugin.messages().warps().warpCreated().replaceText(replacement));
+                MessageService.sendMessage(player, this.plugin.messages().warps().warpCreated(), MessageService.Templates.warpTemplate(warp));
             } else {
-                player.sendMessage(this.plugin.messages().warps().warpUpdated().replaceText(replacement));
+                MessageService.sendMessage(player, this.plugin.messages().warps().warpUpdated(), MessageService.Templates.warpTemplate(warp));
             }
         });
     }

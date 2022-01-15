@@ -7,9 +7,9 @@ import dev.masa.masuite.api.proxy.listeners.home.IDeleteHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.ByteArrayInputStream;
@@ -55,7 +55,7 @@ public record DeleteHomeMessageListener(MaSuiteVelocity plugin) implements IDele
         Optional<User> user = this.plugin.userService().user(username);
 
         if (user.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotFound());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
             return;
         }
 
@@ -67,18 +67,13 @@ public record DeleteHomeMessageListener(MaSuiteVelocity plugin) implements IDele
 
     private void delete(Player player, Optional<Home> home) {
         if (home.isEmpty()) {
-            player.sendMessage(this.plugin.messages().homes().homeNotFound());
+            MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound());
             return;
         }
 
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%home%")
-                .replacement(home.get().name())
-                .build();
-
         this.plugin.homeService().deleteHome(home.get(), done -> {
             if (done) {
-                player.sendMessage(this.plugin.messages().homes().homeDeleted().replaceText(replacement));
+                MessageService.sendMessage(player, this.plugin.messages().homes().homeDeleted(), MessageService.Templates.homeTemplate(home.get()));
             } else {
                 player.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));
             }

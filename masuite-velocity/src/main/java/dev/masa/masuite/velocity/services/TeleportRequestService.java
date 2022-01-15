@@ -3,11 +3,11 @@ package dev.masa.masuite.velocity.services;
 import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.objects.TeleportRequestType;
 import dev.masa.masuite.common.services.AbstractTeleportRequestService;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import dev.masa.masuite.velocity.objects.VelocityTeleportRequest;
 import net.kyori.adventure.text.Component;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -51,7 +51,7 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
         }
 
         if(receiver.isEmpty()) {
-            sender.get().sendMessage(this.plugin.messages().playerNotOnline());
+            MessageService.sendMessage(sender.get(), this.plugin.messages().playerNotOnline());
             return;
         }
 

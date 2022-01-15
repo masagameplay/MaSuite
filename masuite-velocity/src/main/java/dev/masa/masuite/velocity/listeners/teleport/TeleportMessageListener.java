@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.proxy.listeners.teleport.ITeleportMessageListener;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 
 import java.io.ByteArrayInputStream;
@@ -32,7 +33,7 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         Optional<Player> target = this.plugin.proxy().getPlayer(name);
 
         if (target.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotOnline());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
             return;
         }
 
@@ -59,12 +60,12 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         Optional<Player> secondTarget = this.plugin.proxy().getPlayer(secondName);
 
         if (target.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotOnline());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
             return;
         }
 
         if (secondTarget.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotOnline());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
             return;
         }
 
@@ -108,7 +109,7 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         Optional<Player> target = this.plugin.proxy().getPlayer(name);
 
         if (target.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotOnline());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
             return;
         }
 

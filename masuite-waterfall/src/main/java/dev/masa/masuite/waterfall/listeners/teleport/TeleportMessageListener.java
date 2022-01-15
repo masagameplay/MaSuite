@@ -2,6 +2,7 @@ package dev.masa.masuite.waterfall.listeners.teleport;
 
 import dev.masa.masuite.api.proxy.listeners.teleport.ITeleportMessageListener;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -13,7 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listener, ITeleportMessageListener<PluginMessageEvent> {
+public record TeleportMessageListener(
+        MaSuiteWaterfall plugin) implements Listener, ITeleportMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void teleportToPlayer(PluginMessageEvent event) throws IOException {
@@ -34,7 +36,7 @@ public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listen
 
         Audience audience = this.plugin.adventure().player(player);
         if (target == null) {
-            audience.sendMessage(this.plugin().messages().playerNotOnline());
+            MessageService.sendMessage(audience, this.plugin().messages().playerNotOnline());
             return;
         }
 
@@ -65,12 +67,12 @@ public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listen
 
         Audience audience = this.plugin.adventure().player(player);
         if (target == null) {
-            audience.sendMessage(this.plugin().messages().playerNotOnline());
+            MessageService.sendMessage(audience, this.plugin().messages().playerNotOnline());
             return;
         }
 
         if (secondTarget == null) {
-            audience.sendMessage(this.plugin().messages().playerNotOnline());
+            MessageService.sendMessage(audience, this.plugin().messages().playerNotOnline());
             return;
         }
 
@@ -84,11 +86,30 @@ public record TeleportMessageListener(MaSuiteWaterfall plugin) implements Listen
 
     @Override
     public void teleportToLocation(PluginMessageEvent event) throws IOException {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+            return;
+        }
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.TELEPORT_TO_LOCATION.channel)) {
+            return;
+        }
         throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
     public void teleportPlayerToLocation(PluginMessageEvent event) throws IOException {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+            return;
+        }
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.TELEPORT_PLAYER_TO_LOCATION.channel)) {
+            return;
+        }
+
         throw new UnsupportedOperationException("Not implemented");
     }
 }

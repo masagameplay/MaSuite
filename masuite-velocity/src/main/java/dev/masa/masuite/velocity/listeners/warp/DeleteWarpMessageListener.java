@@ -6,10 +6,9 @@ import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import dev.masa.masuite.api.proxy.listeners.warp.IDeleteWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
-
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.ByteArrayInputStream;
@@ -40,18 +39,13 @@ public record DeleteWarpMessageListener(MaSuiteVelocity plugin) implements IDele
         Optional<Warp> warp = this.plugin.warpService().warp(name);
 
         if (warp.isEmpty()) {
-            executor.sendMessage(this.plugin.messages().warps().warpNotFound());
+            MessageService.sendMessage(executor, this.plugin.messages().warps().warpNotFound());
             return;
         }
 
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%warp%")
-                .replacement(warp.get().name())
-                .build();
-
         this.plugin.warpService().deleteWarp(warp.get(), done -> {
             if (done) {
-                executor.sendMessage(this.plugin.messages().warps().warpDeleted().replaceText(replacement));
+                MessageService.sendMessage(executor, this.plugin.messages().warps().warpDeleted(), MessageService.Templates.warpTemplate(warp.get()));
             } else {
                 executor.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));
             }

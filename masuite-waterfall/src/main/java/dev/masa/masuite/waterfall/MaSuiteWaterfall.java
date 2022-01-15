@@ -24,7 +24,6 @@ import dev.masa.masuite.waterfall.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
-import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
@@ -148,8 +147,7 @@ public final class MaSuiteWaterfall extends AbstractMaSuitePlugin<MaSuiteWaterfa
         // messages.yml
         YamlConfigurationLoader messagesLoader = YamlConfigurationLoader.builder()
                 .file(new File("plugins/MaSuite/messages.yml"))
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true)
-                        .serializers(build -> build.registerAll(ConfigurateComponentSerializer.configurate().serializers())))
+                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                 .nodeStyle(NodeStyle.BLOCK)
                 .build();
 

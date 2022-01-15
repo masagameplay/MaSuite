@@ -47,7 +47,7 @@ tasks.withType<JavaCompile> {
 tasks.withType<ShadowJar> {
     relocate("co.aikar.commands", "dev.masa.masuite.libs.acf")
     relocate("co.aikar.locales", "dev.masa.masuite.libs.locales")
-
+    archiveClassifier.set("")
 }
 
 tasks.build {

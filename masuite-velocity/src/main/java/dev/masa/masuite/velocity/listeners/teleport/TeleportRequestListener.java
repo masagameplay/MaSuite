@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.objects.TeleportRequestType;
 import dev.masa.masuite.api.proxy.listeners.teleport.ITeleportRequestListener;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
 
@@ -36,7 +37,7 @@ public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITelepo
         Optional<Player> receiver = this.plugin.proxy().getPlayer(receiverName);
 
         if (receiver.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotOnline());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
             return;
         }
 

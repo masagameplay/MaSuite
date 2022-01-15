@@ -3,10 +3,11 @@ package dev.masa.masuite.waterfall.listeners.warp;
 import dev.masa.masuite.api.proxy.listeners.warp.IListWarpMessageListener;
 import dev.masa.masuite.common.models.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -41,19 +42,11 @@ public record ListWarpMessageListener(MaSuiteWaterfall plugin) implements Listen
 
         Audience audience = this.plugin.adventure().player(player);
 
-        Component message = this.plugin.messages().warps().globalListTitle();
+        Component message = MiniMessage.get().parse(this.plugin.messages().warps().globalListTitle());
 
         // TODO: Fix listing
         for (Warp warp : warps) {
-            TextReplacementConfig replacement = TextReplacementConfig.builder()
-                    .match("%warp%")
-                    .replacement(warp.name())
-                    .match("%server%")
-                    .replacement(warp.location().server())
-                    .build();
-
-
-            // message = message.append(message.replaceText(replacement)).append(this.plugin.homeMessages().homeListSplitter());
+            message = message.append(MiniMessage.get().parse(this.plugin.messages().warps().warpListName(), MessageService.Templates.warpTemplate(warp))).append(MiniMessage.get().parse(this.plugin.messages().warps().warpListSplitter()));
         }
 
         audience.sendMessage(message);
