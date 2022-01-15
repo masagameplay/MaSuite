@@ -109,13 +109,13 @@ public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITelepo
 
         if (value.equals("accept")) {
             this.plugin.teleportRequestService().toggleTeleportationLock(player.getUniqueId(), true);
-            player.sendMessage(Component.text("Teleportation lock set to: ACCEPT"));
+            MessageService.sendMessage(player, this.plugin.messages().teleports().teleportationRequestLock().accept());
         } else if (value.equals("deny")) {
             this.plugin.teleportRequestService().toggleTeleportationLock(player.getUniqueId(), false);
-            player.sendMessage(Component.text("Teleportation lock set to: DENY"));
+            MessageService.sendMessage(player, this.plugin.messages().teleports().teleportationRequestLock().deny());
         } else {
             this.plugin.teleportRequestService().removeTeleportationLock(player.getUniqueId());
-            player.sendMessage(Component.text("Teleportation lock set to: OFF"));
+            MessageService.sendMessage(player, this.plugin.messages().teleports().teleportationRequestLock().off());
         }
 
     }

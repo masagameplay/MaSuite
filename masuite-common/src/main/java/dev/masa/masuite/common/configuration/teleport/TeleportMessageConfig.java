@@ -17,6 +17,11 @@ public class TeleportMessageConfig {
     @Setting("receiver")
     private ReceiverMessageConfig receiver = new ReceiverMessageConfig();
 
+    @Getter
+    @Setting("teleportation-request-lock")
+    private TeleportationLockMessageConfig teleportationRequestLock = new TeleportationLockMessageConfig();
+
+
     @ConfigSerializable
     public static class SenderMessageConfig {
 
@@ -85,6 +90,21 @@ public class TeleportMessageConfig {
         @Setting("teleported")
         private String teleported = "<dark_green>><green>> <dark_gray>+ <gray>You have been teleported to <white><sender><gray>'s location.";
 
+    }
+
+    @ConfigSerializable
+    public static class TeleportationLockMessageConfig {
+        @Getter
+        @Setting("accept")
+        private String accept = "<dark_green>><green>> <dark_gray>+ <gray>You are now <white>accepting <gray>teleportation requests.";
+
+        @Getter
+        @Setting("deny")
+        private String deny = "<dark_red>><red>> <dark_gray>- <gray>You are now <white>denying <gray>teleportation requests.";
+
+        @Getter
+        @Setting("off")
+        private String off = "<dark_red>><red>> <dark_gray>- <gray>You have <white>disabled <gray>teleportation lock.";
     }
 
 }
