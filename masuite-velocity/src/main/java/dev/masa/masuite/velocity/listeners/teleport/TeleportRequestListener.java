@@ -31,9 +31,13 @@ public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITelepo
 
         Player player = (Player) event.getTarget();
         String receiverName = in.readUTF();
+
+        if(player.getUsername().equalsIgnoreCase(receiverName)) {
+            MessageService.sendMessage(player, this.plugin.messages().teleports().sender().cannotTeleportToYourself());
+            return;
+        }
+
         TeleportRequestType type = TeleportRequestType.valueOf(in.readUTF().toUpperCase());
-
-
         Optional<Player> receiver = this.plugin.proxy().getPlayer(receiverName);
 
         if (receiver.isEmpty()) {

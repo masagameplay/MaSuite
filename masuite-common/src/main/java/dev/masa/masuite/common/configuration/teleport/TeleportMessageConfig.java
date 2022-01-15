@@ -57,6 +57,10 @@ public class TeleportMessageConfig {
         @Setting("teleported")
         private String teleported = "<dark_green>><green>> <dark_gray>+ <white><receiver> <gray>has been teleported to your location.";
 
+        @Getter
+        @Setting("you-cannot-teleport-to-yourself")
+        private String cannotTeleportToYourself = "<dark_red>><red>> <dark_gray>- <gray>You can't teleport to yourself.";
+
     }
 
     @ConfigSerializable
