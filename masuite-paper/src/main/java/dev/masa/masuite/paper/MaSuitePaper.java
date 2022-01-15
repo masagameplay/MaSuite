@@ -10,6 +10,7 @@ import dev.masa.masuite.paper.commands.home.SetHomeCommand;
 import dev.masa.masuite.paper.commands.home.TeleportHomeCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportHereCommand;
+import dev.masa.masuite.paper.commands.teleport.TeleportRequestCommand;
 import dev.masa.masuite.paper.commands.warp.DeleteWarpCommand;
 import dev.masa.masuite.paper.commands.warp.ListWarpCommand;
 import dev.masa.masuite.paper.commands.warp.SetWarpCommand;
@@ -60,6 +61,7 @@ public final class MaSuitePaper extends JavaPlugin {
 
         this.manager.registerCommand(new TeleportCommand());
         this.manager.registerCommand(new TeleportHereCommand());
+        this.manager.registerCommand(new TeleportRequestCommand());
 
         this.manager.getCommandConditions().addCondition("cooldown", c -> {
             UUID uuid = c.getIssuer().getUniqueId();

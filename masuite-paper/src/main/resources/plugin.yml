@@ -38,8 +38,8 @@ permissions:
   masuite.teleport.user:
     description: User permissions for Teleport
     children:
-      masuite.teleport.request.to.create: true
-      masuite.teleport.request.here.create: true
+      masuite.teleport.request.to: true
+      masuite.teleport.request.here: true
       masuite.teleport.request.accept: true
       masuite.teleport.request.deny: true
       masuite.teleport.request.lock: true

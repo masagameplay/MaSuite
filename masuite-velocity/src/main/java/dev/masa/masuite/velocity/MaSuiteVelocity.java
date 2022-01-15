@@ -18,16 +18,17 @@ import dev.masa.masuite.velocity.listeners.home.ListHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.SetHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.TeleportHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.teleport.TeleportMessageListener;
+import dev.masa.masuite.velocity.listeners.teleport.TeleportRequestListener;
 import dev.masa.masuite.velocity.listeners.user.UserLeaveListener;
 import dev.masa.masuite.velocity.listeners.user.UserLoginListener;
 import dev.masa.masuite.velocity.listeners.warp.DeleteWarpMessageListener;
 import dev.masa.masuite.velocity.listeners.warp.ListWarpMessageListener;
 import dev.masa.masuite.velocity.listeners.warp.SetWarpMessageListener;
 import dev.masa.masuite.velocity.listeners.warp.TeleportWarpMessageListener;
+import dev.masa.masuite.velocity.services.TeleportRequestService;
 import dev.masa.masuite.velocity.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -69,6 +70,9 @@ public class MaSuiteVelocity  {
     private TeleportationService teleportationService;
 
     @Getter
+    private TeleportRequestService teleportRequestService;
+
+    @Getter
     private DatabaseService databaseService;
 
     @Getter
@@ -97,6 +101,7 @@ public class MaSuiteVelocity  {
         this.homeService = new HomeService(databaseService);
         this.warpService = new WarpService(databaseService);
         this.teleportationService = new TeleportationService(this);
+        this.teleportRequestService = new TeleportRequestService(this);
 
         this.proxy.getEventManager().register(this, new UserLoginListener(this));
         this.proxy.getEventManager().register(this, new UserLeaveListener(this));
@@ -112,6 +117,7 @@ public class MaSuiteVelocity  {
         this.proxy.getEventManager().register(this, new ListWarpMessageListener(this));
 
         this.proxy.getEventManager().register(this, new TeleportMessageListener(this));
+        this.proxy.getEventManager().register(this, new TeleportRequestListener(this));
 
         this.proxy().getChannelRegistrar().register(MASUITE_MAIN_CHANNEL);
 

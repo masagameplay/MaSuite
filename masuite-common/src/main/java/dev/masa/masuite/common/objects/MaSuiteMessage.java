@@ -30,10 +30,15 @@ public enum MaSuiteMessage {
     HOMES_LIST("masuite:homes:list"),
     HOMES_LIST_OTHERS("masuite:homes:list:others"),
     // Teleportation
-    TELEPORT_TO_LOCATION("masuite:user:teleport:location"),
-    TELEPORT_TO_PLAYER("masuite:user:teleport:player"),
-    TELEPORT_PLAYER_TO_PLAYER("masuite:user:teleport:player:other"),
-    TELEPORT_PLAYER_TO_LOCATION("masuite:user:teleport:location:other");
+    TELEPORT_TO_LOCATION("masuite:teleport:location"),
+    TELEPORT_TO_PLAYER("masuite:teleport:player"),
+    TELEPORT_PLAYER_TO_PLAYER("masuite:teleport:player:other"),
+    TELEPORT_PLAYER_TO_LOCATION("masuite:teleport:location:other"),
+
+    TELEPORT_REQUEST_CREATE("masuite:teleport:request:create"),
+    TELEPORT_REQUEST_ACCEPT("masuite:teleport:request:accept"),
+    TELEPORT_REQUEST_DENY("masuite:teleport:request:deny"),
+    TELEPORT_REQUEST_LOCK("masuite:teleport:request:lock");
 
     public final String channel;
 
