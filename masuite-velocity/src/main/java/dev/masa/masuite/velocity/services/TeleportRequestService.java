@@ -6,8 +6,9 @@ import dev.masa.masuite.common.services.AbstractTeleportRequestService;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import dev.masa.masuite.velocity.objects.VelocityTeleportRequest;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Template;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -22,20 +23,27 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
     @Override
     public void expireRequest(VelocityTeleportRequest request) {
         super.expireRequest(request);
+        var sender = request.senderAsPlayer();
+        var receiver = request.receiverAsPlayer();
 
-        request.senderAsPlayer().ifPresent(player -> player.sendMessage(Component.text("Request expired")));
-        request.receiverAsPlayer().ifPresent(player -> player.sendMessage(Component.text("Request expired")));
+        if (sender.isPresent() && receiver.isPresent()) {
+            MessageService.sendMessage(sender.get(), this.plugin.messages().teleports().sender().teleportRequestExpired(), this.buildRequestTemplate(sender.get(), receiver.get()));
+            MessageService.sendMessage(receiver.get(), this.plugin.messages().teleports().receiver().teleportRequestExpired(), this.buildRequestTemplate(sender.get(), receiver.get()));
+        }
+
     }
 
     @Override
     public void denyRequest(VelocityTeleportRequest request) {
         super.denyRequest(request);
 
-        var senderPlayer = request.senderAsPlayer();
-        var receiverPlayer = request.receiverAsPlayer();
+        var sender = request.senderAsPlayer();
+        var receiver = request.receiverAsPlayer();
 
-        senderPlayer.ifPresent(player -> player.sendMessage(Component.text("Player ").append(Component.text(receiverPlayer.get().getUsername())).append(Component.text(" has denied your teleport request"))));
-        receiverPlayer.ifPresent(player -> player.sendMessage(Component.text("You denied ").append(Component.text(senderPlayer.get().getUsername())).append(Component.text("'s teleport request"))));
+        if (sender.isPresent() && receiver.isPresent()) {
+            MessageService.sendMessage(sender.get(), this.plugin.messages().teleports().sender().teleportRequestDenied(), this.buildRequestTemplate(sender.get(), receiver.get()));
+            MessageService.sendMessage(receiver.get(), this.plugin.messages().teleports().receiver().teleportRequestDenied(), this.buildRequestTemplate(sender.get(), receiver.get()));
+        }
     }
 
     @Override
@@ -45,12 +53,12 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
         var sender = request.senderAsPlayer();
         var receiver = request.receiverAsPlayer();
 
-        if(sender.isEmpty()) {
+        if (sender.isEmpty()) {
             this.plugin.logger.info("Player " + senderId + " created teleportation request but they are not online?");
             return;
         }
 
-        if(receiver.isEmpty()) {
+        if (receiver.isEmpty()) {
             MessageService.sendMessage(sender.get(), this.plugin.messages().playerNotOnline());
             return;
         }
@@ -64,9 +72,9 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
 
         this.requests().put(receiverId, request);
 
-        if(this.teleportationLocks().containsKey(receiverId)) {
+        if (this.teleportationLocks().containsKey(receiverId)) {
             var teleportLock = this.teleportationLocks().get(receiverId);
-            if(teleportLock) {
+            if (teleportLock) {
                 this.acceptRequest(request);
                 return;
             }
@@ -74,14 +82,14 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
             return;
         }
 
-        if(requestType.equals(TeleportRequestType.TO)) {
-            sender.get().sendMessage(Component.text("Teleportation request to player ").append(Component.text(receiver.get().getUsername())).append(Component.text("'s location sent.")));
-            receiver.get().sendMessage(Component.text("Player ").append(Component.text(receiver.get().getUsername())).append(Component.text(" wants to teleport to your location.")));
+        if (requestType.equals(TeleportRequestType.TO)) {
+            MessageService.sendMessage(sender.get(), this.plugin.messages().teleports().sender().teleportRequestSentTo(), this.buildRequestTemplate(sender.get(), receiver.get()));
+            MessageService.sendMessage(receiver.get(), this.plugin.messages().teleports().receiver().teleportRequestReceivedTo(), this.buildRequestTemplate(sender.get(), receiver.get()));
         }
 
-        if(requestType.equals(TeleportRequestType.HERE)) {
-            sender.get().sendMessage(Component.text("Teleportation request to player ").append(Component.text(receiver.get().getUsername())).append(Component.text("'s to your location sent")));
-            receiver.get().sendMessage(Component.text("Player ").append(Component.text(receiver.get().getUsername())).append(Component.text(" wants you to teleport to their location.")));
+        if (requestType.equals(TeleportRequestType.HERE)) {
+            MessageService.sendMessage(sender.get(), this.plugin.messages().teleports().sender().teleportRequestSentHere(), this.buildRequestTemplate(sender.get(), receiver.get()));
+            MessageService.sendMessage(receiver.get(), this.plugin.messages().teleports().receiver().teleportRequestReceivedHere(), this.buildRequestTemplate(sender.get(), receiver.get()));
         }
 
         // TODO: Buttons
@@ -95,22 +103,22 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
         var sender = request.senderAsPlayer();
         var receiver = request.receiverAsPlayer();
 
-        if(sender.isEmpty()) {
+        if (sender.isEmpty()) {
             this.plugin.logger.info("Player " + request.sender() + " created teleportation request but they are not online?");
             return;
         }
 
-        if(receiver.isEmpty()) {
+        if (receiver.isEmpty()) {
             this.plugin.logger.info("Player " + request.receiver() + " accepted teleportation request but they are not online?");
             return;
         }
 
-        if(request.requestType().equals(TeleportRequestType.TO)) {
+        if (request.requestType().equals(TeleportRequestType.TO)) {
             teleportPlayerToPlayer(sender.get(), receiver.get());
             return;
         }
 
-        if(request.requestType().equals(TeleportRequestType.HERE)) {
+        if (request.requestType().equals(TeleportRequestType.HERE)) {
             teleportPlayerToPlayer(receiver.get(), sender.get());
         }
 
@@ -124,10 +132,14 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
 
     private void teleportPlayerToPlayer(Player sender, Player receiver) {
         this.plugin.teleportationService().teleportPlayerToPlayer(sender, receiver, (done) -> {
-            if(done) {
-                sender.sendMessage(Component.text("Teleported to player ").append(Component.text(receiver.getUsername())).append(Component.text("'s location")));
-                receiver.sendMessage(Component.text("Player ").append(Component.text(sender.getUsername())).append(Component.text(" teleported to your location.")));
+            if (done) {
+                MessageService.sendMessage(sender, this.plugin.messages().teleports().sender().teleportRequestAccepted(), this.buildRequestTemplate(sender, receiver));
+                MessageService.sendMessage(receiver, this.plugin.messages().teleports().receiver().teleportRequestAccepted(), this.buildRequestTemplate(sender, receiver));;
             }
         });
+    }
+
+    private List<Template> buildRequestTemplate(Player sender, Player receiver) {
+        return MessageService.Templates.teleportRequestTemplate(sender.getUsername(), receiver.getUsername());
     }
 }

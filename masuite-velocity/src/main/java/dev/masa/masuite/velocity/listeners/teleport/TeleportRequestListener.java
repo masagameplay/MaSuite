@@ -43,7 +43,7 @@ public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITelepo
 
         var request = this.plugin.teleportRequestService().request(receiver.get().getUniqueId());
         if (request.isPresent()) {
-            player.sendMessage(Component.text("Player has already pending request"));
+            MessageService.sendMessage(player, this.plugin.messages().teleports().sender().teleportRequestPendingReceiver(), MessageService.Templates.teleportRequestTemplate(player.getUsername(), receiver.get().getUsername()));
             return;
         }
 
@@ -65,7 +65,7 @@ public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITelepo
         var request = this.plugin.teleportRequestService().request(player.getUniqueId());
 
         if (request.isEmpty()) {
-            player.sendMessage(Component.text("No pending requests"));
+            MessageService.sendMessage(player, this.plugin.messages().teleports().receiver().noPendingRequests());
             return;
         }
 
@@ -87,7 +87,7 @@ public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITelepo
         var request = this.plugin.teleportRequestService().request(player.getUniqueId());
 
         if (request.isEmpty()) {
-            player.sendMessage(Component.text("No pending requests"));
+            MessageService.sendMessage(player, this.plugin.messages().teleports().receiver().noPendingRequests());
             return;
         }
 

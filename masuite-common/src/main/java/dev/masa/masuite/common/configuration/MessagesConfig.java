@@ -1,6 +1,7 @@
 package dev.masa.masuite.common.configuration;
 
 import dev.masa.masuite.common.configuration.home.HomeMessagesConfig;
+import dev.masa.masuite.common.configuration.teleport.TeleportMessageConfig;
 import dev.masa.masuite.common.configuration.warp.WarpMessagesConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -30,6 +31,10 @@ public class MessagesConfig {
     @Getter
     @Setting("warps")
     private WarpMessagesConfig warps = new WarpMessagesConfig();
+
+    @Getter
+    @Setting("teleports")
+    private TeleportMessageConfig teleports = new TeleportMessageConfig();
 
     private static final ObjectMapper<MessagesConfig> MAPPER;
 

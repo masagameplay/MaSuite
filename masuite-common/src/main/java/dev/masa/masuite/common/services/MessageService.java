@@ -48,10 +48,10 @@ public class MessageService implements IMessageService {
             );
         }
 
-        public static List<Template> teleportRequestTemplate(ITeleportRequest request, String senderName, String receiverName) {
+        public static List<Template> teleportRequestTemplate(String senderName, String receiverName) {
             return List.of(
-                    Template.of("sender-name", senderName),
-                    Template.of("receiver-name", receiverName)
+                    Template.of("sender", senderName),
+                    Template.of("receiver", receiverName)
             );
         }
 
