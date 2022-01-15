@@ -4,6 +4,9 @@ plugins {
 }
 
 repositories {
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") {
+        name = "sonatype-oss-snapshots"
+    }
     mavenCentral()
 }
 
@@ -21,6 +24,7 @@ dependencies {
     compileOnly("com.google.code.gson:gson:2.8.9")
 
     compileOnly("net.kyori:adventure-api:4.9.3")
+    compileOnly("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 }
 
 java {

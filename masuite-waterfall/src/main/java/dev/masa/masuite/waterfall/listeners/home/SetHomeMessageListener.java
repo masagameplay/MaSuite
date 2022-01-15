@@ -5,10 +5,10 @@ import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -68,7 +68,7 @@ public record SetHomeMessageListener(MaSuiteWaterfall plugin) implements Listene
         Audience audience = this.plugin.adventure().player(player);
 
         if (user.isEmpty()) {
-            audience.sendMessage(this.plugin.messages().playerNotFound());
+            MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
             return;
         }
 
@@ -87,20 +87,15 @@ public record SetHomeMessageListener(MaSuiteWaterfall plugin) implements Listene
     private void createHome(ProxiedPlayer player, Home home) {
         Audience audience = this.plugin.adventure().player(player);
 
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%home%")
-                .replacement(home.name())
-                .build();
-
         this.plugin.homeService().createOrUpdateHome(home, (done, isCreated) -> {
             if (!done) {
                 audience.sendMessage(Component.text("An error occurred while creating / updating home.", NamedTextColor.RED));
                 return;
             }
             if (isCreated) {
-                audience.sendMessage(this.plugin.messages().homes().homeSet().replaceText(replacement));
+                MessageService.sendMessage(audience, this.plugin.messages().homes().homeSet(), MessageService.Templates.homeTemplate(home));
             } else {
-                audience.sendMessage(this.plugin.messages().homes().homeUpdated().replaceText(replacement));
+                MessageService.sendMessage(audience, this.plugin.messages().homes().homeUpdated(), MessageService.Templates.homeTemplate(home));
             }
         });
     }

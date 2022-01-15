@@ -7,8 +7,8 @@ import dev.masa.masuite.api.proxy.listeners.home.ITeleportHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
-import net.kyori.adventure.text.TextReplacementConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -17,7 +17,8 @@ import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public record TeleportHomeMessageListener(MaSuiteVelocity plugin) implements ITeleportHomeMessageListener<PluginMessageEvent> {
+public record TeleportHomeMessageListener(
+        MaSuiteVelocity plugin) implements ITeleportHomeMessageListener<PluginMessageEvent> {
 
     @Subscribe
     public void teleportHome(PluginMessageEvent event) throws IOException {
@@ -32,9 +33,7 @@ public record TeleportHomeMessageListener(MaSuiteVelocity plugin) implements ITe
 
         String name = in.readUTF();
 
-        this.plugin.homeService().home(player.getUniqueId(), name)
-                .ifPresentOrElse(home -> this.teleport(player, home),
-                        () -> player.sendMessage(this.plugin.messages().homes().homeNotFound()));
+        this.plugin.homeService().home(player.getUniqueId(), name).ifPresentOrElse(home -> this.teleport(player, home), () -> MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound()));
     }
 
     @Subscribe
@@ -52,26 +51,16 @@ public record TeleportHomeMessageListener(MaSuiteVelocity plugin) implements ITe
         Optional<User> user = this.plugin.userService().user(username);
 
         if (user.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotFound());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
             return;
         }
 
         String name = in.readUTF();
 
-        this.plugin.homeService().home(user.get().uniqueId(), name)
-                .ifPresentOrElse(home -> this.teleport(player, home),
-                        () -> player.sendMessage(this.plugin.messages().homes().homeNotFound()));
+        this.plugin.homeService().home(user.get().uniqueId(), name).ifPresentOrElse(home -> this.teleport(player, home), () -> MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound()));
     }
 
     private void teleport(Player player, Home home) {
-        this.plugin.teleportationService().teleportPlayerToLocation(player, home.location(), done -> {
-
-            TextReplacementConfig replacement = TextReplacementConfig.builder()
-                    .match("%home%")
-                    .replacement(home.name())
-                    .build();
-
-            player.sendMessage(this.plugin.messages().homes().homeTeleported().replaceText(replacement));
-        });
+        this.plugin.teleportationService().teleportPlayerToLocation(player, home.location(), done -> MessageService.sendMessage(player, this.plugin.messages().homes().homeTeleported(), MessageService.Templates.homeTemplate(home)));
     }
 }

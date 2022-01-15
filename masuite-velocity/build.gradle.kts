@@ -20,7 +20,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.22")
 
     implementation("org.spongepowered:configurate-yaml:4.1.2")
-    implementation("net.kyori:adventure-serializer-configurate4:4.9.3")
+    implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 }
 
 tasks.withType(AbstractArchiveTask::class).configureEach {
@@ -31,6 +31,7 @@ tasks.withType(AbstractArchiveTask::class).configureEach {
 tasks.withType<ShadowJar> {
     val prefix = "dev.masa.masuite.libs."
     relocate("org.spongepowered", prefix + "spongepowered")
+    relocate("net.kyori:adventure-text-minimessage", prefix + "kyori:adventure-text-minimessage")
     archiveClassifier.set("")
 }
 

@@ -8,9 +8,9 @@ import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.ByteArrayInputStream;
@@ -55,7 +55,7 @@ public record SetHomeMessageListener(MaSuiteVelocity plugin) implements ISetHome
         Optional<User> user = this.plugin.userService().user(username);
 
         if (user.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotFound());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
             return;
         }
 
@@ -68,20 +68,15 @@ public record SetHomeMessageListener(MaSuiteVelocity plugin) implements ISetHome
     }
 
     private void createHome(Player player, Home home) {
-        TextReplacementConfig replacement = TextReplacementConfig.builder()
-                .match("%home%")
-                .replacement(home.name())
-                .build();
-
         this.plugin.homeService().createOrUpdateHome(home, (done, isCreated) -> {
             if (!done) {
                 player.sendMessage(Component.text("An error occurred while creating / updating home.", NamedTextColor.RED));
                 return;
             }
             if (isCreated) {
-                player.sendMessage(this.plugin.messages().homes().homeSet().replaceText(replacement));
+                MessageService.sendMessage(player, this.plugin.messages().homes().homeSet(), MessageService.Templates.homeTemplate(home));
             } else {
-                player.sendMessage(this.plugin.messages().homes().homeUpdated().replaceText(replacement));
+                MessageService.sendMessage(player, this.plugin.messages().homes().homeUpdated(), MessageService.Templates.homeTemplate(home));
             }
         });
     }

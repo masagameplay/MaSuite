@@ -1,16 +1,9 @@
 package dev.masa.masuite.common.configuration.home;
 
 import lombok.Getter;
-import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 @ConfigSerializable
 @Accessors(fluent = true)
@@ -18,65 +11,46 @@ public class HomeMessagesConfig {
 
     @Getter
     @Setting("home-limit-reached")
-    private Component homeLimitReached = Component.text("You have reached home limit.", NamedTextColor.RED);
+    private String homeLimitReached = "<dark_red>><red>> <dark_gray>- <gray>You have reached your home limit";
 
     @Getter
     @Setting("home-not-found")
-    private Component homeNotFound = Component.text("Home with that name not found", NamedTextColor.RED);
+    private String homeNotFound = "<dark_red>><red>> <dark_gray>- <gray>Home with that name not found";
 
     @Getter
     @Setting("home-set")
-    private Component homeSet = Component.text("Created home with name ", NamedTextColor.GRAY).append(Component.text("%home%", NamedTextColor.BLUE));
+    private String homeSet = "<dark_green>><green>> <dark_gray>+ <gray>Created a home with name <white><home-name>";
 
     @Getter
     @Setting("home-updated")
-    private Component homeUpdated = Component.text("Updated home with name ", NamedTextColor.GRAY).append(Component.text("%home%", NamedTextColor.BLUE));
+    private String homeUpdated = "<dark_green>><green>> <dark_gray>+ <gray>Updated home with name <white><home-name>";
 
     @Getter
     @Setting("home-deleted")
-    private Component homeDeleted = Component.text("Deleted home with name ", NamedTextColor.GRAY).append(Component.text("%home%", NamedTextColor.BLUE));
+    private String homeDeleted = "<dark_aqua>><aqua>> <dark_gray>- <gray>Deleted home with name <white><home-name>";
 
     @Getter
     @Setting("home-teleported")
-    private Component homeTeleported = Component.text("Teleport to ", NamedTextColor.GRAY).append(Component.text("%home%", NamedTextColor.BLUE));
+    private String homeTeleported = "<dark_aqua>><aqua>> <dark_gray>+ <gray>Teleported to <white><home-name>";
 
     @Getter
     @Setting("home-list-title")
-    private Component homeListTitle = Component.text("Your homes: ", NamedTextColor.BLUE);
+    private String homeListTitle = "<dark_aqua>><aqua>> <dark_gray>+ <gray>Your homes: ";
 
     @Getter
     @Setting("home-list-title-others")
-    private Component homeListTitleOthers = Component.text("%player%'s homes: ", NamedTextColor.BLUE);
+    private String homeListTitleOthers = "<dark_aqua>><aqua>> <dark_gray>+ <white><username><gray>'s homes: ";
 
     @Getter
     @Setting("home-list-name")
-    private Component homeListName = Component.text("%home%", NamedTextColor.GRAY).hoverEvent(HoverEvent.showText(Component.text("Click to teleport", NamedTextColor.BLUE)));
+    private String homeListName = "<hover:show_text:'<blue>Click to teleport'><click:run_command:'/home <home-name>'><white><home-name>";
 
     @Getter
     @Setting("home-list-splitter")
-    private Component homeListSplitter = Component.text(", ", NamedTextColor.GRAY);
+    private String homeListSplitter = "<gray>, ";
 
     @Getter
     @Setting("home-list-server-name")
-    private Component homeListServerName = Component.text("%server%", NamedTextColor.BLUE).append(Component.text(": ", NamedTextColor.GRAY));
+    private String homeListServerName = "<blue><location-server><gray>:";
 
-
-    private static final ObjectMapper<HomeMessagesConfig> MAPPER;
-
-    static {
-        try {
-            MAPPER = ObjectMapper.factory().get(HomeMessagesConfig.class);
-        } catch (final SerializationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
-    public static HomeMessagesConfig loadFrom(final ConfigurationNode node) throws SerializationException {
-        return MAPPER.load(node);
-    }
-
-    @SneakyThrows
-    public void saveTo(ConfigurationNode node) {
-        MAPPER.save(this, node);
-    }
 }

@@ -4,10 +4,10 @@ import dev.masa.masuite.api.proxy.listeners.home.IListHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public record ListHomeMessageListener(MaSuiteWaterfall plugin) implements Listener, IListHomeMessageListener<PluginMessageEvent> {
+public record ListHomeMessageListener(
+        MaSuiteWaterfall plugin) implements Listener, IListHomeMessageListener<PluginMessageEvent> {
 
     @EventHandler
     public void listHomes(PluginMessageEvent event) throws IOException {
@@ -37,7 +38,15 @@ public record ListHomeMessageListener(MaSuiteWaterfall plugin) implements Listen
 
         List<Home> homes = this.plugin.homeService().homes(player.getUniqueId());
 
-        this.listHomes(player, homes, this.plugin.messages().homes().homeListName(), player.getName());
+        var title = MiniMessage.get().parse(this.plugin.messages().homes().homeListTitle());
+        for (var home : homes) {
+            title = title
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListName(), MessageService.Templates.homeTemplate(home)))
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListSplitter()));
+        }
+
+        Audience audience = this.plugin.adventure().player(player);
+        audience.sendMessage(title);
 
     }
 
@@ -62,31 +71,20 @@ public record ListHomeMessageListener(MaSuiteWaterfall plugin) implements Listen
         Audience audience = this.plugin.adventure().player(player);
 
         if (user.isEmpty()) {
-            audience.sendMessage(this.plugin.messages().playerNotFound());
+            MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
             return;
         }
 
         // Query homes and send them to player
         List<Home> homes = this.plugin.homeService().homes(user.get().uniqueId());
 
-        this.listHomes(player, homes, this.plugin.messages().homes().homeListTitleOthers(), user.get().username());
-    }
-
-    private void listHomes(ProxiedPlayer player, List<Home> homes, Component title, String ownerName) {
-        Audience audience = this.plugin.adventure().player(player);
-
-        Component message = this.plugin.messages().homes().homeListTitle();
-
-        for (Home home : homes) {
-            TextReplacementConfig replacement = TextReplacementConfig.builder()
-                    .match("%player%")
-                    .replacement(ownerName)
-                    .match("%home%")
-                    .replacement(home.name())
-                    .build();
-            message = message.append(title.replaceText(replacement)).append(this.plugin.messages().homes().homeListSplitter());
+        var title = MiniMessage.get().parse(this.plugin.messages().homes().homeListTitleOthers(), MessageService.Templates.userTemplate(user.get()));
+        for (var home : homes) {
+            title = title
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListName(), MessageService.Templates.homeTemplate(home)))
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListSplitter()));
         }
 
-        audience.sendMessage(message);
+        audience.sendMessage(title);
     }
 }

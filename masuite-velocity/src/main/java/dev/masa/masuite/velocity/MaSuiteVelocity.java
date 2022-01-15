@@ -29,7 +29,6 @@ import dev.masa.masuite.velocity.services.TeleportRequestService;
 import dev.masa.masuite.velocity.services.TeleportationService;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -146,8 +145,7 @@ public class MaSuiteVelocity  {
         // messages.yml
         YamlConfigurationLoader messagesLoader = YamlConfigurationLoader.builder()
                 .file(new File("plugins/MaSuite/messages.yml"))
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true)
-                        .serializers(build -> build.registerAll(ConfigurateComponentSerializer.configurate().serializers())))
+                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                 .nodeStyle(NodeStyle.BLOCK)
                 .build();
 

@@ -7,9 +7,9 @@ import dev.masa.masuite.api.proxy.listeners.home.IListHomeMessageListener;
 import dev.masa.masuite.common.models.Home;
 import dev.masa.masuite.common.models.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -35,7 +35,14 @@ public record ListHomeMessageListener(MaSuiteVelocity plugin) implements IListHo
 
         List<Home> homes = this.plugin.homeService().homes(player.getUniqueId());
 
-        this.listHomes(player, homes, this.plugin.messages().homes().homeListName(), player.getUsername());
+        var title = MiniMessage.get().parse(this.plugin.messages().homes().homeListTitle());
+        for (var home : homes) {
+            title = title
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListName(), MessageService.Templates.homeTemplate(home)))
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListSplitter()));
+        }
+
+        player.sendMessage(title);
     }
 
     @Subscribe
@@ -54,24 +61,20 @@ public record ListHomeMessageListener(MaSuiteVelocity plugin) implements IListHo
         Optional<User> user = this.plugin.userService().user(username);
 
         if (user.isEmpty()) {
-            player.sendMessage(this.plugin.messages().playerNotFound());
+            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
             return;
         }
 
         // Query homes and send them to player
         List<Home> homes = this.plugin.homeService().homes(user.get().uniqueId());
 
-        this.listHomes(player, homes, this.plugin.messages().homes().homeListTitleOthers(), user.get().username());
-    }
-
-    private void listHomes(Player player, List<Home> homes, Component title, String ownerName) {
-        Component message = this.plugin.messages().homes().homeListTitle();
-
-        for (Home home : homes) {
-            TextReplacementConfig replacement = TextReplacementConfig.builder().match("%player%").replacement(ownerName).match("%home%").replacement(home.name()).build();
-            message = message.append(title.replaceText(replacement)).append(this.plugin.messages().homes().homeListSplitter());
+        var title = MiniMessage.get().parse(this.plugin.messages().homes().homeListTitleOthers(), MessageService.Templates.userTemplate(user.get()));
+        for (var home : homes) {
+            title = title
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListName(), MessageService.Templates.homeTemplate(home)))
+                    .append(MiniMessage.get().parse(this.plugin.messages().homes().homeListSplitter()));
         }
 
-        player.sendMessage(message);
+        player.sendMessage(title);
     }
 }

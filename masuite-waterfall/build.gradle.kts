@@ -23,16 +23,19 @@ dependencies {
     compileOnly("io.github.waterfallmc:waterfall-api:1.18-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-platform-bungeecord:4.0.1")
+    implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
     implementation("org.spongepowered:configurate-yaml:4.1.2")
-
-    implementation("net.kyori:adventure-serializer-configurate4:4.9.3")
 
     compileOnly("org.projectlombok:lombok:1.18.22")
     annotationProcessor("org.projectlombok:lombok:1.18.22")
 }
 
 tasks.withType<ShadowJar> {
-    relocate("net.kyori:adventure-platform-bungeecord", "dev.masa.masuite.libs.adventure-platform-bungeecord")
+    val prefix = "dev.masa.masuite.libs."
+    relocate("org.spongepowered", prefix + "spongepowered")
+    relocate("net.kyori:adventure-text-minimessage", prefix + "kyori:adventure-text-minimessage")
+    relocate("net.kyori:adventure-platform-bungeecord", prefix + "adventure-platform-bungeecord")
+    archiveClassifier.set("")
 }
 
 tasks.processResources {
