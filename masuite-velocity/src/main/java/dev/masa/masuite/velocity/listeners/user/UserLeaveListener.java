@@ -12,11 +12,18 @@ public record UserLeaveListener(MaSuiteVelocity plugin) {
 
     @Subscribe
     public void onLeave(DisconnectEvent event) {
+        // Save last login
         this.plugin.userService().user(event.getPlayer().getUniqueId()).ifPresent(user -> {
             user.lastLogin(new Date());
             this.plugin.userService().createOrUpdateUser(user);
         });
 
+        // Cancel request if player leaves
+        var request = this.plugin().teleportRequestService().request(event.getPlayer().getUniqueId());
+        request.ifPresent(velocityTeleportRequest -> this.plugin().teleportRequestService().denyRequest(velocityTeleportRequest));
+
+
+        // Remove player name from tab completions from all servers that are online
         for (var server : this.plugin().proxy().getAllServers()) {
             server.ping().whenComplete((serverPing, throwable) -> {
                 if (throwable != null) return;
