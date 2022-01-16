@@ -84,7 +84,7 @@ public record TeleportMessageListener(
 
     }
 
-    @Override
+    @EventHandler
     public void teleportToLocation(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
@@ -98,7 +98,7 @@ public record TeleportMessageListener(
         throw new UnsupportedOperationException("Not implemented");
     }
 
-    @Override
+    @EventHandler
     public void teleportPlayerToLocation(PluginMessageEvent event) throws IOException {
         if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
             return;
@@ -110,6 +110,20 @@ public record TeleportMessageListener(
             return;
         }
 
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @EventHandler
+    public void teleportAll(PluginMessageEvent event) throws IOException {
+        if (!event.getTag().equals(MaSuiteMessage.MAIN.channel)) {
+            return;
+        }
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.TELEPORT_ALL_TO_PLAYER.channel)) {
+            return;
+        }
         throw new UnsupportedOperationException("Not implemented");
     }
 }

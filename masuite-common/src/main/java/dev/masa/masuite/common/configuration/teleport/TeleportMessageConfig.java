@@ -37,6 +37,10 @@ public class TeleportMessageConfig {
     @Setting("teleported-player-to-location")
     private String teleportedPlayerToLocation = "<dark_green>><green>> <dark_gray>+ <gray>Teleported <white><username></white> to <white><location-world></white>, <white><location-x></white>, <white><location-y></white>, <white><location-z></white>.";
 
+    @Getter
+    @Setting("teleported-all-to-player")
+    private String teleportAllToPlayer = "<dark_green>><green>> <dark_gray>+ <gray>Teleported all players to <white><username></white>.";
+
     @ConfigSerializable
     public static class SenderMessageConfig {
 

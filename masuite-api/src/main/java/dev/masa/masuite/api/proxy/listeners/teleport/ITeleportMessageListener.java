@@ -8,5 +8,6 @@ public interface ITeleportMessageListener<E> {
     void teleportPlayerToPlayer(E event) throws IOException;
     void teleportToLocation(E event) throws IOException;
     void teleportPlayerToLocation(E event) throws IOException;
+    void teleportAll(E event) throws IOException;
 
 }

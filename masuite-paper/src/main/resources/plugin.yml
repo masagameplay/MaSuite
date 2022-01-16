@@ -46,6 +46,7 @@ permissions:
   masuite.teleport.staff:
     description: Staff permissions for Teleport
     children:
+      masuite.teleport.all: true
       masuite.teleport.player: true
       masuite.teleport.player.others: true
       masuite.teleport.player.here: true

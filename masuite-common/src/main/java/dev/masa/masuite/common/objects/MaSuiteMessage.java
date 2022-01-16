@@ -32,6 +32,7 @@ public enum MaSuiteMessage {
     // Teleportation
     TELEPORT_TO_LOCATION("masuite:teleport:location"),
     TELEPORT_TO_PLAYER("masuite:teleport:player"),
+    TELEPORT_ALL_TO_PLAYER("masuite:teleport:all"),
     TELEPORT_PLAYER_TO_PLAYER("masuite:teleport:player:other"),
     TELEPORT_PLAYER_TO_LOCATION("masuite:teleport:location:other"),
 

@@ -134,5 +134,35 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         });
     }
 
+    @Subscribe
+    public void teleportAll(PluginMessageEvent event) throws IOException {
+        if (!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.TELEPORT_ALL_TO_PLAYER.channel)) {
+            return;
+        }
+        Player player = (Player) event.getTarget();
+        String name = in.readUTF();
+
+        Optional<Player> target = this.plugin.proxy().getPlayer(name);
+
+        if (target.isEmpty()) {
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
+            return;
+        }
+
+        for(var onlinePlayer : this.plugin.proxy().getAllPlayers()) {
+            if(onlinePlayer.getUsername().equals(target.get().getUsername())) {
+                continue;
+            }
+            this.plugin.teleportationService().teleportPlayerToPlayer(onlinePlayer, target.get(), (done) -> {});
+        }
+
+        MessageService.sendMessage(player, this.plugin.messages().teleports().teleportAllToPlayer(), List.of(Template.of("username", target.get().getUsername())));
+
+    }
+
 
 }

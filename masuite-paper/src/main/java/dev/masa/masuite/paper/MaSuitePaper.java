@@ -8,6 +8,7 @@ import dev.masa.masuite.paper.commands.home.DeleteHomeCommand;
 import dev.masa.masuite.paper.commands.home.ListHomeCommand;
 import dev.masa.masuite.paper.commands.home.SetHomeCommand;
 import dev.masa.masuite.paper.commands.home.TeleportHomeCommand;
+import dev.masa.masuite.paper.commands.teleport.TeleportAllCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportHereCommand;
 import dev.masa.masuite.paper.commands.teleport.TeleportRequestCommand;
@@ -61,6 +62,7 @@ public final class MaSuitePaper extends JavaPlugin {
 
         this.manager.registerCommand(new TeleportCommand());
         this.manager.registerCommand(new TeleportHereCommand());
+        this.manager.registerCommand(new TeleportAllCommand());
         this.manager.registerCommand(new TeleportRequestCommand());
 
         this.manager.getCommandConditions().addCondition("cooldown", c -> {
