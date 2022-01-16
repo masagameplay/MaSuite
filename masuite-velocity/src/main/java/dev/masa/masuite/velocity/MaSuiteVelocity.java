@@ -9,16 +9,14 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import dev.masa.masuite.common.configuration.MaSuiteConfig;
 import dev.masa.masuite.common.configuration.MessagesConfig;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
-import dev.masa.masuite.common.services.DatabaseService;
-import dev.masa.masuite.common.services.HomeService;
-import dev.masa.masuite.common.services.UserService;
-import dev.masa.masuite.common.services.WarpService;
+import dev.masa.masuite.common.services.*;
 import dev.masa.masuite.velocity.listeners.home.DeleteHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.ListHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.SetHomeMessageListener;
 import dev.masa.masuite.velocity.listeners.home.TeleportHomeMessageListener;
+import dev.masa.masuite.velocity.listeners.teleport.SpawnMessageListener;
 import dev.masa.masuite.velocity.listeners.teleport.TeleportMessageListener;
-import dev.masa.masuite.velocity.listeners.teleport.TeleportRequestListener;
+import dev.masa.masuite.velocity.listeners.teleport.TeleportRequestMessageListener;
 import dev.masa.masuite.velocity.listeners.user.UserLeaveListener;
 import dev.masa.masuite.velocity.listeners.user.UserLoginListener;
 import dev.masa.masuite.velocity.listeners.warp.DeleteWarpMessageListener;
@@ -72,6 +70,9 @@ public class MaSuiteVelocity  {
     private TeleportRequestService teleportRequestService;
 
     @Getter
+    private SpawnService spawnService;
+
+    @Getter
     private DatabaseService databaseService;
 
     @Getter
@@ -99,6 +100,8 @@ public class MaSuiteVelocity  {
         this.userService = new UserService(databaseService);
         this.homeService = new HomeService(databaseService);
         this.warpService = new WarpService(databaseService);
+        this.spawnService = new SpawnService(databaseService);
+
         this.teleportationService = new TeleportationService(this);
         this.teleportRequestService = new TeleportRequestService(this);
 
@@ -116,7 +119,9 @@ public class MaSuiteVelocity  {
         this.proxy.getEventManager().register(this, new ListWarpMessageListener(this));
 
         this.proxy.getEventManager().register(this, new TeleportMessageListener(this));
-        this.proxy.getEventManager().register(this, new TeleportRequestListener(this));
+        this.proxy.getEventManager().register(this, new TeleportRequestMessageListener(this));
+
+        this.proxy.getEventManager().register(this, new SpawnMessageListener(this));
 
         this.proxy().getChannelRegistrar().register(MASUITE_MAIN_CHANNEL);
 

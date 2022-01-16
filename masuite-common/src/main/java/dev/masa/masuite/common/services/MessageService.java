@@ -2,6 +2,7 @@ package dev.masa.masuite.common.services;
 
 import dev.masa.masuite.api.services.IMessageService;
 import dev.masa.masuite.common.models.home.Home;
+import dev.masa.masuite.common.models.teleport.Spawn;
 import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.models.warp.Warp;
 import dev.masa.masuite.common.objects.Location;
@@ -29,6 +30,12 @@ public class MessageService implements IMessageService {
         public static List<Template> homeTemplate(Home home) {
             var templates = new ArrayList<>(locationTemplate(home.location()));
             templates.add(Template.of("home-name", home.name()));
+            return templates;
+        }
+
+        public static List<Template> spawnTemplate(Spawn spawn) {
+            var templates = new ArrayList<>(locationTemplate(spawn.location()));
+            templates.add(Template.of("spawn-type", String.valueOf(spawn.isDefaultSpawn())));
             return templates;
         }
 
