@@ -8,10 +8,13 @@ import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
+import net.kyori.adventure.text.minimessage.Template;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
@@ -38,8 +41,9 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         }
 
         this.plugin.teleportationService().teleportPlayerToPlayer(player, target.get(), (done) -> {
-            // TODO: Send message to player
-            this.plugin.logger.info(player.getUsername() + " teleported to " + target.get().getUsername());
+            if (done) {
+                MessageService.sendMessage(player, this.plugin.messages().teleports().teleportedToPlayer(), List.of(Template.of("username", target.get().getUsername())));
+            }
         });
     }
 
@@ -70,8 +74,12 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         }
 
         this.plugin.teleportationService().teleportPlayerToPlayer(target.get(), secondTarget.get(), (done) -> {
-            // TODO: Send message to executor
-            this.plugin.logger.info(player.getUsername() + " teleported to " + target.get().getUsername());
+            if (done) {
+                MessageService.sendMessage(player, this.plugin.messages().teleports().teleportedPlayerToPlayer(), List.of(
+                        Template.of("first-player", target.get().getUsername()),
+                        Template.of("second-player", secondTarget.get().getUsername())
+                ));
+            }
         });
     }
 
@@ -89,8 +97,9 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         Location location = new Location().deserialize(in.readUTF());
 
         this.plugin.teleportationService().teleportPlayerToLocation(player, location, (done) -> {
-            // TODO: Send message to player
-            this.plugin.logger.info(player.getUsername() + " teleported to " + location.serialize());
+            if (done) {
+                MessageService.sendMessage(player, this.plugin.messages().teleports().teleportedToLocation(), MessageService.Templates.locationTemplate(location));
+            }
         });
     }
 
@@ -117,8 +126,11 @@ public record TeleportMessageListener(MaSuiteVelocity plugin) implements ITelepo
         location.server(player.getCurrentServer().get().getServerInfo().getName());
 
         this.plugin.teleportationService().teleportPlayerToLocation(target.get(), location, (done) -> {
-            // TODO: Send message to executor
-            this.plugin.logger.info(player.getUsername() + " teleported to " + location.serialize());
+            if (done) {
+                var template = new ArrayList<>(MessageService.Templates.locationTemplate(location));
+                template.add(Template.of("username", target.get().getUsername()));
+                MessageService.sendMessage(player, this.plugin.messages().teleports().teleportedPlayerToLocation(), template);
+            }
         });
     }
 

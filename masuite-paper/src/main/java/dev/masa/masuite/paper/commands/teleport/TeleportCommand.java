@@ -23,7 +23,7 @@ public class TeleportCommand extends BaseCommand {
     @CommandPermission("masuite.teleport.player.others")
     @Description("Teleport player to player")
     @CommandCompletion("@masuite_players @masuite_players")
-    public void teleportPlayerToPlayer(Player player, @Single String target, @Single String secondPlayer) {
+    public void teleportPlayerToPlayer(Player player, String target, @Single String secondPlayer) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.TELEPORT_PLAYER_TO_PLAYER, target, secondPlayer);
         bpm.send();
     }
@@ -32,7 +32,7 @@ public class TeleportCommand extends BaseCommand {
     @CommandPermission("masuite.teleport.location")
     @Description("Teleport to location")
     @CommandCompletion("@worlds")
-    public void teleportToLocation(Player player, @Single String world, double x, double y, double z) {
+    public void teleportToLocation(Player player, String world, double x, double y, double z) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.TELEPORT_TO_LOCATION, new Location(x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch(), world).serialize());
         bpm.send();
     }
@@ -49,7 +49,7 @@ public class TeleportCommand extends BaseCommand {
     @CommandPermission("masuite.teleport.location.others")
     @Description("Teleport to location")
     @CommandCompletion("@masuite_players @worlds")
-    public void teleportPlayerToLocation(Player player, @Single String target, @Single String world, double x, double y, double z) {
+    public void teleportPlayerToLocation(Player player, String target, String world, double x, double y, double z) {
         BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.TELEPORT_PLAYER_TO_LOCATION, target, new Location(x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch(), world).serialize());
         bpm.send();
     }

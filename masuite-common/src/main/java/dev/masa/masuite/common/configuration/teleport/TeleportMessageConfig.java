@@ -21,6 +21,21 @@ public class TeleportMessageConfig {
     @Setting("teleportation-request-lock")
     private TeleportationLockMessageConfig teleportationRequestLock = new TeleportationLockMessageConfig();
 
+    @Getter
+    @Setting("teleported-to-player")
+    private String teleportedToPlayer = "<dark_green>><green>> <dark_gray>+ <gray>Teleported to <white><username></white>.";
+
+    @Getter
+    @Setting("teleported-player-to-player")
+    private String teleportedPlayerToPlayer = "<dark_green>><green>> <dark_gray>+ <gray>Teleported <white><first-player></white> to <white><second-player></white>.";
+
+    @Getter
+    @Setting("teleported-to-location")
+    private String teleportedToLocation = "<dark_green>><green>> <dark_gray>+ <gray>Teleported to <white><location-world></white>, <white><location-x></white>, <white><location-y></white>, <white><location-z></white>.";
+
+    @Getter
+    @Setting("teleported-player-to-location")
+    private String teleportedPlayerToLocation = "<dark_green>><green>> <dark_gray>+ <gray>Teleported <white><username></white> to <white><location-world></white>, <white><location-x></white>, <white><location-y></white>, <white><location-z></white>.";
 
     @ConfigSerializable
     public static class SenderMessageConfig {
