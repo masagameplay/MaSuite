@@ -1,7 +1,7 @@
 package dev.masa.masuite.common.services;
 
 import dev.masa.masuite.api.services.ITeleportRequestService;
-import dev.masa.masuite.common.models.AbstractTeleportRequest;
+import dev.masa.masuite.common.objects.AbstractTeleportRequest;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 

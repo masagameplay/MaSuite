@@ -6,7 +6,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.table.TableUtils;
 import dev.masa.masuite.api.services.IWarpService;
-import dev.masa.masuite.common.models.Warp;
+import dev.masa.masuite.common.models.warp.Warp;
 import lombok.SneakyThrows;
 
 import java.sql.SQLException;
