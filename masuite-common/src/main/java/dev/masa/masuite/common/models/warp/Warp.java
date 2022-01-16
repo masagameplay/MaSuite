@@ -1,8 +1,8 @@
-package dev.masa.masuite.common.models;
+package dev.masa.masuite.common.models.warp;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
-import dev.masa.masuite.api.models.home.IHome;
+import dev.masa.masuite.api.models.warp.IWarp;
 import dev.masa.masuite.common.objects.Location;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,16 +16,19 @@ import java.util.UUID;
 @NoArgsConstructor()
 @Data()
 @Entity()
-@Table(name = "masuite_homes")
-public class Home implements IHome {
+@Table(name = "masuite_warps")
+public class Warp implements IWarp {
 
     @DatabaseField(dataType = DataType.UUID, generatedId = true, columnName = "uuid")
     private UUID uniqueId;
     @DatabaseField
     private String name;
 
-    @DatabaseField(dataType = DataType.UUID)
-    private UUID owner;
+    @DatabaseField(columnName = "public")
+    private boolean isPublic;
+
+    @DatabaseField
+    private boolean global;
 
     @DatabaseField
     private Double x;
@@ -48,10 +51,21 @@ public class Home implements IHome {
     @DatabaseField
     private String world;
 
-    public Home(String name, UUID owner, Location location) {
+    public Warp(String name, Location location, boolean isPublic, boolean isGlobal) {
         this.name = name;
-        this.owner = owner;
+        this.isPublic = isPublic;
+        this.global = isGlobal;
         this.location(location);
+    }
+
+    @Override
+    public boolean isPublic() {
+        return this.isPublic;
+    }
+
+    @Override
+    public boolean isGlobal() {
+        return this.global;
     }
 
     public Location location() {

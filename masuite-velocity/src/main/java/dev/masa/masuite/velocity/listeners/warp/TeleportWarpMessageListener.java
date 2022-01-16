@@ -4,7 +4,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.proxy.listeners.warp.ITeleportWarpMessageListener;
-import dev.masa.masuite.common.models.Warp;
+import dev.masa.masuite.common.models.warp.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;

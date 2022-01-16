@@ -1,7 +1,7 @@
 package dev.masa.masuite.waterfall.listeners.warp;
 
 import dev.masa.masuite.api.proxy.listeners.warp.IListWarpMessageListener;
-import dev.masa.masuite.common.models.Warp;
+import dev.masa.masuite.common.models.warp.Warp;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
