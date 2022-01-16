@@ -2,38 +2,93 @@ package dev.masa.masuite.velocity.listeners.user;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
+import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+import dev.masa.masuite.common.models.teleport.Spawn;
 import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public record UserLoginListener(MaSuiteVelocity plugin) {
 
+    // Budget solution to get spawn listeners to work, but it works so ¯\_(ツ)_/¯
+    private static final ConcurrentHashMap<UUID, Boolean> hasPlayedBefore = new ConcurrentHashMap<>();
+
+    /**
+     * Create a new {@link User} if needed. This will also set value to {@link #hasPlayedBefore} map,
+     * and it will be removed when {@link #onNetworkConnect} has been called.
+     *
+     * Everything this does:
+     * - Creates a new user if needed
+     * - Checks if user has been played before or not and adds the information to {@link #hasPlayedBefore}
+     * - Sends user info to all online servers with {@link #sendPlayerInfo} for tab complete.
+     *
+     * @param event LoginEvent
+     */
     @Subscribe
     public void onJoin(LoginEvent event) {
         if (!event.getResult().isAllowed()) return;
         Optional<User> optionalUser = this.plugin.userService().user(event.getPlayer().getUniqueId());
+
         if (optionalUser.isPresent()) {
-            this.sendPlayerInfo(event.getPlayer());
-            return;
+            hasPlayedBefore.put(event.getPlayer().getUniqueId(), true);
+        } else {
+            User user = new User();
+            user.uniqueId(event.getPlayer().getUniqueId());
+            user.username(event.getPlayer().getUsername());
+            user.firstLogin(new Date());
+            user.lastLogin(new Date());
+            this.plugin.userService().createOrUpdateUser(user);
+            hasPlayedBefore.put(event.getPlayer().getUniqueId(), false);
         }
-        User user = new User();
-        user.uniqueId(event.getPlayer().getUniqueId());
-        user.username(event.getPlayer().getUsername());
-        user.firstLogin(new Date());
-        user.lastLogin(new Date());
-        this.plugin.userService().createOrUpdateUser(user);
 
         this.sendPlayerInfo(event.getPlayer());
+
+    }
+
+    /**
+     * Do stuff here that requires player's current server (for example spawns) to work
+     *
+     * @param event {@link ServerPostConnectEvent}
+     */
+    @Subscribe
+    public void onNetworkConnect(ServerPostConnectEvent event) {
+        // If the player has previous server, skip it
+        if (event.getPreviousServer() != null) {
+            return;
+        }
+
+        var playedBefore = hasPlayedBefore.get(event.getPlayer().getUniqueId());
+        hasPlayedBefore.remove(event.getPlayer().getUniqueId());
+
+        if (playedBefore == null) {
+            this.plugin.logger.warn("For some reason player " + event.getPlayer().getUsername() + " does not have set played before field. Skipping spawn logic...");
+            return;
+        }
+
+        // If config has enabled spawn on join and player has played before, teleport to default spawn
+        if (this.plugin.config().teleports().spawnOnJoin() && playedBefore) {
+            teleportToSpawn(event.getPlayer(), true, event.getPlayer().getCurrentServer().get().getServer());
+        }
+
+        // If config has enabled first spawn teleporting and player has not played before, teleport to first spawn
+        if (this.plugin.config().teleports().enableFirstSpawn() && !playedBefore) {
+            teleportToSpawn(event.getPlayer(), false, event.getPlayer().getCurrentServer().get().getServer());
+        }
     }
 
     /**
      * Send the player with a little delay to all servers. This will be used in tab completions
+     *
      * @param player - player to send
      */
     private void sendPlayerInfo(Player player) {
@@ -46,6 +101,38 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
                 });
             }
         }).delay(1, TimeUnit.SECONDS).schedule();
+    }
+
+    /**
+     * Teleports {@link Player} to spawn by given spawn type.
+     * <p>
+     * If the player has permission "masuite.teleport.bypass.spawn-on-join", the force teleportation will be skipped.
+     *
+     * @param player       player to teleport
+     * @param defaultSpawn should the player be teleported to default spawn or first time spawn
+     */
+    private void teleportToSpawn(Player player, boolean defaultSpawn, RegisteredServer server) {
+        if (player.hasPermission("masuite.teleport.bypass.spawn-on-join")) {
+            return;
+        }
+
+        Optional<Spawn> spawn;
+        if (this.plugin.config().teleports().spawnType().equals("global")) {
+            spawn = this.plugin.spawnService().spawn(defaultSpawn);
+        } else {
+            spawn = this.plugin.spawnService().spawn(server.getServerInfo().getName(), true);
+        }
+
+        spawn.ifPresent(value -> this.plugin.teleportationService().teleportPlayerToLocation(player, value.location(), done ->
+                MessageService.sendMessage(player,
+                        this.plugin.messages().teleports().spawn().teleported(),
+                        MessageService.Templates.spawnTemplate(value)
+                )
+        ));
+
+        if (spawn.isEmpty()) {
+            this.plugin.logger.warn("Spawn not found but it spawn on (first) join has been enabled.");
+        }
     }
 
 }

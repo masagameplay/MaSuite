@@ -54,6 +54,29 @@ public class SpawnService implements ISpawnService<Spawn> {
     }
 
     @Override
+    public Optional<Spawn> spawn(boolean defaultSpawn) {
+        CompletableFuture<Optional<Spawn>> query = CompletableFuture.supplyAsync(() -> {
+            try {
+                QueryBuilder<Spawn, UUID> queryBuilder = this.spawnDao.queryBuilder()
+                        .where().in("defaultSpawn", defaultSpawn)
+                        .queryBuilder();
+                return Optional.ofNullable(spawnDao.queryForFirst(queryBuilder.prepare()));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return Optional.empty();
+        });
+
+        try {
+            return query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public void createOrUpdateSpawn(Spawn spawn, BiConsumer<Boolean, Boolean> done) {
         CompletableFuture.runAsync(() -> {
             try {

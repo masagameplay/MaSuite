@@ -1,5 +1,6 @@
 package dev.masa.masuite.common.configuration;
 
+import dev.masa.masuite.common.configuration.teleport.TeleportSettingsConfig;
 import dev.masa.masuite.common.configuration.warp.WarpSettingsConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -24,6 +25,11 @@ public class MaSuiteConfig {
     @Comment("Warps settings")
     @Setting("warps")
     private WarpSettingsConfig warps = new WarpSettingsConfig();
+
+    @Getter
+    @Comment("Teleports settings")
+    @Setting("teleports")
+    private TeleportSettingsConfig teleports = new TeleportSettingsConfig();
 
     @ConfigSerializable
     static public class DatabaseConfig {

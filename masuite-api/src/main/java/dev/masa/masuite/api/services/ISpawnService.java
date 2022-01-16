@@ -21,6 +21,13 @@ public interface ISpawnService<T extends ISpawn> {
     Optional<T> spawn(String serverName, boolean defaultSpawn);
 
     /**
+     * Get first spawn from database with given type. Useful for retrieving global spawn
+     * @param defaultSpawn - is spawn default or first time
+     * @return optional {@link T}
+     */
+    Optional<T> spawn(boolean defaultSpawn);
+
+    /**
      * Create or update {@link T}
      * @param spawn spawn to create or update
      * @param done callback after home has been created or updated (first = ok?, second = isCreated?)
