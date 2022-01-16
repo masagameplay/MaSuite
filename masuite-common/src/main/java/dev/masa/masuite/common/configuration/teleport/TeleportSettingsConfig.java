@@ -18,8 +18,8 @@ public class TeleportSettingsConfig {
     private Integer keepTeleportRequestAlive = 20;
 
     @Getter
-    @Setting("enable-first-spawn")
-    private Boolean enableFirstSpawn = true;
+    @Setting("spawn-on-first-join")
+    private Boolean spawnOnFirstJoin = true;
 
     @Getter
     @Setting("spawn-type")

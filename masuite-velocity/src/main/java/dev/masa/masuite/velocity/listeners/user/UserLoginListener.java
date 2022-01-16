@@ -26,7 +26,7 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
     /**
      * Create a new {@link User} if needed. This will also set value to {@link #hasPlayedBefore} map,
      * and it will be removed when {@link #onNetworkConnect} has been called.
-     *
+     * <p>
      * Everything this does:
      * - Creates a new user if needed
      * - Checks if user has been played before or not and adds the information to {@link #hasPlayedBefore}
@@ -57,6 +57,14 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
 
     /**
      * Do stuff here that requires player's current server (for example spawns) to work
+     * <p>
+     * Everything this does:
+     * - Check if player has previous server (not a network join), if so instantly returns
+     * - Checks if {@link #hasPlayedBefore} contains required info, if not instantly returns
+     * - Checks if player has played before and {@link dev.masa.masuite.common.configuration.teleport.TeleportSettingsConfig#spawnOnJoin()} is enabled,
+     * if so teleports to default spawn
+     * - Checks if player has not played before and {@link dev.masa.masuite.common.configuration.teleport.TeleportSettingsConfig#spawnOnFirstJoin()} is enabled,
+     * if so teleports to first time spawn
      *
      * @param event {@link ServerPostConnectEvent}
      */
@@ -81,7 +89,7 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
         }
 
         // If config has enabled first spawn teleporting and player has not played before, teleport to first spawn
-        if (this.plugin.config().teleports().enableFirstSpawn() && !playedBefore) {
+        if (this.plugin.config().teleports().spawnOnFirstJoin() && !playedBefore) {
             teleportToSpawn(event.getPlayer(), false, event.getPlayer().getCurrentServer().get().getServer());
         }
     }
