@@ -3,7 +3,7 @@ package dev.masa.masuite.velocity.listeners.user;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
-import dev.masa.masuite.common.models.User;
+import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
 import dev.masa.masuite.velocity.utils.VelocityPluginMessage;

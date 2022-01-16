@@ -1,10 +1,9 @@
 package dev.masa.masuite.velocity.objects;
 
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import dev.masa.masuite.api.objects.TeleportRequestType;
-import dev.masa.masuite.common.models.AbstractTeleportRequest;
+import dev.masa.masuite.common.objects.AbstractTeleportRequest;
 
 import java.util.Optional;
 import java.util.UUID;

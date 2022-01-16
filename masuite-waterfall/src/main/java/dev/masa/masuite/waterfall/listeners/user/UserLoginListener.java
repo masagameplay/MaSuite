@@ -1,6 +1,6 @@
 package dev.masa.masuite.waterfall.listeners.user;
 
-import dev.masa.masuite.common.models.User;
+import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
 import dev.masa.masuite.waterfall.utils.BungeePluginMessage;

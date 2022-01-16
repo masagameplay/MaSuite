@@ -1,4 +1,4 @@
-package dev.masa.masuite.common.models;
+package dev.masa.masuite.common.objects;
 
 import dev.masa.masuite.api.objects.ITeleportRequest;
 import dev.masa.masuite.api.objects.TeleportRequestType;

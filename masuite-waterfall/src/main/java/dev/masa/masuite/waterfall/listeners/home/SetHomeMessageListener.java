@@ -1,8 +1,8 @@
 package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.api.proxy.listeners.home.ISetHomeMessageListener;
-import dev.masa.masuite.common.models.Home;
-import dev.masa.masuite.common.models.User;
+import dev.masa.masuite.common.models.home.Home;
+import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
