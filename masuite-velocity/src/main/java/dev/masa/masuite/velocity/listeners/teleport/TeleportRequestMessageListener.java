@@ -8,7 +8,6 @@ import dev.masa.masuite.api.proxy.listeners.teleport.ITeleportRequestListener;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
-import net.kyori.adventure.text.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public record TeleportRequestListener(MaSuiteVelocity plugin) implements ITeleportRequestListener<PluginMessageEvent> {
+public record TeleportRequestMessageListener(MaSuiteVelocity plugin) implements ITeleportRequestListener<PluginMessageEvent> {
 
     @Subscribe
     public void createRequest(PluginMessageEvent event) throws IOException {

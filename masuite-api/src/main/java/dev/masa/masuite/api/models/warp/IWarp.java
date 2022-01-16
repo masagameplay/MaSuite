@@ -11,21 +11,21 @@ public interface IWarp {
     /**
      * Unique id of the warp
      *
-     * @return unique id of the home
+     * @return unique id of the warp
      */
     UUID uniqueId();
 
     /**
-     * Name of the home point
+     * Name of the warp point
      *
-     * @return name of the home
+     * @return name of the warp
      */
     String name();
 
     /**
-     * Location of the home point
+     * Location of the warp point
      *
-     * @return location of the home
+     * @return location of the warp
      */
     ILocation location();
 

@@ -18,6 +18,10 @@ public class TeleportMessageConfig {
     private ReceiverMessageConfig receiver = new ReceiverMessageConfig();
 
     @Getter
+    @Setting("spawn")
+    private SpawnMessageConfig spawn = new SpawnMessageConfig();
+
+    @Getter
     @Setting("teleportation-request-lock")
     private TeleportationLockMessageConfig teleportationRequestLock = new TeleportationLockMessageConfig();
 
@@ -128,6 +132,30 @@ public class TeleportMessageConfig {
         @Getter
         @Setting("off")
         private String off = "<dark_red>><red>> <dark_gray>- <gray>You have <white>disabled <gray>teleportation lock.";
+    }
+
+    @ConfigSerializable
+    public static class SpawnMessageConfig {
+
+        @Getter
+        @Setting("teleported")
+        private String teleported = "<dark_green>><green>> <dark_gray>+ <gray>You have been teleported to the spawn (<white><location-x></white>, <white><location-y></white>, <white><location-z></white>).";
+
+        @Getter
+        @Setting("created")
+        private String created = "<dark_green>><green>> <dark_gray>+ <gray>You have created a new spawn point at <white><location-server></white>, <white><location-world></white>, <white><location-x></white>, <white><location-y></white>, <white><location-z></white>.";
+
+        @Getter
+        @Setting("updated")
+        private String updated = "<dark_green>><green>> <dark_gray>+ <gray>You have updated an existing spawn point to <white><location-server></white>, <white><location-world></white>, <white><location-x></white>, <white><location-y></white>, <white><location-z></white>.";
+
+        @Getter
+        @Setting("deleted")
+        private String deleted = "<dark_red>><red>> <dark_gray>- <gray>You have deleted a spawn point from server <white><location-server></white>.";
+
+        @Getter
+        @Setting("spawn-not-found")
+        private String spawnNotFound = "<dark_red>><red>> <dark_gray>- <gray>Could not find a spawn point.";
     }
 
 }

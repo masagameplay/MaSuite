@@ -36,6 +36,10 @@ public enum MaSuiteMessage {
     TELEPORT_PLAYER_TO_PLAYER("masuite:teleport:player:other"),
     TELEPORT_PLAYER_TO_LOCATION("masuite:teleport:location:other"),
 
+    SPAWN_CREATE("masuite:spawn:create"),
+    SPAWN_DELETE("masuite:spawn:delete"),
+    SPAWN_TELEPORT("masuite:spawn:teleport"),
+
     TELEPORT_REQUEST_CREATE("masuite:teleport:request:create"),
     TELEPORT_REQUEST_ACCEPT("masuite:teleport:request:accept"),
     TELEPORT_REQUEST_DENY("masuite:teleport:request:deny"),
