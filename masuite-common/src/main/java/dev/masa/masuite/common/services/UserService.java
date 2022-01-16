@@ -5,7 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.table.TableUtils;
 import dev.masa.masuite.api.services.IUserService;
-import dev.masa.masuite.common.models.User;
+import dev.masa.masuite.common.models.user.User;
 import lombok.SneakyThrows;
 
 import java.sql.SQLException;

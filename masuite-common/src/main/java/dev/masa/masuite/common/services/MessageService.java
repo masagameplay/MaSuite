@@ -1,10 +1,9 @@
 package dev.masa.masuite.common.services;
 
-import dev.masa.masuite.api.objects.ITeleportRequest;
 import dev.masa.masuite.api.services.IMessageService;
-import dev.masa.masuite.common.models.Home;
-import dev.masa.masuite.common.models.User;
-import dev.masa.masuite.common.models.Warp;
+import dev.masa.masuite.common.models.home.Home;
+import dev.masa.masuite.common.models.user.User;
+import dev.masa.masuite.common.models.warp.Warp;
 import dev.masa.masuite.common.objects.Location;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
