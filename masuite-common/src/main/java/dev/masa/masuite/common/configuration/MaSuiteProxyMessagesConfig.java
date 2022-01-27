@@ -14,7 +14,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 @ConfigSerializable
 @Accessors(fluent = true)
-public class MessagesConfig {
+public class MaSuiteProxyMessagesConfig {
 
     @Getter
     @Setting("player-not-online")
@@ -36,17 +36,17 @@ public class MessagesConfig {
     @Setting("teleports")
     private TeleportMessageConfig teleports = new TeleportMessageConfig();
 
-    private static final ObjectMapper<MessagesConfig> MAPPER;
+    private static final ObjectMapper<MaSuiteProxyMessagesConfig> MAPPER;
 
     static {
         try {
-            MAPPER = ObjectMapper.factory().get(MessagesConfig.class);
+            MAPPER = ObjectMapper.factory().get(MaSuiteProxyMessagesConfig.class);
         } catch (final SerializationException e) {
             throw new ExceptionInInitializerError(e);
         }
     }
 
-    public static MessagesConfig loadFrom(final ConfigurationNode node) throws SerializationException {
+    public static MaSuiteProxyMessagesConfig loadFrom(final ConfigurationNode node) throws SerializationException {
         return MAPPER.load(node);
     }
 

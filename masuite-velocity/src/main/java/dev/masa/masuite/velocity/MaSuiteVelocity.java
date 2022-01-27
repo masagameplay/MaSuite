@@ -6,8 +6,8 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
-import dev.masa.masuite.common.configuration.MaSuiteConfig;
-import dev.masa.masuite.common.configuration.MessagesConfig;
+import dev.masa.masuite.common.configuration.MaSuiteProxyConfig;
+import dev.masa.masuite.common.configuration.MaSuiteProxyMessagesConfig;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.*;
 import dev.masa.masuite.velocity.listeners.home.DeleteHomeMessageListener;
@@ -76,10 +76,10 @@ public class MaSuiteVelocity  {
     private DatabaseService databaseService;
 
     @Getter
-    private MaSuiteConfig config;
+    private MaSuiteProxyConfig config;
 
     @Getter
-    private MessagesConfig messages;
+    private MaSuiteProxyMessagesConfig messages;
 
     public static MaSuiteVelocity MASUITE_INSTANCE;
 
@@ -140,7 +140,7 @@ public class MaSuiteVelocity  {
         CommentedConfigurationNode configNode;
         try {
             configNode = configLoader.load();
-            this.config = MaSuiteConfig.loadFrom(configNode);
+            this.config = MaSuiteProxyConfig.loadFrom(configNode);
             this.config.saveTo(configNode);
             configLoader.save(configNode);
         } catch (ConfigurateException e) {
@@ -157,7 +157,7 @@ public class MaSuiteVelocity  {
         CommentedConfigurationNode messagesNode;
         try {
             messagesNode = messagesLoader.load();
-            this.messages = MessagesConfig.loadFrom(messagesNode);
+            this.messages = MaSuiteProxyMessagesConfig.loadFrom(messagesNode);
             this.messages.saveTo(messagesNode);
             messagesLoader.save(messagesNode);
         } catch (ConfigurateException e) {

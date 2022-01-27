@@ -14,7 +14,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 @ConfigSerializable
 @Accessors(fluent = true)
-public class MaSuiteConfig {
+public class MaSuiteProxyConfig {
 
     @Getter
     @Comment("Database settings")
@@ -54,17 +54,17 @@ public class MaSuiteConfig {
         protected String databasePassword = "minecraft";
     }
 
-    private static final ObjectMapper<MaSuiteConfig> MAPPER;
+    private static final ObjectMapper<MaSuiteProxyConfig> MAPPER;
 
     static {
         try {
-            MAPPER = ObjectMapper.factory().get(MaSuiteConfig.class);
+            MAPPER = ObjectMapper.factory().get(MaSuiteProxyConfig.class);
         } catch (final SerializationException e) {
             throw new ExceptionInInitializerError(e);
         }
     }
 
-    public static MaSuiteConfig loadFrom(final ConfigurationNode node) throws SerializationException {
+    public static MaSuiteProxyConfig loadFrom(final ConfigurationNode node) throws SerializationException {
         return MAPPER.load(node);
     }
 
