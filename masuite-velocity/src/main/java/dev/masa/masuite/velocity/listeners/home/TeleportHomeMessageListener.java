@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.proxy.listeners.home.ITeleportHomeMessageListener;
 import dev.masa.masuite.common.models.home.Home;
-import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
@@ -13,7 +12,6 @@ import dev.masa.masuite.velocity.MaSuiteVelocity;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
@@ -33,7 +31,13 @@ public record TeleportHomeMessageListener(
 
         String name = in.readUTF();
 
-        this.plugin.homeService().home(player.getUniqueId(), name).ifPresentOrElse(home -> this.teleport(player, home), () -> MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound()));
+        this.plugin.homeService().home(player.getUniqueId(), name).thenAcceptAsync(home -> {
+            if (home.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound());
+                return;
+            }
+            this.teleport(player, home.get());
+        });
     }
 
     @Subscribe
@@ -48,16 +52,21 @@ public record TeleportHomeMessageListener(
         Player player = (Player) event.getTarget();
 
         String username = in.readUTF();
-        Optional<User> user = this.plugin.userService().user(username);
-
-        if (user.isEmpty()) {
-            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
-            return;
-        }
-
         String name = in.readUTF();
+        this.plugin.userService().user(username).thenAcceptAsync(user -> {
+            if (user.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
+                return;
+            }
 
-        this.plugin.homeService().home(user.get().uniqueId(), name).ifPresentOrElse(home -> this.teleport(player, home), () -> MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound()));
+            this.plugin.homeService().home(user.get().uniqueId(), name).thenAcceptAsync(home -> {
+                if (home.isEmpty()) {
+                    MessageService.sendMessage(player, this.plugin.messages().homes().homeNotFound());
+                    return;
+                }
+                this.teleport(player, home.get());
+            });
+        });
     }
 
     private void teleport(Player player, Home home) {

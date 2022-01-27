@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.proxy.listeners.home.IDeleteHomeMessageListener;
 import dev.masa.masuite.common.models.home.Home;
-import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
@@ -19,7 +18,8 @@ import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
-public record DeleteHomeMessageListener(MaSuiteVelocity plugin) implements IDeleteHomeMessageListener<PluginMessageEvent> {
+public record DeleteHomeMessageListener(
+        MaSuiteVelocity plugin) implements IDeleteHomeMessageListener<PluginMessageEvent> {
 
     @Subscribe
     public void deleteHome(PluginMessageEvent event) throws IOException {
@@ -34,10 +34,7 @@ public record DeleteHomeMessageListener(MaSuiteVelocity plugin) implements IDele
         Player player = (Player) event.getTarget();
         String name = in.readUTF();
 
-        Optional<Home> home = this.plugin.homeService().home(player.getUniqueId(), name);
-
-        this.delete(player, home);
-
+        this.plugin.homeService().home(player.getUniqueId(), name).thenAcceptAsync((home) -> this.delete(player, home));
     }
 
     @Subscribe
@@ -52,17 +49,18 @@ public record DeleteHomeMessageListener(MaSuiteVelocity plugin) implements IDele
 
         Player player = (Player) event.getTarget();
         String username = in.readUTF();
-        Optional<User> user = this.plugin.userService().user(username);
-
-        if (user.isEmpty()) {
-            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
-            return;
-        }
-
-        // Find & delete
         String name = in.readUTF();
-        Optional<Home> home = this.plugin.homeService().home(user.get().uniqueId(), name);
-        this.delete(player, home);
+
+        this.plugin.userService().user(username).thenAcceptAsync((user) -> {
+            if (user.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
+                return;
+            }
+            // Find & delete (seek and destroy)
+            this.plugin.homeService().home(user.get().uniqueId(), name).thenAcceptAsync((home -> this.delete(player, home)));
+        });
+
+
     }
 
     private void delete(Player player, Optional<Home> home) {
@@ -71,7 +69,7 @@ public record DeleteHomeMessageListener(MaSuiteVelocity plugin) implements IDele
             return;
         }
 
-        this.plugin.homeService().deleteHome(home.get(), done -> {
+        this.plugin.homeService().deleteHome(home.get()).thenAccept(done -> {
             if (done) {
                 MessageService.sendMessage(player, this.plugin.messages().homes().homeDeleted(), MessageService.Templates.homeTemplate(home.get()));
             } else {

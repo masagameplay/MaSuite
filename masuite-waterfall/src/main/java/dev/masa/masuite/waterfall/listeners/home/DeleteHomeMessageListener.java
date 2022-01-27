@@ -2,7 +2,6 @@ package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.api.proxy.listeners.home.IDeleteHomeMessageListener;
 import dev.masa.masuite.common.models.home.Home;
-import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
@@ -37,9 +36,7 @@ public record DeleteHomeMessageListener(MaSuiteWaterfall plugin) implements List
 
         String name = in.readUTF();
 
-        Optional<Home> home = this.plugin.homeService().home(player.getUniqueId(), name);
-
-        this.delete(player, home);
+        this.plugin.homeService().home(player.getUniqueId(), name).thenAcceptAsync((home) -> this.delete(player, home));
     }
 
     @EventHandler
@@ -60,19 +57,16 @@ public record DeleteHomeMessageListener(MaSuiteWaterfall plugin) implements List
 
         // Get targeted user
         String username = in.readUTF();
-        Optional<User> user = this.plugin.userService().user(username);
-
-        if (user.isEmpty()) {
-            MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
-            return;
-        }
-
-        // Find & delete
         String name = in.readUTF();
 
-        Optional<Home> home = this.plugin.homeService().home(user.get().uniqueId(), name);
-
-        this.delete(player, home);
+        this.plugin.userService().user(username).thenAcceptAsync((user) -> {
+            if (user.isEmpty()) {
+                MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
+                return;
+            }
+            // Find & delete (seek and destroy)
+            this.plugin.homeService().home(user.get().uniqueId(), name).thenAcceptAsync((home -> this.delete(player, home)));
+        });
 
     }
 
@@ -84,7 +78,7 @@ public record DeleteHomeMessageListener(MaSuiteWaterfall plugin) implements List
             return;
         }
 
-        this.plugin.homeService().deleteHome(home.get(), done -> {
+        this.plugin.homeService().deleteHome(home.get()).thenAccept(done -> {
             if (done) {
                 MessageService.sendMessage(audience, this.plugin.messages().homes().homeDeleted(), MessageService.Templates.homeTemplate(home.get()));
             } else {

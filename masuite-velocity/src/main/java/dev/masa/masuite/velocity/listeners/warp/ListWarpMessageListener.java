@@ -14,7 +14,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.List;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
@@ -36,16 +35,15 @@ public record ListWarpMessageListener(MaSuiteVelocity plugin) implements IListWa
         boolean serverPerm = in.readBoolean();
         boolean hiddenPerm = in.readBoolean();
 
-        List<Warp> warps = this.plugin.warpService().warps();
+        this.plugin.warpService().warps().thenAcceptAsync(warps -> {
+            Component message = MiniMessage.get().parse(this.plugin.messages().warps().globalListTitle());
 
-        Component message = MiniMessage.get().parse(this.plugin.messages().warps().globalListTitle());
+            // TODO: Fix listing
+            for (Warp warp : warps) {
+                message = message.append(MiniMessage.get().parse(this.plugin.messages().warps().warpListName(), MessageService.Templates.warpTemplate(warp))).append(MiniMessage.get().parse(this.plugin.messages().warps().warpListSplitter()));
+            }
 
-        // TODO: Fix listing
-        for (Warp warp : warps) {
-            message = message.append(MiniMessage.get().parse(this.plugin.messages().warps().warpListName(), MessageService.Templates.warpTemplate(warp))).append(MiniMessage.get().parse(this.plugin.messages().warps().warpListSplitter()));
-        }
-
-        executor.sendMessage(message);
-
+            executor.sendMessage(message);
+        });
     }
 }

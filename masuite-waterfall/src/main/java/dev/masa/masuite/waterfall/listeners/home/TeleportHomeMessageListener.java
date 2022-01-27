@@ -2,7 +2,6 @@ package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.api.proxy.listeners.home.ITeleportHomeMessageListener;
 import dev.masa.masuite.common.models.home.Home;
-import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.waterfall.MaSuiteWaterfall;
@@ -15,7 +14,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Optional;
 
 public record TeleportHomeMessageListener(
         MaSuiteWaterfall plugin) implements Listener, ITeleportHomeMessageListener<PluginMessageEvent> {
@@ -36,9 +34,14 @@ public record TeleportHomeMessageListener(
 
         String name = in.readUTF();
 
-        Optional<Home> home = this.plugin.homeService().home(player.getUniqueId(), name);
-
-        this.teleport(player, home);
+        Audience audience = this.plugin.adventure().player(player);
+        this.plugin.homeService().home(player.getUniqueId(), name).thenAcceptAsync(home -> {
+            if (home.isEmpty()) {
+                MessageService.sendMessage(audience, this.plugin.messages().homes().homeNotFound());
+                return;
+            }
+            this.teleport(player, home.get());
+        });
 
     }
 
@@ -60,31 +63,29 @@ public record TeleportHomeMessageListener(
 
         // Get targeted user
         String username = in.readUTF();
-        Optional<User> user = this.plugin.userService().user(username);
-
-        if (user.isEmpty()) {
-            MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
-            return;
-        }
-
-        // Search home & teleport
         String name = in.readUTF();
-        Optional<Home> home = this.plugin.homeService().home(user.get().uniqueId(), name);
+        this.plugin.userService().user(username).thenAcceptAsync(user -> {
+            if (user.isEmpty()) {
+                MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
+                return;
+            }
 
-        this.teleport(player, home);
+            this.plugin.homeService().home(user.get().uniqueId(), name).thenAcceptAsync(home -> {
+                if (home.isEmpty()) {
+                    MessageService.sendMessage(audience, this.plugin.messages().homes().homeNotFound());
+                    return;
+                }
+                this.teleport(player, home.get());
+            });
+        });
 
 
     }
 
-    private void teleport(ProxiedPlayer player, Optional<Home> home) {
+    private void teleport(ProxiedPlayer player, Home home) {
         Audience audience = this.plugin.adventure().player(player);
-        if (home.isEmpty()) {
-            MessageService.sendMessage(audience, this.plugin.messages().homes().homeNotFound());
-            return;
-        }
-
-        this.plugin.teleportationService().teleportPlayerToLocation(player, home.get().location(), done -> {
-            MessageService.sendMessage(audience, this.plugin.messages().homes().homeTeleported(), MessageService.Templates.homeTemplate(home.get()));
+        this.plugin.teleportationService().teleportPlayerToLocation(player, home.location(), done -> {
+            MessageService.sendMessage(audience, this.plugin.messages().homes().homeTeleported(), MessageService.Templates.homeTemplate(home));
         });
     }
 }

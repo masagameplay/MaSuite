@@ -16,7 +16,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.List;
 
 public record ListWarpMessageListener(MaSuiteWaterfall plugin) implements Listener, IListWarpMessageListener<PluginMessageEvent> {
 
@@ -38,18 +37,18 @@ public record ListWarpMessageListener(MaSuiteWaterfall plugin) implements Listen
         boolean serverPerm = in.readBoolean();
         boolean hiddenPerm = in.readBoolean();
 
-        List<Warp> warps = this.plugin.warpService().warps();
-
         Audience audience = this.plugin.adventure().player(player);
 
-        Component message = MiniMessage.get().parse(this.plugin.messages().warps().globalListTitle());
+        this.plugin.warpService().warps().thenAcceptAsync(warps -> {
+            Component message = MiniMessage.get().parse(this.plugin.messages().warps().globalListTitle());
 
-        // TODO: Fix listing
-        for (Warp warp : warps) {
-            message = message.append(MiniMessage.get().parse(this.plugin.messages().warps().warpListName(), MessageService.Templates.warpTemplate(warp))).append(MiniMessage.get().parse(this.plugin.messages().warps().warpListSplitter()));
-        }
+            // TODO: Fix listing
+            for (Warp warp : warps) {
+                message = message.append(MiniMessage.get().parse(this.plugin.messages().warps().warpListName(), MessageService.Templates.warpTemplate(warp))).append(MiniMessage.get().parse(this.plugin.messages().warps().warpListSplitter()));
+            }
 
-        audience.sendMessage(message);
+            audience.sendMessage(message);
+        });
 
     }
 }

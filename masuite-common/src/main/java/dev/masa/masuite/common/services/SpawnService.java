@@ -15,7 +15,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class SpawnService implements ISpawnService<Spawn> {
 
@@ -29,8 +28,9 @@ public class SpawnService implements ISpawnService<Spawn> {
     }
 
     @Override
-    public Optional<Spawn> spawn(String serverName, boolean defaultSpawn) {
-        CompletableFuture<Optional<Spawn>> query = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<Optional<Spawn>> spawn(String serverName, boolean defaultSpawn) {
+
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 SelectArg server = new SelectArg(serverName);
                 QueryBuilder<Spawn, UUID> queryBuilder = this.spawnDao.queryBuilder()
@@ -43,19 +43,11 @@ public class SpawnService implements ISpawnService<Spawn> {
             }
             return Optional.empty();
         });
-
-        try {
-            return query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 
     @Override
-    public Optional<Spawn> spawn(boolean defaultSpawn) {
-        CompletableFuture<Optional<Spawn>> query = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<Optional<Spawn>> spawn(boolean defaultSpawn) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 QueryBuilder<Spawn, UUID> queryBuilder = this.spawnDao.queryBuilder()
                         .where().in("defaultSpawn", defaultSpawn)
@@ -66,22 +58,12 @@ public class SpawnService implements ISpawnService<Spawn> {
             }
             return Optional.empty();
         });
-
-        try {
-            return query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 
     @Override
     public void createOrUpdateSpawn(Spawn spawn, BiConsumer<Boolean, Boolean> done) {
-        CompletableFuture.runAsync(() -> {
+        this.spawn(spawn.location().server(), spawn.isDefaultSpawn()).thenAcceptAsync((spawnQuery) -> {
             try {
-                // Search if spawn is present, then update or create
-                Optional<Spawn> spawnQuery = this.spawn(spawn.location().server(), spawn.isDefaultSpawn());
                 if (spawnQuery.isPresent()) {
                     spawnQuery.get().location(spawn.location());
                     this.spawnDao.update(spawnQuery.get());
@@ -98,14 +80,14 @@ public class SpawnService implements ISpawnService<Spawn> {
     }
 
     @Override
-    public void deleteSpawn(Spawn spawn, Consumer<Boolean> done) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Boolean> deleteSpawn(Spawn spawn) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 this.spawnDao.delete(spawn);
-                done.accept(true);
+                return true;
             } catch (SQLException ex) {
                 ex.printStackTrace();
-                done.accept(false);
+                return false;
             }
         });
     }

@@ -2,10 +2,9 @@ package dev.masa.masuite.api.services;
 
 import dev.masa.masuite.api.models.user.IUser;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * UserService handles data related to homes
@@ -20,7 +19,7 @@ public interface IUserService<T extends IUser> {
      * @param uniqueId unique id of the user
      * @return optional {@link T}
      */
-    Optional<T> user(UUID uniqueId);
+    CompletableFuture<Optional<T>> user(UUID uniqueId);
 
     /**
      * Get {@link T} by username
@@ -28,7 +27,7 @@ public interface IUserService<T extends IUser> {
      * @param username unique id of the user
      * @return optional {@link T}
      */
-    Optional<T> user(String username);
+    CompletableFuture<Optional<T>> user(String username);
 
     /**
      * Create or update new user

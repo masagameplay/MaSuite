@@ -11,7 +11,6 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public record UserLoginListener(MaSuiteWaterfall plugin) implements Listener {
@@ -19,37 +18,38 @@ public record UserLoginListener(MaSuiteWaterfall plugin) implements Listener {
     @EventHandler
     public void onLogin(LoginEvent event) {
         event.registerIntent(this.plugin.loader());
-        try {
-            Optional<User> optionalUser = this.plugin.userService().user(event.getConnection().getUniqueId());
-            if (optionalUser.isEmpty()) {
-                User user = new User();
-                user.uniqueId(event.getConnection().getUniqueId());
-                user.username(event.getConnection().getName());
-                user.firstLogin(new Date());
-                user.lastLogin(new Date());
-                this.plugin.userService().createOrUpdateUser(user);
-            }
 
-            this.plugin.loader().getProxy().getScheduler().schedule(this.plugin.loader(), () -> {
-                for (Map.Entry<String, ServerInfo> entry : this.plugin.loader().getProxy().getServers().entrySet()) {
-                    ServerInfo serverInfo = entry.getValue();
-                    serverInfo.ping((result, error) -> {
-                        if (error == null) {
-                            var bpm = new BungeePluginMessage(serverInfo,
-                                    MaSuiteMessage.ADD_USER,
-                                    event.getConnection().getName()
-                            );
-                            bpm.send();
-                        }
-                    });
+        this.plugin.userService().user(event.getConnection().getUniqueId()).thenAcceptAsync(optionalUser -> {
+            try {
+                if (optionalUser.isEmpty()) {
+                    User user = new User();
+                    user.uniqueId(event.getConnection().getUniqueId());
+                    user.username(event.getConnection().getName());
+                    user.firstLogin(new Date());
+                    user.lastLogin(new Date());
+                    this.plugin.userService().createOrUpdateUser(user);
                 }
-            }, 1, TimeUnit.SECONDS);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            event.completeIntent(this.plugin.loader());
-        }
+                this.plugin.loader().getProxy().getScheduler().schedule(this.plugin.loader(), () -> {
+                    for (Map.Entry<String, ServerInfo> entry : this.plugin.loader().getProxy().getServers().entrySet()) {
+                        ServerInfo serverInfo = entry.getValue();
+                        serverInfo.ping((result, error) -> {
+                            if (error == null) {
+                                var bpm = new BungeePluginMessage(serverInfo,
+                                        MaSuiteMessage.ADD_USER,
+                                        event.getConnection().getName()
+                                );
+                                bpm.send();
+                            }
+                        });
+                    }
+                }, 1, TimeUnit.SECONDS);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                event.completeIntent(this.plugin.loader());
+            }
+        });
     }
 
 }

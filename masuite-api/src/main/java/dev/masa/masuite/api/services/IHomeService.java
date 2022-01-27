@@ -5,8 +5,8 @@ import dev.masa.masuite.api.models.home.IHome;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * HomeService handles data related to homes
@@ -22,7 +22,7 @@ public interface IHomeService<T extends IHome> {
      * @param name    name of the home
      * @return optional {@link T}
      */
-    Optional<T> home(UUID ownerId, String name);
+    CompletableFuture<Optional<T>> home(UUID ownerId, String name);
 
     /**
      * Create or update {@link T}.
@@ -35,14 +35,14 @@ public interface IHomeService<T extends IHome> {
     /**
      * Delete {@link T}
      * @param home home to delete
-     * @param done callback after has been deleted successfully or not
+     * @return  if the home has been deleted successfully or not
      */
-    void deleteHome(T home, Consumer<Boolean> done);
+    CompletableFuture<Boolean> deleteHome(T home);
 
     /**
      * Get a list of {@link T}s from owner
      * @param ownerId id of the homes
      * @return a list of user's {@link T}s
      */
-    List<T> homes(UUID ownerId);
+    CompletableFuture<List<T>> homes(UUID ownerId);
 }

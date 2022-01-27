@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class UserService implements IUserService<User> {
 
@@ -25,8 +24,8 @@ public class UserService implements IUserService<User> {
         TableUtils.createTableIfNotExists(databaseService.connection(), User.class);
     }
 
-    public Optional<User> user(String username) {
-        CompletableFuture<Optional<User>> query = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<Optional<User>> user(String username) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 SelectArg name = new SelectArg(username);
                 return userDao.queryForEq("username", name).stream().findFirst();
@@ -35,19 +34,10 @@ public class UserService implements IUserService<User> {
             }
             return Optional.empty();
         });
-
-
-        try {
-            return query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 
-    public Optional<User> user(UUID uniqueId) {
-        CompletableFuture<Optional<User>> query = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<Optional<User>> user(UUID uniqueId) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 return Optional.ofNullable(userDao.queryForId(uniqueId));
             } catch (SQLException ex) {
@@ -55,15 +45,6 @@ public class UserService implements IUserService<User> {
             }
             return Optional.empty();
         });
-
-
-        try {
-            return query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 
     @SneakyThrows

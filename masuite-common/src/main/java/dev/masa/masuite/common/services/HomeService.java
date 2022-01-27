@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class HomeService implements IHomeService<Home> {
 
@@ -31,8 +29,8 @@ public class HomeService implements IHomeService<Home> {
     }
 
     @Override
-    public Optional<Home> home(UUID ownerId, String name) {
-        CompletableFuture<Optional<Home>> query = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<Optional<Home>> home(UUID ownerId, String name) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 SelectArg homeName = new SelectArg(name);
                 QueryBuilder<Home, UUID> queryBuilder = this.homeDao.queryBuilder()
@@ -46,22 +44,12 @@ public class HomeService implements IHomeService<Home> {
             }
             return Optional.empty();
         });
-
-        try {
-            return query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 
     @Override
     public void createOrUpdateHome(Home home, BiConsumer<Boolean, Boolean> done) {
-        CompletableFuture.runAsync(() -> {
+        this.home(home.owner(), home.name()).thenAcceptAsync((homeQuery) -> {
             try {
-                // Search if home is present, then update or create
-                Optional<Home> homeQuery = this.home(home.owner(), home.name());
                 if (homeQuery.isPresent()) {
                     homeQuery.get().location(home.location());
                     this.homeDao.update(homeQuery.get());
@@ -79,21 +67,21 @@ public class HomeService implements IHomeService<Home> {
 
 
     @Override
-    public void deleteHome(Home home, Consumer<Boolean> done) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Boolean> deleteHome(Home home) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 this.homeDao.delete(home);
-                done.accept(true);
+                return true;
             } catch (SQLException ex) {
                 ex.printStackTrace();
-                done.accept(false);
+                return false;
             }
         });
     }
 
     @Override
-    public List<Home> homes(UUID ownerId) {
-        CompletableFuture<List<Home>> homesQuery = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<List<Home>> homes(UUID ownerId) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 QueryBuilder<Home, UUID> queryBuilder = this.homeDao.queryBuilder()
                         .orderBy("name", true)
@@ -104,11 +92,5 @@ public class HomeService implements IHomeService<Home> {
                 return new ArrayList<>();
             }
         });
-        try {
-            return homesQuery.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 }

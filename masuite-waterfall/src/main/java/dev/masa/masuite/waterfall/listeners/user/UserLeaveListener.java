@@ -15,9 +15,12 @@ public record UserLeaveListener(MaSuiteWaterfall plugin) implements Listener {
 
     @EventHandler
     public void onLeave(PlayerDisconnectEvent event) {
-        this.plugin.userService().user(event.getPlayer().getUniqueId()).ifPresent(user -> {
-            user.lastLogin(new Date());
-            this.plugin.userService().createOrUpdateUser(user);
+        this.plugin.userService().user(event.getPlayer().getUniqueId()).thenAcceptAsync(user -> {
+            if(user.isPresent()) {
+                user.get().lastLogin(new Date());
+                this.plugin.userService().createOrUpdateUser(user.get());
+            }
+
         });
 
         for (Map.Entry<String, ServerInfo> entry : this.plugin().loader().getProxy().getServers().entrySet()) {
