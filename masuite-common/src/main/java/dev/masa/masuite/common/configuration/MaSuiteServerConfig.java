@@ -35,21 +35,6 @@ public class MaSuiteServerConfig {
     private WarpsConfig warps = new WarpsConfig();
 
     @ConfigSerializable
-    static public class ModulesConfig {
-        @Getter
-        @Setting("homes")
-        protected boolean homes = true;
-
-        @Getter
-        @Setting("teleports")
-        protected boolean teleports = true;
-
-        @Getter
-        @Setting("warps")
-        protected boolean warps = true;
-    }
-
-    @ConfigSerializable
     static public class TimingConfig {
         @Getter
         @Setting("cooldown")

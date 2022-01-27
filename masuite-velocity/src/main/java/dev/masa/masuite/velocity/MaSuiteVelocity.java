@@ -3,7 +3,6 @@ package dev.masa.masuite.velocity;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import dev.masa.masuite.common.configuration.MaSuiteProxyConfig;
@@ -36,14 +35,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.io.File;
 import java.sql.SQLException;
 
-@Plugin(
-        id = "masuite",
-        name = "MaSuite",
-        version = "@version@",
-        description = "Proxy wide homes, teleportations and warps",
-        url = "https://masa.dev",
-        authors = {"Masa"}
-)
 @Accessors(fluent = true)
 public class MaSuiteVelocity  {
 
@@ -98,9 +89,6 @@ public class MaSuiteVelocity  {
         }
 
         this.userService = new UserService(databaseService);
-        this.homeService = new HomeService(databaseService);
-        this.warpService = new WarpService(databaseService);
-        this.spawnService = new SpawnService(databaseService);
 
         this.teleportationService = new TeleportationService(this);
         this.teleportRequestService = new TeleportRequestService(this);
@@ -108,20 +96,30 @@ public class MaSuiteVelocity  {
         this.proxy.getEventManager().register(this, new UserLoginListener(this));
         this.proxy.getEventManager().register(this, new UserLeaveListener(this));
 
-        this.proxy.getEventManager().register(this, new TeleportHomeMessageListener(this));
-        this.proxy.getEventManager().register(this, new SetHomeMessageListener(this));
-        this.proxy.getEventManager().register(this, new DeleteHomeMessageListener(this));
-        this.proxy.getEventManager().register(this, new ListHomeMessageListener(this));
+        if(this.config.modules().homes()) {
+            this.homeService = new HomeService(databaseService);
+            this.proxy.getEventManager().register(this, new TeleportHomeMessageListener(this));
+            this.proxy.getEventManager().register(this, new SetHomeMessageListener(this));
+            this.proxy.getEventManager().register(this, new DeleteHomeMessageListener(this));
+            this.proxy.getEventManager().register(this, new ListHomeMessageListener(this));
+        }
 
-        this.proxy.getEventManager().register(this, new SetWarpMessageListener(this));
-        this.proxy.getEventManager().register(this, new TeleportWarpMessageListener(this));
-        this.proxy.getEventManager().register(this, new DeleteWarpMessageListener(this));
-        this.proxy.getEventManager().register(this, new ListWarpMessageListener(this));
+        if(this.config.modules().warps()) {
+            this.warpService = new WarpService(databaseService);
+            this.proxy.getEventManager().register(this, new SetWarpMessageListener(this));
+            this.proxy.getEventManager().register(this, new TeleportWarpMessageListener(this));
+            this.proxy.getEventManager().register(this, new DeleteWarpMessageListener(this));
+            this.proxy.getEventManager().register(this, new ListWarpMessageListener(this));
+        }
 
-        this.proxy.getEventManager().register(this, new TeleportMessageListener(this));
-        this.proxy.getEventManager().register(this, new TeleportRequestMessageListener(this));
+        if(this.config.modules().teleports()) {
+            this.spawnService = new SpawnService(databaseService);
 
-        this.proxy.getEventManager().register(this, new SpawnMessageListener(this));
+            this.proxy.getEventManager().register(this, new TeleportMessageListener(this));
+            this.proxy.getEventManager().register(this, new TeleportRequestMessageListener(this));
+
+            this.proxy.getEventManager().register(this, new SpawnMessageListener(this));
+        }
 
         this.proxy().getChannelRegistrar().register(MASUITE_MAIN_CHANNEL);
 

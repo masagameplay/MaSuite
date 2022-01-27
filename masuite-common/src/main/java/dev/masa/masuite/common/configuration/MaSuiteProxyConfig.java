@@ -22,6 +22,11 @@ public class MaSuiteProxyConfig {
     private DatabaseConfig database = new DatabaseConfig();
 
     @Getter
+    @Comment("Enabled modules")
+    @Setting("modules")
+    private ModulesConfig modules = new ModulesConfig();
+
+    @Getter
     @Comment("Warps settings")
     @Setting("warps")
     private WarpSettingsConfig warps = new WarpSettingsConfig();

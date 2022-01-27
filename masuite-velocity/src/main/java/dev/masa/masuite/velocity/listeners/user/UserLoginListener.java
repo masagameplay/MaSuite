@@ -75,6 +75,11 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
             return;
         }
 
+        if(!this.plugin.config().modules().teleports()) {
+            hasPlayedBefore.remove(event.getPlayer().getUniqueId());
+            return;
+        }
+
         var playedBefore = hasPlayedBefore.get(event.getPlayer().getUniqueId());
         hasPlayedBefore.remove(event.getPlayer().getUniqueId());
 
