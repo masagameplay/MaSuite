@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     java
     id("com.github.johnrengelman.shadow")
@@ -21,6 +22,10 @@ dependencies {
     }
     compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+
+    implementation("net.kyori:adventure-platform-bukkit:4.0.1")
+    implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
 
     compileOnly("org.projectlombok:lombok:1.18.22")
     annotationProcessor("org.projectlombok:lombok:1.18.22")
@@ -45,8 +50,12 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.withType<ShadowJar> {
-    relocate("co.aikar.commands", "dev.masa.masuite.libs.acf")
-    relocate("co.aikar.locales", "dev.masa.masuite.libs.locales")
+    val prefix = "dev.masa.masuite.libs."
+    relocate("co.aikar.commands", prefix + "acf")
+    relocate("co.aikar.locales", prefix + "locales")
+    relocate("org.spongepowered", prefix + "spongepowered")
+    relocate("net.kyori:adventure-text-minimessage", prefix + "kyori:adventure-text-minimessage")
+    relocate("net.kyori:adventure-platform-bukkit", prefix + "adventure-platform-bukkit")
     archiveClassifier.set("")
 }
 

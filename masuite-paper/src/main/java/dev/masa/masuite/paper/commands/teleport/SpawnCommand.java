@@ -3,18 +3,29 @@ package dev.masa.masuite.paper.commands.teleport;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
+import dev.masa.masuite.paper.MaSuitePaper;
 import dev.masa.masuite.paper.utils.BukkitAdapter;
 import dev.masa.masuite.paper.utils.BukkitPluginMessage;
 import org.bukkit.entity.Player;
 
 public class SpawnCommand extends BaseCommand {
 
+    private final MaSuitePaper plugin;
+
+    public SpawnCommand(MaSuitePaper plugin) {
+        this.plugin = plugin;
+    }
+
     @CommandAlias("spawn")
     @CommandPermission("masuite.spawn.teleport")
     @Description("Teleport to the spawn point")
+    @Conditions("cooldown:type=teleports,bypass=masuite.teleport.cooldown.bypass")
     public void teleportToSpawn(Player player) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.SPAWN_TELEPORT, true);
-        bpm.send();
+        this.plugin.warmupManager().applyWarmup(player, "masuite.teleport.warmup.bypass", "teleports", success -> {
+            if(!success) return;
+            BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.SPAWN_TELEPORT, true);
+            bpm.send();
+        });
     }
 
     @CommandAlias("setspawn")

@@ -20,6 +20,8 @@ permissions:
       masuite.home.delete.others: true
       masuite.home.teleport.others: true
       masuite.home.list.others: true
+      masuite.home.warmup.bypass: true
+      masuite.home.cooldown.bypass: true
 
   masuite.warp.user:
     description: User permissions for Warps
@@ -28,12 +30,15 @@ permissions:
       masuite.warp.list.global: true
       masuite.warp.list.server: true
       masuite.warp.teleport: true
+
   masuite.warp.staff:
     description: Staff permissions for Warps
     children:
       masuite.warp.list.hidden: true
       masuite.warp.delete: true
       masuite.warp.set: true
+      masuite.warp.warmup.bypass: true
+      masuite.warp.cooldown.bypass: true
 
   masuite.teleport.user:
     description: User permissions for Teleport
@@ -52,3 +57,5 @@ permissions:
       masuite.teleport.player.here: true
       masuite.teleport.location: true
       masuite.teleport.location.others: true
+      masuite.teleport.warmup.bypass: true
+      masuite.teleport.cooldown.bypass: true
