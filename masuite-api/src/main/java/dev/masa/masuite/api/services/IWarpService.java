@@ -4,6 +4,7 @@ import dev.masa.masuite.api.models.warp.IWarp;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -20,7 +21,7 @@ public interface IWarpService<T extends IWarp> {
      * @param name name of the home
      * @return optional {@link T}
      */
-    Optional<T> warp(String name);
+    CompletableFuture<Optional<T>> warp(String name);
 
     /**
      * Create or update {@link T}.
@@ -34,14 +35,14 @@ public interface IWarpService<T extends IWarp> {
      * Delete {@link T}
      *
      * @param warp warp to delete
-     * @param done callback after has been deleted successfully or not
+     * @return if warp has been deleted successfully or not
      */
-    void deleteWarp(T warp, Consumer<Boolean> done);
+    CompletableFuture<Boolean> deleteWarp(T warp);
 
     /**
      * Get a list of warps
      *
      * @return a list of {@link T}s
      */
-    List<T> warps();
+    CompletableFuture<List<T>> warps();
 }

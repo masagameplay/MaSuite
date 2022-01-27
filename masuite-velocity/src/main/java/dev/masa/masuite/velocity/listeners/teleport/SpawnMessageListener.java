@@ -64,22 +64,20 @@ public record SpawnMessageListener(MaSuiteVelocity plugin) implements ISpawnMess
         Player player = (Player) event.getTarget();
         boolean isDefault = in.readBoolean();
 
-        Optional<Spawn> spawn = this.plugin.spawnService().spawn(player.getCurrentServer().get().getServerInfo().getName(), isDefault);
-
-        if (spawn.isEmpty()) {
-            MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().spawnNotFound());
-            return;
-        }
-
-        this.plugin.spawnService().deleteSpawn(spawn.get(), done -> {
-            if (done) {
-                MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().deleted(), MessageService.Templates.spawnTemplate(spawn.get()));
-            } else {
-                player.sendMessage(Component.text("An error occurred while deleting spawn", NamedTextColor.RED));
+        this.plugin.spawnService().spawn(player.getCurrentServer().get().getServerInfo().getName(), isDefault).thenAcceptAsync(spawn -> {
+            if (spawn.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().spawnNotFound());
+                return;
             }
+
+            this.plugin.spawnService().deleteSpawn(spawn.get()).thenAccept(done -> {
+                if (done) {
+                    MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().deleted(), MessageService.Templates.spawnTemplate(spawn.get()));
+                } else {
+                    player.sendMessage(Component.text("An error occurred while deleting spawn", NamedTextColor.RED));
+                }
+            });
         });
-
-
     }
 
     @Subscribe
@@ -94,17 +92,15 @@ public record SpawnMessageListener(MaSuiteVelocity plugin) implements ISpawnMess
         Player player = (Player) event.getTarget();
         boolean isDefault = in.readBoolean();
 
-        Optional<Spawn> spawn = this.plugin.spawnService().spawn(player.getCurrentServer().get().getServerInfo().getName(), isDefault);
+        this.plugin.spawnService().spawn(player.getCurrentServer().get().getServerInfo().getName(), isDefault).thenAccept(spawn -> {
+            if (spawn.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().spawnNotFound());
+                return;
+            }
 
-        if (spawn.isEmpty()) {
-            MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().spawnNotFound());
-            return;
-        }
-
-        this.plugin.teleportationService().teleportPlayerToLocation(player, spawn.get().location(), done ->
-                MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().teleported(), MessageService.Templates.spawnTemplate(spawn.get()))
-        );
-
-
+            this.plugin.teleportationService().teleportPlayerToLocation(player, spawn.get().location(), done ->
+                    MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().teleported(), MessageService.Templates.spawnTemplate(spawn.get()))
+            );
+        });
     }
 }

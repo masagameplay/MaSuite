@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.Player;
 import dev.masa.masuite.api.proxy.listeners.home.ISetHomeMessageListener;
 import dev.masa.masuite.common.models.home.Home;
-import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
@@ -16,7 +15,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Optional;
 
 import static dev.masa.masuite.velocity.MaSuiteVelocity.MASUITE_MAIN_CHANNEL;
 
@@ -52,19 +50,21 @@ public record SetHomeMessageListener(MaSuiteVelocity plugin) implements ISetHome
         Player player = (Player) event.getTarget();
 
         String username = in.readUTF();
-        Optional<User> user = this.plugin.userService().user(username);
-
-        if (user.isEmpty()) {
-            MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
-            return;
-        }
-
         String name = in.readUTF();
         Location loc = new Location().deserialize(in.readUTF());
         loc.server(player.getCurrentServer().get().getServerInfo().getName());
 
-        Home home = new Home(name, user.get().uniqueId(), loc);
-        this.createHome(player, home);
+        this.plugin.userService().user(username).thenAcceptAsync((user) -> {
+            if (user.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().playerNotFound());
+                return;
+            }
+
+            Home home = new Home(name, user.get().uniqueId(), loc);
+            this.createHome(player, home);
+        });
+
+
     }
 
     private void createHome(Player player, Home home) {

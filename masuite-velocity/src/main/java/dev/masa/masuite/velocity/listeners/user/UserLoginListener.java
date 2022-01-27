@@ -15,6 +15,7 @@ import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,22 +38,21 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
     @Subscribe
     public void onJoin(LoginEvent event) {
         if (!event.getResult().isAllowed()) return;
-        Optional<User> optionalUser = this.plugin.userService().user(event.getPlayer().getUniqueId());
+        this.plugin.userService().user(event.getPlayer().getUniqueId()).thenAcceptAsync(optionalUser -> {
+            if (optionalUser.isPresent()) {
+                hasPlayedBefore.put(event.getPlayer().getUniqueId(), true);
+            } else {
+                User user = new User();
+                user.uniqueId(event.getPlayer().getUniqueId());
+                user.username(event.getPlayer().getUsername());
+                user.firstLogin(new Date());
+                user.lastLogin(new Date());
+                this.plugin.userService().createOrUpdateUser(user);
+                hasPlayedBefore.put(event.getPlayer().getUniqueId(), false);
+            }
 
-        if (optionalUser.isPresent()) {
-            hasPlayedBefore.put(event.getPlayer().getUniqueId(), true);
-        } else {
-            User user = new User();
-            user.uniqueId(event.getPlayer().getUniqueId());
-            user.username(event.getPlayer().getUsername());
-            user.firstLogin(new Date());
-            user.lastLogin(new Date());
-            this.plugin.userService().createOrUpdateUser(user);
-            hasPlayedBefore.put(event.getPlayer().getUniqueId(), false);
-        }
-
-        this.sendPlayerInfo(event.getPlayer());
-
+            this.sendPlayerInfo(event.getPlayer());
+        });
     }
 
     /**
@@ -124,23 +124,24 @@ public record UserLoginListener(MaSuiteVelocity plugin) {
             return;
         }
 
-        Optional<Spawn> spawn;
+        CompletableFuture<Optional<Spawn>> spawnFuture;
         if (this.plugin.config().teleports().spawnType().equals("global")) {
-            spawn = this.plugin.spawnService().spawn(defaultSpawn);
+            spawnFuture = this.plugin.spawnService().spawn(defaultSpawn);
         } else {
-            spawn = this.plugin.spawnService().spawn(server.getServerInfo().getName(), true);
+            spawnFuture = this.plugin.spawnService().spawn(server.getServerInfo().getName(), true);
         }
 
-        spawn.ifPresent(value -> this.plugin.teleportationService().teleportPlayerToLocation(player, value.location(), done ->
-                MessageService.sendMessage(player,
-                        this.plugin.messages().teleports().spawn().teleported(),
-                        MessageService.Templates.spawnTemplate(value)
-                )
-        ));
-
-        if (spawn.isEmpty()) {
-            this.plugin.logger.warn("Spawn not found but it spawn on (first) join has been enabled.");
-        }
+        spawnFuture.thenAccept(spawn -> {
+            if (spawn.isEmpty()) {
+                this.plugin.logger.warn("Spawn not found but it spawn on (first) join has been enabled.");
+                return;
+            }
+            this.plugin.teleportationService().teleportPlayerToLocation(player, spawn.get().location(), done ->
+                    MessageService.sendMessage(player,
+                            this.plugin.messages().teleports().spawn().teleported(),
+                            MessageService.Templates.spawnTemplate(spawn.get())
+                    )
+            );
+        });
     }
-
 }

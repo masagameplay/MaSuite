@@ -2,7 +2,6 @@ package dev.masa.masuite.waterfall.listeners.home;
 
 import dev.masa.masuite.api.proxy.listeners.home.ISetHomeMessageListener;
 import dev.masa.masuite.common.models.home.Home;
-import dev.masa.masuite.common.models.user.User;
 import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
@@ -18,7 +17,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Optional;
 
 public record SetHomeMessageListener(MaSuiteWaterfall plugin) implements Listener, ISetHomeMessageListener<PluginMessageEvent> {
 
@@ -63,24 +61,25 @@ public record SetHomeMessageListener(MaSuiteWaterfall plugin) implements Listene
 
         // Get targeted user
         String username = in.readUTF();
-        Optional<User> user = this.plugin.userService().user(username);
+        String name = in.readUTF();
 
         Audience audience = this.plugin.adventure().player(player);
 
-        if (user.isEmpty()) {
-            MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
-            return;
-        }
-
         // Build home
-        String name = in.readUTF();
+
         // Deserialize location and assign correct server
         Location loc = new Location().deserialize(in.readUTF());
         loc.server(player.getServer().getInfo().getName());
 
-        Home home = new Home(name, user.get().uniqueId(), loc);
+        this.plugin.userService().user(username).thenAcceptAsync((user) -> {
+            if (user.isEmpty()) {
+                MessageService.sendMessage(audience, this.plugin.messages().playerNotFound());
+                return;
+            }
 
-        this.createHome(player, home);
+            Home home = new Home(name, user.get().uniqueId(), loc);
+            this.createHome(player, home);
+        });
 
     }
 

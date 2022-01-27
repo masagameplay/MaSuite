@@ -13,9 +13,12 @@ public record UserLeaveListener(MaSuiteVelocity plugin) {
     @Subscribe
     public void onLeave(DisconnectEvent event) {
         // Save last login
-        this.plugin.userService().user(event.getPlayer().getUniqueId()).ifPresent(user -> {
-            user.lastLogin(new Date());
-            this.plugin.userService().createOrUpdateUser(user);
+        this.plugin.userService().user(event.getPlayer().getUniqueId()).thenAcceptAsync(user -> {
+            if(user.isPresent()) {
+                user.get().lastLogin(new Date());
+                this.plugin.userService().createOrUpdateUser(user.get());
+            }
+
         });
 
         // Cancel request if player leaves

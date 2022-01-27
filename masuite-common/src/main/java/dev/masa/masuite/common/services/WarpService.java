@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class WarpService implements IWarpService<Warp> {
 
@@ -31,8 +29,8 @@ public class WarpService implements IWarpService<Warp> {
     }
 
     @Override
-    public Optional<Warp> warp(String name) {
-        CompletableFuture<Optional<Warp>> query = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<Optional<Warp>> warp(String name) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 SelectArg warpName = new SelectArg(name);
                 QueryBuilder<Warp, UUID> queryBuilder = this.warpDao.queryBuilder()
@@ -45,22 +43,14 @@ public class WarpService implements IWarpService<Warp> {
             }
             return Optional.empty();
         });
-
-        try {
-            return query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 
     @Override
     public void createOrUpdateWarp(Warp warp, BiConsumer<Boolean, Boolean> done) {
-        CompletableFuture.runAsync(() -> {
+        this.warp(warp.name()).thenAcceptAsync((warpQuery) -> {
             try {
                 // Search if home is present, then update or create
-                Optional<Warp> warpQuery = this.warp(warp.name());
+
                 if (warpQuery.isPresent()) {
                     warpQuery.get().location(warp.location());
                     this.warpDao.update(warpQuery.get());
@@ -78,21 +68,21 @@ public class WarpService implements IWarpService<Warp> {
 
 
     @Override
-    public void deleteWarp(Warp warp, Consumer<Boolean> done) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Boolean> deleteWarp(Warp warp) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 this.warpDao.delete(warp);
-                done.accept(true);
+                return true;
             } catch (SQLException ex) {
                 ex.printStackTrace();
-                done.accept(false);
+                return false;
             }
         });
     }
 
     @Override
-    public List<Warp> warps() {
-        CompletableFuture<List<Warp>> warpsQuery = CompletableFuture.supplyAsync(() -> {
+    public CompletableFuture<List<Warp>> warps() {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 return this.warpDao.queryBuilder()
                         .orderBy("name", true)
@@ -102,11 +92,5 @@ public class WarpService implements IWarpService<Warp> {
                 return new ArrayList<>();
             }
         });
-        try {
-            return warpsQuery.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 }
