@@ -2,7 +2,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     `java-library`
-
     id("com.github.johnrengelman.shadow")
 }
 
@@ -35,11 +34,19 @@ tasks.withType<ShadowJar> {
     archiveClassifier.set("")
 }
 
+
+
 tasks.named("assemble").configure {
     dependsOn("shadowJar")
 }
 
+val buildVersion = "RC${(System.getenv("BUILD_NUMBER") ?: "0")}";
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    expand("version" to "${parent!!.version}-${buildVersion}");
+}
+
 artifacts {
-    val version = System.getenv("BUILD_NUMBER") ?: "0"
-    base.archivesName.set("${project.name}-${parent!!.version}-RC${version}")
+    base.archivesName.set("${project.name}-${parent!!.version}-${buildVersion}")
 }

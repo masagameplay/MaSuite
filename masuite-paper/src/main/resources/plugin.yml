@@ -1,5 +1,5 @@
 name: MaSuite
-version: 1.0.0
+version: ${version}
 main: dev.masa.masuite.paper.MaSuitePaper
 api-version: 1.17
 authors: [ Masa ]

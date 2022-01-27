@@ -31,15 +31,10 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.22")
 }
 
+val buildVersion = "RC${(System.getenv("BUILD_NUMBER") ?: "0")}";
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-
-    // TODO: Solve
-    /*
-    from(sourceSets.main.resources.srcDirs) {
-        expand "version": project.version
-    }*/
+    expand("version" to "${parent!!.version}-${buildVersion}")
 }
 
 tasks.withType<JavaCompile> {
@@ -68,6 +63,5 @@ java {
 }
 
 artifacts {
-    val version = System.getenv("BUILD_NUMBER") ?: "0"
-    base.archivesName.set("${project.name}-${parent!!.version}-RC${version}")
+    base.archivesName.set("${project.name}-${parent!!.version}-${buildVersion}")
 }

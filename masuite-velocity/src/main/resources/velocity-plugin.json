@@ -1,0 +1,12 @@
+{
+  "id": "masuite",
+  "name": "MaSuite",
+  "version": "${version}",
+  "description": "Proxy wide homes, teleportations and warps",
+  "url": "https://github.com/Makkarakiska/MaSuite",
+  "authors": [
+    "Masa"
+  ],
+  "dependencies": [],
+  "main": "dev.masa.masuite.velocity.MaSuiteVelocity"
+}
