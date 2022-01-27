@@ -33,6 +33,10 @@ public class MessageService implements IMessageService {
             return templates;
         }
 
+        public static List<Template> timeTemplate(int timeInSeconds) {
+            return List.of(Template.of("time", String.valueOf(timeInSeconds)));
+        }
+
         public static List<Template> spawnTemplate(Spawn spawn) {
             var templates = new ArrayList<>(locationTemplate(spawn.location()));
             templates.add(Template.of("spawn-type", String.valueOf(spawn.isDefaultSpawn())));
