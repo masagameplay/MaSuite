@@ -202,6 +202,9 @@ public final class MaSuitePaper extends JavaPlugin {
         }
 
         // Copy lang file over
-        this.saveResource("acf_lang.yml", false);
+        var file = new File(this.getDataFolder(), "acf_lang.yml");
+        if(!file.exists()) {
+            this.saveResource("acf_lang.yml", false);
+        }
     }
 }
