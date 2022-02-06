@@ -65,7 +65,7 @@ public class TeleportRequestService extends AbstractTeleportRequestService<Veloc
 
         var task = this.plugin.proxy().getScheduler()
                 .buildTask(this.plugin, () -> this.expireRequest(request))
-                .delay(30, TimeUnit.SECONDS)
+                .delay(this.plugin.config().teleports().keepTeleportRequestAlive(), TimeUnit.SECONDS)
                 .schedule();
 
         request.task(task);
