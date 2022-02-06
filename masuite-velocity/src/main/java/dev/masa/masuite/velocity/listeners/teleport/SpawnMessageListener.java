@@ -103,4 +103,36 @@ public record SpawnMessageListener(MaSuiteVelocity plugin) implements ISpawnMess
             );
         });
     }
+
+    @Subscribe
+    public void teleportOtherToSpawn(PluginMessageEvent event) throws IOException {
+        if (!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.SPAWN_TELEPORT_OTHERS.channel)) {
+            return;
+        }
+        Player player = (Player) event.getTarget();
+        String name = in.readUTF();
+        boolean isDefault = in.readBoolean();
+
+        var target = this.plugin.proxy().getPlayer(name);
+
+        if (target.isEmpty()) {
+            MessageService.sendMessage(player, this.plugin.messages().playerNotOnline());
+            return;
+        }
+
+        this.plugin.spawnService().spawn(player.getCurrentServer().get().getServerInfo().getName(), isDefault).thenAccept(spawn -> {
+            if (spawn.isEmpty()) {
+                MessageService.sendMessage(player, this.plugin.messages().teleports().spawn().spawnNotFound());
+                return;
+            }
+
+            this.plugin.teleportationService().teleportPlayerToLocation(target.get(), spawn.get().location(), done ->
+                    MessageService.sendMessage(target.get(), this.plugin.messages().teleports().spawn().teleported(), MessageService.Templates.spawnTemplate(spawn.get()))
+            );
+        });
+    }
 }

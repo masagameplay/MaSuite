@@ -42,6 +42,7 @@ public enum MaSuiteMessage {
     SPAWN_CREATE("masuite:spawn:create"),
     SPAWN_DELETE("masuite:spawn:delete"),
     SPAWN_TELEPORT("masuite:spawn:teleport"),
+    SPAWN_TELEPORT_OTHERS("masuite:spawn:teleport:others"),
 
     TELEPORT_REQUEST_CREATE("masuite:teleport:request:create"),
     TELEPORT_REQUEST_ACCEPT("masuite:teleport:request:accept"),

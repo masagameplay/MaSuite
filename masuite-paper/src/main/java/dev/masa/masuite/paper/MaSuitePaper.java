@@ -130,7 +130,6 @@ public final class MaSuitePaper extends JavaPlugin {
 
             manager.getCommandCompletions().registerCompletion("homes", c -> {
                 if (homes.containsKey(c.getPlayer().getUniqueId())) {
-                    this.getLogger().info("Tab completing home names");
                     return homes.get(c.getPlayer().getUniqueId());
                 }
                 return new ArrayList<>();
