@@ -13,18 +13,15 @@ public class SetHomeCommand extends BaseCommand {
     @Default()
     @CommandPermission("masuite.home.set")
     @Description("Create a new home or update an existing one")
-    @CommandCompletion("@homes")
-    public void setHome(Player player, @Single @Default("home") String home) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_SET, home, BukkitAdapter.adapt(player.getLocation()).serialize());
-        bpm.send();
-    }
+    @CommandCompletion("@homes @masuite_players")
+    public void setHome(Player player, @Single @Default("home") String home, @Optional @CommandPermission("masuite.home.set.others") String user) {
+        if(user != null) {
+            var bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_SET_OTHERS, user, home, BukkitAdapter.adapt(player.getLocation()).serialize());
+            bpm.send();
+            return;
+        }
 
-    @Default()
-    @CommandPermission("masuite.home.set.others")
-    @Description("Create a new home or update an existing one for player")
-    @CommandCompletion("@masuite_players")
-    public void setHome(Player player, String user, @Single String home) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_SET_OTHERS, user, home, BukkitAdapter.adapt(player.getLocation()).serialize());
+        var bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_SET, home, BukkitAdapter.adapt(player.getLocation()).serialize());
         bpm.send();
     }
 

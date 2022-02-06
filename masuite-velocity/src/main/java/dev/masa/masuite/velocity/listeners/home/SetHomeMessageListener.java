@@ -9,6 +9,7 @@ import dev.masa.masuite.common.objects.Location;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
+import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -75,9 +76,13 @@ public record SetHomeMessageListener(MaSuiteVelocity plugin) implements ISetHome
             }
             if (isCreated) {
                 MessageService.sendMessage(player, this.plugin.messages().homes().homeSet(), MessageService.Templates.homeTemplate(home));
+                var vpm = new VelocityPluginMessage(player.getCurrentServer().get().getServer(), MaSuiteMessage.HOME_LIST_ADD, home.owner().toString(), home.name());
+                vpm.send();
             } else {
                 MessageService.sendMessage(player, this.plugin.messages().homes().homeUpdated(), MessageService.Templates.homeTemplate(home));
             }
+
+
         });
     }
 }

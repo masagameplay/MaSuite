@@ -7,6 +7,7 @@ import dev.masa.masuite.api.proxy.listeners.home.IListHomeMessageListener;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
+import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.io.ByteArrayInputStream;
@@ -74,5 +75,25 @@ public record ListHomeMessageListener(MaSuiteVelocity plugin) implements IListHo
         });
 
 
+    }
+
+    @Subscribe
+    public void serverRequestHomes(PluginMessageEvent event) throws IOException {
+        if (!event.getIdentifier().equals(MASUITE_MAIN_CHANNEL)) return;
+
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
+        String channel = in.readUTF();
+        if (!channel.equals(MaSuiteMessage.HOMES_LIST_REQUEST.channel)) {
+            return;
+        }
+
+        Player player = (Player) event.getTarget();
+
+        this.plugin.homeService().homes(player.getUniqueId()).thenAccept(homes -> {
+            for(var home : homes) {
+                VelocityPluginMessage vpm = new VelocityPluginMessage(player.getCurrentServer().get().getServer(), MaSuiteMessage.HOME_LIST_ADD, player.getUniqueId().toString(), home.name());
+                vpm.send();
+            }
+        });
     }
 }

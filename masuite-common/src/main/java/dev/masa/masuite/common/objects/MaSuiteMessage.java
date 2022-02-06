@@ -29,6 +29,9 @@ public enum MaSuiteMessage {
     HOMES_TELEPORT_OTHERS("masuite:homes:teleport:others"),
     HOMES_LIST("masuite:homes:list"),
     HOMES_LIST_OTHERS("masuite:homes:list:others"),
+    HOMES_LIST_REQUEST("masuite:homes:request"),
+    HOME_LIST_ADD("masuite:homes:list_add"),
+    HOME_LIST_REMOVE("masuite:homes:list_remove"),
     // Teleportation
     TELEPORT_TO_LOCATION("masuite:teleport:location"),
     TELEPORT_TO_PLAYER("masuite:teleport:player"),

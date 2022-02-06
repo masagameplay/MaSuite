@@ -12,19 +12,15 @@ public class DeleteHomeCommand extends BaseCommand {
     @Default()
     @CommandPermission("masuite.home.delete")
     @Description("Delete home")
-    @CommandCompletion("@homes")
-    public void deleteHome(Player player, @Single @Default("home") String home) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_DELETE, home);
+    @CommandCompletion("@homes @masuite_players")
+    public void deleteHome(Player player, @Single @Default("home") String home, @Optional @CommandPermission("masuite.home.delete.others") String user) {
+        if (user != null) {
+            var bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_DELETE_OTHERS, user, home);
+            bpm.send();
+            return;
+        }
+
+        var bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_DELETE, home);
         bpm.send();
     }
-
-    @Default()
-    @CommandPermission("masuite.home.delete.others")
-    @Description("Delete other player's home")
-    @CommandCompletion("@masuite_players")
-    public void deleteHome(Player player, String user, @Single String home) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_DELETE_OTHERS, user, home);
-        bpm.send();
-    }
-
 }

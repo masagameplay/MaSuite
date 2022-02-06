@@ -19,22 +19,20 @@ public class TeleportHomeCommand extends BaseCommand {
     @Default()
     @CommandPermission("masuite.home.teleport")
     @Description("Teleport to home")
+    @CommandCompletion("@homes @masuite_players")
     @Conditions("cooldown:type=homes,bypass=masuite.home.cooldown.bypass")
-    public void teleportHome(Player player, @Single @Default("home") String home) {
+    public void teleportHome(Player player, @Default("home") String home, @Optional @CommandPermission("masuite.home.teleport.others") String user) {
+        if(user != null) {
+            var bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT_OTHERS, user, home);
+            bpm.send();
+            return;
+        }
+
         this.plugin.warmupManager().applyWarmup(player, "masuite.home.warmup.bypass", "homes", success -> {
             if(!success) return;
-            BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT, home);
+            var bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT, home);
             bpm.send();
         });
-    }
-
-    @Default()
-    @CommandPermission("masuite.home.teleport.others")
-    @Description("Teleport to other player's home")
-    @CommandCompletion("@masuite_players")
-    public void teleportHome(Player player, String user, @Single String home) {
-        BukkitPluginMessage bpm = new BukkitPluginMessage(player, MaSuiteMessage.HOMES_TELEPORT_OTHERS, user, home);
-        bpm.send();
     }
 
 }

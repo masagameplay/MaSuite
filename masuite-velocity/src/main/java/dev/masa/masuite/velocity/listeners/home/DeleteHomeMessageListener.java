@@ -8,6 +8,7 @@ import dev.masa.masuite.common.models.home.Home;
 import dev.masa.masuite.common.objects.MaSuiteMessage;
 import dev.masa.masuite.common.services.MessageService;
 import dev.masa.masuite.velocity.MaSuiteVelocity;
+import dev.masa.masuite.velocity.utils.VelocityPluginMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -72,6 +73,8 @@ public record DeleteHomeMessageListener(
         this.plugin.homeService().deleteHome(home.get()).thenAccept(done -> {
             if (done) {
                 MessageService.sendMessage(player, this.plugin.messages().homes().homeDeleted(), MessageService.Templates.homeTemplate(home.get()));
+                var vpm = new VelocityPluginMessage(player.getCurrentServer().get().getServer(), MaSuiteMessage.HOME_LIST_REMOVE, home.get().owner().toString(), home.get().name());
+                vpm.send();
             } else {
                 player.sendMessage(Component.text("An error occurred while deleting home", NamedTextColor.RED));
             }
