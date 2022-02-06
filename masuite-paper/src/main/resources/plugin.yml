@@ -48,6 +48,7 @@ permissions:
       masuite.teleport.request.accept: true
       masuite.teleport.request.deny: true
       masuite.teleport.request.lock: true
+      masuite.teleport.spawn.teleport: true
   masuite.teleport.staff:
     description: Staff permissions for Teleport
     children:
@@ -59,3 +60,6 @@ permissions:
       masuite.teleport.location.others: true
       masuite.teleport.warmup.bypass: true
       masuite.teleport.cooldown.bypass: true
+      masuite.teleport.spawn.teleport.others: true
+      masuite.teleport.spawn.set: true
+      masuite.teleport.spawn.delete: true
