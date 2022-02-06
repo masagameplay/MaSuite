@@ -55,9 +55,6 @@ public class MaSuiteServerConfig {
 
     @ConfigSerializable
     static public class TeleportsConfig extends TimingConfig {
-        @Getter
-        @Setting("respawn-type")
-        protected String respawnType = "none";
 
         @Getter
         @Setting("spawn-on-first-join")
