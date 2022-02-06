@@ -18,15 +18,23 @@ public record PlayerJoinListener(MaSuitePaper plugin) implements Listener {
             this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
                 BukkitPluginMessage bpm = new BukkitPluginMessage(event.getPlayer(), MaSuiteMessage.HOMES_LIST_REQUEST);
                 bpm.send();
-            }, 60);
+            }, 30);
         }
 
+        // If player has not played before and spawn on first join has set to true, teleport player to first time spawn.
+        if (!event.getPlayer().hasPlayedBefore() && this.plugin.config().teleports().spawnOnFirstJoin()) {
+            var bpm = new BukkitPluginMessage(event.getPlayer(), MaSuiteMessage.SPAWN_TELEPORT, false);
+            bpm.send();
+        }
+
+        // If player is in location teleportation queue, teleport to given location.
         var targetLocation = this.plugin.locationTeleportationQueue().get(event.getPlayer().getUniqueId());
         if (targetLocation != null) {
             event.getPlayer().teleport(targetLocation);
             return;
         }
 
+        // If player is in player teleportation queue, teleport to given player.
         var targetUUID = this.plugin.playerTeleportationQueue().get(event.getPlayer().getUniqueId());
         if (targetUUID != null) {
             var targetPlayer = this.plugin.getServer().getPlayer(targetUUID);
